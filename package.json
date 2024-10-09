@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "bunx serve@latest out",
+    "lint": "next lint --fix",
+    "format": "prettier --write **/*.{js,jsx,ts,tsx}",
+    "prepare": "husky install"
   },
   "dependencies": {
     "react": "^18",
@@ -18,9 +20,19 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^8.6.0",
+    "@typescript-eslint/parser": "^8.6.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.15"
+    "eslint-config-next": "14.2.15",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-testing-library": "^5.10.3",
+    "eslint-plugin-unicorn": "^55.0.0",
+    "eslint-plugin-unused-imports": "^3.0.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
+    "prettier": "2.7.0",
+    "prettier-plugin-tailwindcss": "^0.1.13"
   }
 }
