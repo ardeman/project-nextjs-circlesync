@@ -3,7 +3,7 @@ export const extractPathSegment = (path: string) => {
   const segments = path.split('/').filter(Boolean)
 
   // Assuming the dynamic segment is always the first one, the desired part will be the second segment if it exists
-  const desiredSegment = segments.length > 1 ? `/${segments[1]}` : '/'
+  const desiredSegment = segments.length > 0 ? `/${segments[0]}` : '/'
 
   return desiredSegment
 }

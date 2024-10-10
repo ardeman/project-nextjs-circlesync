@@ -9,19 +9,18 @@ type TProps = {
   push: (href: string, options?: NavigateOptions) => void
   pathname: string
   user: User | null
-  loading: boolean
 }
 
 export function middleware(props: TProps) {
-  const { push, pathname, user, loading } = props
+  const { push, pathname, user } = props
   const extractedPath = extractPathSegment(pathname)
 
-  if (protectedPages.has(extractedPath) && !user && !loading) {
+  if (protectedPages.has(extractedPath) && !user) {
     const url = '/'
     return push(url)
   }
 
-  if (authPages.has(extractedPath) && user && !loading) {
+  if (authPages.has(extractedPath) && user) {
     const url = '/'
     return push(url)
   }
