@@ -5,7 +5,7 @@ import { FC, FormEvent, useState } from 'react'
 import { useFirebaseAuth } from '@/hooks'
 
 export const AuthPage: FC = () => {
-  const { register, loading, error, loginWithGoogle } = useFirebaseAuth()
+  const { register, isLoading, error, loginWithGoogle } = useFirebaseAuth()
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
@@ -74,7 +74,7 @@ export const AuthPage: FC = () => {
             <button
               type="submit"
               className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none disabled:opacity-50"
-              disabled={loading || isSubmitting}
+              disabled={isLoading || isSubmitting}
             >
               {isSubmitting ? 'Submitting...' : 'Continue'}
             </button>
@@ -91,7 +91,7 @@ export const AuthPage: FC = () => {
               type="button"
               onClick={handleGoogleSignIn}
               className="mt-4 w-full rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 focus:outline-none disabled:opacity-50"
-              disabled={loading || isSubmitting}
+              disabled={isLoading || isSubmitting}
             >
               Continue with Google
             </button>
