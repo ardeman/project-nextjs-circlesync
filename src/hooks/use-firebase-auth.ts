@@ -15,7 +15,7 @@ import { firebaseAuthError } from '@/data'
 
 type TFirebaseAuthReturn = {
   user: User | null
-  loading: boolean
+  isLoading: boolean
   error: string | null
   register: (email: string, password: string) => Promise<void>
   loginWithGoogle: () => Promise<void>
@@ -24,13 +24,13 @@ type TFirebaseAuthReturn = {
 
 export const useFirebaseAuth = (): TFirebaseAuthReturn => {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState<boolean>(true)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const provider = new GoogleAuthProvider()
 
   // Handle email/password registration
   const register = async (email: string, password: string): Promise<void> => {
-    setLoading(true)
+    setIsLoading(true)
     try {
       await createUserWithEmailAndPassword(firebaseAuth, email, password)
       setError(null)
@@ -54,13 +54,13 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
         setError(String(error))
       }
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
   // Handle email/password login
   const login = async (email: string, password: string): Promise<void> => {
-    setLoading(true)
+    setIsLoading(true)
     try {
       await signInWithEmailAndPassword(firebaseAuth, email, password)
       setError(null)
@@ -75,13 +75,13 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
         setError(String(error))
       }
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
   // Handle Google Sign-In and linking accounts if necessary
   const loginWithGoogle = async (): Promise<void> => {
-    setLoading(true)
+    setIsLoading(true)
     try {
       await signInWithPopup(firebaseAuth, provider)
       setError(null)
@@ -96,13 +96,13 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
         setError(String(error))
       }
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
   // Handle user logout
   const logout = async (): Promise<void> => {
-    setLoading(true)
+    setIsLoading(true)
     try {
       await signOut(firebaseAuth)
       setError(null)
@@ -113,7 +113,7 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
         setError(String(error))
       }
     } finally {
-      setLoading(false)
+      setIsLoading(false)
     }
   }
 
@@ -121,7 +121,7 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
       setUser(currentUser)
-      setLoading(false)
+      setIsLoading(false)
     })
 
     return () => unsubscribe()
@@ -129,7 +129,7 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
 
   return {
     user,
-    loading,
+    isLoading,
     error,
     register,
     loginWithGoogle,
