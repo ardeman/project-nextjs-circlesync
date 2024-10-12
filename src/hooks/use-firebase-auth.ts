@@ -4,7 +4,7 @@ import {
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect,
   signOut,
   User,
 } from 'firebase/auth'
@@ -83,7 +83,7 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
   const loginWithGoogle = async (): Promise<void> => {
     setIsLoading(true)
     try {
-      await signInWithPopup(firebaseAuth, provider)
+      await signInWithRedirect(firebaseAuth, provider)
       setError(null)
     } catch (error: unknown) {
       if (error instanceof FirebaseError || error instanceof Error) {
