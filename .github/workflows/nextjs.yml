@@ -95,7 +95,7 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Verify build output
         run: ls -laR out
-      - name: Upload build artifacts
+      - name: Upload artifacts
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out
