@@ -1,30 +1,11 @@
 import { useEffect, useState } from 'react'
-import {
-  FaFighterJet,
-  FaGamepad,
-  FaHeadphones,
-  FaCubes,
-  FaPaw,
-  FaRocket,
-  FaTicketAlt,
-  FaOpencart,
-  FaCodepen,
-} from 'react-icons/fa'
 import { twMerge } from 'tailwind-merge'
 
-const icons = [
-  FaFighterJet,
-  FaGamepad,
-  FaHeadphones,
-  FaCubes,
-  FaPaw,
-  FaRocket,
-  FaTicketAlt,
-  FaOpencart,
-  FaCodepen,
-]
+import { icons } from './data'
+import { TProps } from './type'
 
-export const LoadingSpinner = () => {
+export const LoadingSpinner = (props: TProps) => {
+  const { classname } = props
   const [counter, setCounter] = useState(0)
   const [animate, setAnimate] = useState(false)
 
@@ -48,7 +29,9 @@ export const LoadingSpinner = () => {
   const IconComponent = icons[counter]
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div
+      className={twMerge('flex h-dvh items-center justify-center', classname)}
+    >
       <div className="absolute flex h-24 w-24 flex-col items-center justify-center">
         <div
           className={twMerge(
