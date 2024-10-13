@@ -17,4 +17,8 @@ export const firebaseAuthError: TFirebaseAuthError[] = [
     code: 'auth/weak-password',
     message: 'Weak password',
   },
+  {
+    code: 'auth/popup-closed-by-user',
+    message: 'Popup closed by user',
+  },
 ]
