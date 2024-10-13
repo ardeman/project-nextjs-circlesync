@@ -103,6 +103,8 @@ jobs:
             .firebaserc
             firebase.json
           include-hidden-files: true
+      - name: Verify build artifacts
+        run: ls -laR ~/work
 
   # Deployment job
   deploy:
@@ -123,7 +125,7 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: firebase deploy --only hosting
-      - name: Verify build artifacts
+      - name: Verify deploy artifacts
         run: ls -laR ~/work
       - name: Verify firebase cache
         run: cat .firebase/hosting.b3V0.cache
