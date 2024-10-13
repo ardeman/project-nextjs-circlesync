@@ -126,4 +126,4 @@ jobs:
       - name: Verify build artifacts
         run: ls -laR
       - name: Verify firebase cache
-        run: cat ~/.firebase/hosting.b3V0.cache
+        run: cat .firebase/hosting.b3V0.cache
