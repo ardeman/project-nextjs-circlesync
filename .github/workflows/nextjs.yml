@@ -58,7 +58,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: ${{ steps.detect-package-manager.outputs.manager }}
       - name: Setup Bun (if applicable)
         if: ${{ steps.detect-package-manager.outputs.manager == 'bun' }}
         run: npm install -g bun@1.1.30
