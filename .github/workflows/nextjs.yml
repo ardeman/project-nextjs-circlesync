@@ -22,6 +22,18 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Firebase job
+  firebase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIRCLE_SYNC_7D314 }}
+          channelId: live
+          projectId: circle-sync-7d314
+
   # Build job
   build:
     runs-on: ubuntu-latest
