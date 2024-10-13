@@ -112,6 +112,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: nextjs-build
+      - name: Verify build artifacts
+        run: ls ./
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
