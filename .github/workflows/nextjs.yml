@@ -100,8 +100,8 @@ jobs:
           name: nextjs-build
           path: |
             out
-            firebase.json
             .firebaserc
+            firebase.json
 
   # Deployment job
   deploy:
