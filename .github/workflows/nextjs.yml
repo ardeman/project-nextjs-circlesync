@@ -62,8 +62,7 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 8.10.5
-      - name: Setup Node (if not Bun)
-        if: ${{ steps.detect-package-manager.outputs.manager != 'bun' }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -94,31 +93,6 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
       - name: Verify build output
         run: ls -laR out
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: nextjs-build
-          path: |
-            ./out
-            .firebaserc
-            firebase.json
-          include-hidden-files: true
-
-  # Deployment job
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: nextjs-build
-      - name: Verify build artifacts
-        run: ls -laR ./
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
       - name: Deploy to Firebase Hosting
