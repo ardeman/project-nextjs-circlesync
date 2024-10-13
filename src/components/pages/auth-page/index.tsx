@@ -1,6 +1,7 @@
 'use client'
 
 import { FC, FormEvent, useState } from 'react'
+import { PiSpinnerBallDuotone } from 'react-icons/pi'
 
 import { useFirebaseAuth } from '@/hooks'
 
@@ -8,19 +9,14 @@ export const AuthPage: FC = () => {
   const { register, isLoading, error, loginWithGoogle } = useFirebaseAuth()
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
-  const handleEmailPasswordSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleEmailPasswordSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsSubmitting(true)
-    await register(email, password)
-    setIsSubmitting(false)
+    register(email, password)
   }
 
   const handleGoogleSignIn = async () => {
-    setIsSubmitting(true)
     await loginWithGoogle()
-    setIsSubmitting(false)
   }
 
   return (
@@ -73,10 +69,13 @@ export const AuthPage: FC = () => {
 
             <button
               type="submit"
-              className="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 focus:outline-none disabled:opacity-50"
-              disabled={isLoading || isSubmitting}
+              className="flex h-11 w-full items-center justify-center gap-2 rounded bg-blue-500 text-white hover:bg-blue-600 focus:outline-none disabled:opacity-50"
+              disabled={isLoading}
             >
-              {isSubmitting ? 'Submitting...' : 'Continue'}
+              <PiSpinnerBallDuotone
+                className={isLoading ? 'animate-spin text-lg' : 'hidden'}
+              />
+              {!isLoading && 'Continue'}
             </button>
           </form>
 
@@ -91,7 +90,7 @@ export const AuthPage: FC = () => {
               type="button"
               onClick={handleGoogleSignIn}
               className="mt-4 w-full rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 focus:outline-none disabled:opacity-50"
-              disabled={isLoading || isSubmitting}
+              disabled={isLoading}
             >
               Continue with Google
             </button>
