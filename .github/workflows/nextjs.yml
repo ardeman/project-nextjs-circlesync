@@ -102,6 +102,7 @@ jobs:
             ./out
             .firebaserc
             firebase.json
+          include-hidden-files: true
 
   # Deployment job
   deploy:
