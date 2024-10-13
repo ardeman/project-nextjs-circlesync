@@ -99,7 +99,7 @@ jobs:
         with:
           name: nextjs-build
           path: |
-            out
+            ./out
             .firebaserc
             firebase.json
 
@@ -113,7 +113,7 @@ jobs:
         with:
           name: nextjs-build
       - name: Verify build artifacts
-        run: ls ./
+        run: ls -la ./
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
