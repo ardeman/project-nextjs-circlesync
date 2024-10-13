@@ -1,70 +1,79 @@
+import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
-  onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
   User,
 } from 'firebase/auth'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { firebaseAuth } from '@/configs'
 import { firebaseAuthError } from '@/data'
 
+import { useAuthUser } from './use-auth-user'
+import { useQueryActions } from './use-query-actions'
+
 type TFirebaseAuthReturn = {
-  user: User | null
+  user?: User | null
   isLoading: boolean
   error: string | null
-  register: (email: string, password: string) => Promise<void>
-  loginWithGoogle: () => Promise<void>
-  logout: () => Promise<void>
+  register: (email: string, password: string) => void
+  loginWithGoogle: () => void
+  logout: () => void
 }
 
 export const useFirebaseAuth = (): TFirebaseAuthReturn => {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const { data: user, isLoading: isUserLoading } = useAuthUser()
   const [error, setError] = useState<string | null>(null)
   const provider = new GoogleAuthProvider()
+  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
 
   // Handle email/password registration
-  const register = async (email: string, password: string): Promise<void> => {
-    setIsLoading(true)
-    try {
-      await createUserWithEmailAndPassword(firebaseAuth, email, password)
+  const { mutate: mutateRegister, isPending: isRegisterPending } = useMutation({
+    mutationFn: (data: { email: string; password: string }) =>
+      createUserWithEmailAndPassword(firebaseAuth, data.email, data.password),
+    onSuccess: () => {
       setError(null)
-    } catch (error: unknown) {
+      invalidateUser()
+    },
+    onError: (
+      error: unknown,
+      variables: { email: string; password: string }
+    ) => {
       if (error instanceof FirebaseError || error instanceof Error) {
         const code = error instanceof FirebaseError ? error.code : ''
         const action = firebaseAuthError.find(
           (item) => item.code === code
         )?.action
-
         if (action === 'signin') {
-          login(email, password)
-          return
+          mutateLogin({
+            email: variables.email,
+            password: variables.password,
+          })
+        } else {
+          const message =
+            firebaseAuthError.find((item) => item.code === code)?.message ||
+            error.message
+          setError(message)
         }
-
-        const message =
-          firebaseAuthError.find((item) => item.code === code)?.message ||
-          error.message
-        setError(message)
       } else {
         setError(String(error))
       }
-    } finally {
-      setIsLoading(false)
-    }
-  }
+    },
+  })
 
   // Handle email/password login
-  const login = async (email: string, password: string): Promise<void> => {
-    setIsLoading(true)
-    try {
-      await signInWithEmailAndPassword(firebaseAuth, email, password)
+  const { mutate: mutateLogin, isPending: isLoginPending } = useMutation({
+    mutationFn: (data: { email: string; password: string }) =>
+      signInWithEmailAndPassword(firebaseAuth, data.email, data.password),
+    onSuccess: () => {
       setError(null)
-    } catch (error: unknown) {
+      invalidateUser()
+    },
+    onError: (error: unknown) => {
       if (error instanceof FirebaseError || error instanceof Error) {
         const code = error instanceof FirebaseError ? error.code : ''
         const message =
@@ -74,65 +83,57 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
       } else {
         setError(String(error))
       }
-    } finally {
-      setIsLoading(false)
-    }
-  }
+    },
+  })
 
-  // Handle Google Sign-In and linking accounts if necessary
-  const loginWithGoogle = async (): Promise<void> => {
-    setIsLoading(true)
-    try {
-      await signInWithPopup(firebaseAuth, provider)
-      setError(null)
-    } catch (error: unknown) {
-      if (error instanceof FirebaseError || error instanceof Error) {
-        const code = error instanceof FirebaseError ? error.code : ''
-        const message =
-          firebaseAuthError.find((item) => item.code === code)?.message ||
-          error.message
-        setError(message)
-      } else {
-        setError(String(error))
-      }
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  // Handle Google Sign-In
+  const { mutate: mutateGoogleLogin, isPending: isGoogleLoginPending } =
+    useMutation({
+      mutationFn: () => signInWithPopup(firebaseAuth, provider),
+      onSuccess: () => {
+        setError(null)
+        invalidateUser()
+      },
+      onError: (error: unknown) => {
+        if (error instanceof FirebaseError || error instanceof Error) {
+          const code = error instanceof FirebaseError ? error.code : ''
+          const message =
+            firebaseAuthError.find((item) => item.code === code)?.message ||
+            error.message
+          setError(message)
+        } else {
+          setError(String(error))
+        }
+      },
+    })
 
   // Handle user logout
-  const logout = async (): Promise<void> => {
-    setIsLoading(true)
-    try {
-      await signOut(firebaseAuth)
+  const { mutate: mutateLogout, isPending: isLogoutPending } = useMutation({
+    mutationFn: () => signOut(firebaseAuth),
+    onSuccess: () => {
       setError(null)
-    } catch (error: unknown) {
+      invalidateUser()
+    },
+    onError: (error: unknown) => {
       if (error instanceof FirebaseError || error instanceof Error) {
         setError(error.message)
       } else {
         setError(String(error))
       }
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Monitor auth state changes
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
-      setUser(currentUser)
-      setIsLoading(false)
-    })
-
-    return () => unsubscribe()
-  }, [])
+    },
+  })
 
   return {
     user,
-    isLoading,
+    isLoading:
+      isUserLoading ||
+      isRegisterPending ||
+      isLoginPending ||
+      isGoogleLoginPending ||
+      isLogoutPending,
     error,
-    register,
-    loginWithGoogle,
-    logout,
+    register: (email, password) => mutateRegister({ email, password }),
+    loginWithGoogle: () => mutateGoogleLogin(),
+    logout: () => mutateLogout(),
   }
 }

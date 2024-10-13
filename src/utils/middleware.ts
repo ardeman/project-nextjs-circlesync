@@ -8,7 +8,7 @@ import { extractPathSegment } from './parser'
 type TProps = {
   push: (href: string, options?: NavigateOptions) => void
   pathname: string
-  user: User | null
+  user?: User | null
 }
 
 export function middleware(props: TProps) {
