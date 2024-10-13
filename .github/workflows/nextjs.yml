@@ -113,8 +113,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: nextjs-build
-      - name: Verify build artifacts
-        run: ls -laR ./
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -125,3 +123,5 @@ jobs:
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: firebase deploy --only hosting
+      - name: Verify build artifacts
+        run: ls -laR
