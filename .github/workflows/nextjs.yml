@@ -95,7 +95,7 @@ jobs:
       - name: Verify build output
         run: ls -laR out
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: nextjs-build
           path: |
@@ -110,7 +110,7 @@ jobs:
     needs: build
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: nextjs-build
       - name: Setup Node
@@ -124,6 +124,6 @@ jobs:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: firebase deploy --only hosting
       - name: Verify build artifacts
-        run: ls -laR ~/
+        run: ls -laR ~/work
       - name: Verify firebase cache
         run: cat .firebase/hosting.b3V0.cache
