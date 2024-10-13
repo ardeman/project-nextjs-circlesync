@@ -77,11 +77,3 @@ Feel free to fork this repository. If you do, please give proper credit by linki
    ```bash
    bun start
    ```
-
-Preserve
-
-```shell
-firebase login:ci
-```
-
-`FIREBASE_TOKEN`
