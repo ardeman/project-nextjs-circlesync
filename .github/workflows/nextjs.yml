@@ -114,7 +114,7 @@ jobs:
         with:
           name: nextjs-build
       - name: Verify build artifacts
-        run: ls -la ./
+        run: ls -laR ./
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
