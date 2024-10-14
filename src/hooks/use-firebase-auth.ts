@@ -44,17 +44,16 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
       error: unknown,
       variables: { email: string; password: string }
     ) => {
-      if (error instanceof FirebaseError || error instanceof Error) {
-        const code = error instanceof FirebaseError ? error.code : ''
+      if (error instanceof FirebaseError) {
         const action = firebaseAuthError.find(
-          (item) => item.code === code
+          (item) => item.code === error.code
         )?.action
         if (action === 'signin') {
           mutateLogin(variables)
         } else {
           const message =
-            firebaseAuthError.find((item) => item.code === code)?.message ||
-            error.message
+            firebaseAuthError.find((item) => item.code === error.code)
+              ?.message || error.message
           setError(message)
         }
       } else {
@@ -72,10 +71,9 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
       invalidateUser()
     },
     onError: (error: unknown) => {
-      if (error instanceof FirebaseError || error instanceof Error) {
-        const code = error instanceof FirebaseError ? error.code : ''
+      if (error instanceof FirebaseError) {
         const message =
-          firebaseAuthError.find((item) => item.code === code)?.message ||
+          firebaseAuthError.find((item) => item.code === error.code)?.message ||
           error.message
         setError(message)
       } else {
@@ -93,11 +91,10 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
         invalidateUser()
       },
       onError: (error: unknown) => {
-        if (error instanceof FirebaseError || error instanceof Error) {
-          const code = error instanceof FirebaseError ? error.code : ''
+        if (error instanceof FirebaseError) {
           const message =
-            firebaseAuthError.find((item) => item.code === code)?.message ||
-            error.message
+            firebaseAuthError.find((item) => item.code === error.code)
+              ?.message || error.message
           setError(message)
         } else {
           setError(String(error))
@@ -113,8 +110,11 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
       invalidateUser()
     },
     onError: (error: unknown) => {
-      if (error instanceof FirebaseError || error instanceof Error) {
-        setError(error.message)
+      if (error instanceof FirebaseError) {
+        const message =
+          firebaseAuthError.find((item) => item.code === error.code)?.message ||
+          error.message
+        setError(message)
       } else {
         setError(String(error))
       }
