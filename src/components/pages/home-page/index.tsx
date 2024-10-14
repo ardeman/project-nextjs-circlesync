@@ -6,7 +6,7 @@ export const HomePage = () => {
   const { user, logout } = useFirebaseAuth()
 
   return (
-    <div className="grid min-h-screen grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
+    <div className="grid min-h-dvh grid-rows-[20px_1fr_20px] items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
       {user && (
         <div className="text-center">
           <p className="mb-4 text-lg font-semibold text-gray-800 dark:text-gray-200">

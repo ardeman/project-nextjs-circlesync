@@ -30,7 +30,10 @@ export const LoadingSpinner = (props: TProps) => {
 
   return (
     <div
-      className={twMerge('flex h-dvh items-center justify-center', classname)}
+      className={twMerge(
+        'flex min-h-dvh items-center justify-center',
+        classname
+      )}
     >
       <div className="absolute flex h-24 w-24 flex-col items-center justify-center">
         <div

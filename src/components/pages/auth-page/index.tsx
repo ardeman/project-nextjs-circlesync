@@ -26,7 +26,7 @@ export const AuthPage: FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
+    <div className="flex min-h-dvh items-center justify-center">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md dark:bg-gray-800">
         <div>
           <FormProvider {...formMethods}>
