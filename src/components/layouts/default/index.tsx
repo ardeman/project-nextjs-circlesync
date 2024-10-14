@@ -21,11 +21,9 @@ export const DefaultLayout = (props: PropsWithChildren) => {
   }, [user, isLoading, push, pathname])
 
   return (
-    <html lang="en">
-      <body className="bg-slate-100 leading-relaxed text-stone-900 antialiased selection:bg-gray-900 selection:text-white dark:bg-slate-900 dark:text-slate-400 dark:selection:bg-sky-400 dark:selection:text-sky-900">
-        <LoadingSpinner classname={isLoading ? 'flex' : 'hidden'} />
-        <div className={isLoading ? 'hidden' : 'block'}>{children}</div>
-      </body>
-    </html>
+    <div className="bg-slate-100 text-stone-900 selection:bg-gray-900 selection:text-white dark:bg-slate-900 dark:text-slate-400 dark:selection:bg-sky-400 dark:selection:text-sky-900">
+      <LoadingSpinner classname={isLoading ? 'flex' : 'hidden'} />
+      <div className={isLoading ? 'hidden' : 'block'}>{children}</div>
+    </div>
   )
 }
