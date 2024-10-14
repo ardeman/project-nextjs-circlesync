@@ -1,8 +1,16 @@
 import { useId } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { twMerge } from 'tailwind-merge'
 
-import { ErrorText } from '@/components/base'
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input as UIInput,
+} from '@/components/ui'
+import { cn } from '@/utils'
 
 import { TProps } from './type'
 
@@ -15,58 +23,45 @@ export const Input = <TFormValues extends Record<string, unknown>>(
     name,
     label,
     type = 'text',
-    rules,
     onClick,
     hint,
     className,
     containerClassName,
     inputClassName,
-    leftNode,
-    leftNodeClassName,
-    rightNode,
-    rightNodeClassName,
+    labelClassName,
     required,
     ...rest
   } = props
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext()
-  const error = errors[name]
+  const { control } = useFormContext()
 
   return (
-    <div className={twMerge('space-y-1', className)}>
-      {label && (
-        <label
-          htmlFor={id}
-          className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-        >
-          {label} {required && <sup className="text-red-500">*</sup>}
-        </label>
-      )}
-      <div className={twMerge(containerClassName)}>
-        {leftNode && (
-          <div className={twMerge(leftNodeClassName)}>{leftNode}</div>
-        )}
-        <input
-          id={id}
-          type={type}
-          className={twMerge(
-            'block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200',
-            inputClassName
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className={cn('space-y-1', className)}>
+          {label && (
+            <FormLabel
+              htmlFor={id}
+              className={cn(labelClassName)}
+            >
+              {label} {required && <sup className="text-red-500">*</sup>}
+            </FormLabel>
           )}
-          onClick={onClick}
-          {...register(name, rules)}
-          {...rest}
-        />
-        {rightNode && (
-          <div className={twMerge(rightNodeClassName)}>{rightNode}</div>
-        )}
-      </div>
-      {hint && (
-        <p className="text-sm text-gray-500 dark:text-gray-400">{hint}</p>
+          <FormControl className={cn(containerClassName)}>
+            <UIInput
+              id={id}
+              type={type}
+              className={cn(inputClassName)}
+              onClick={onClick}
+              {...field}
+              {...rest}
+            />
+          </FormControl>
+          {hint && <FormDescription>{hint}</FormDescription>}
+          <FormMessage />
+        </FormItem>
       )}
-      {error && <ErrorText>{error?.message?.toString()}</ErrorText>}
-    </div>
+    />
   )
 }

@@ -1,8 +1,7 @@
 import { PiSpinnerGapDuotone } from 'react-icons/pi'
-import { twMerge } from 'tailwind-merge'
 
-import { ErrorText } from '@/components/base'
-import { Button as UIButton } from '@/components/ui'
+import { FormMessage, Button as UIButton } from '@/components/ui'
+import { cn } from '@/utils'
 
 import { TButtonProps } from './type'
 
@@ -19,12 +18,12 @@ export const Button = (props: TButtonProps) => {
     variant,
   } = props
   return (
-    <div className={twMerge('grid space-y-1', containerClassName)}>
+    <div className={cn('grid space-y-1', containerClassName)}>
       <UIButton
         variant={variant}
         onClick={onClick}
         type={type}
-        className={twMerge('flex items-center justify-center gap-2', className)}
+        className={cn('flex items-center justify-center gap-2', className)}
         disabled={disabled}
       >
         <PiSpinnerGapDuotone
@@ -32,7 +31,7 @@ export const Button = (props: TButtonProps) => {
         />
         {!isLoading && children}
       </UIButton>
-      {error && <ErrorText className="text-center">{error}</ErrorText>}
+      {error && <FormMessage className="text-center">{error}</FormMessage>}
     </div>
   )
 }

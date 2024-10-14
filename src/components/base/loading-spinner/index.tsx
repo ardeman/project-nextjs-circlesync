@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { twMerge } from 'tailwind-merge'
+
+import { cn } from '@/utils'
 
 import { icons } from './data'
 import { TProps } from './type'
@@ -30,14 +31,11 @@ export const LoadingSpinner = (props: TProps) => {
 
   return (
     <div
-      className={twMerge(
-        'flex min-h-dvh items-center justify-center',
-        classname
-      )}
+      className={cn('flex min-h-dvh items-center justify-center', classname)}
     >
       <div className="absolute flex h-24 w-24 flex-col items-center justify-center">
         <div
-          className={twMerge(
+          className={cn(
             'flex h-48 w-24 origin-bottom justify-center text-5xl',
             animate ? 'animate-rotate' : 'opacity-0'
           )}
