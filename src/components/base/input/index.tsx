@@ -2,6 +2,8 @@ import { useId } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { twMerge } from 'tailwind-merge'
 
+import { ErrorText } from '@/components/base'
+
 import { TProps } from './type'
 
 export const Input = <TFormValues extends Record<string, unknown>>(
@@ -64,11 +66,7 @@ export const Input = <TFormValues extends Record<string, unknown>>(
       {hint && (
         <p className="text-sm text-gray-500 dark:text-gray-400">{hint}</p>
       )}
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">
-          {error?.message?.toString()}
-        </p>
-      )}
+      {error && <ErrorText>{error?.message?.toString()}</ErrorText>}
     </div>
   )
 }

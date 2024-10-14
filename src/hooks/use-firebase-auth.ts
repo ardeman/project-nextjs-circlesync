@@ -20,7 +20,10 @@ import { useQueryActions } from './use-query-actions'
 type TFirebaseAuthReturn = {
   user?: User | null
   isLoading: boolean
-  error: string | null
+  isRegisterPending: boolean
+  isGoogleLoginPending: boolean
+  isLogoutPending: boolean
+  error?: string
   register: (data: TRegisterRequest) => void
   loginWithGoogle: () => void
   logout: () => void
@@ -28,7 +31,7 @@ type TFirebaseAuthReturn = {
 
 export const useFirebaseAuth = (): TFirebaseAuthReturn => {
   const { data: user, isLoading: isUserLoading } = useAuthUser()
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string | undefined>()
   const provider = new GoogleAuthProvider()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
 
@@ -37,7 +40,7 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
     mutationFn: (data: { email: string; password: string }) =>
       createUserWithEmailAndPassword(firebaseAuth, data.email, data.password),
     onSuccess: () => {
-      setError(null)
+      setError(undefined)
       invalidateUser()
     },
     onError: (
@@ -67,7 +70,7 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
     mutationFn: (data: { email: string; password: string }) =>
       signInWithEmailAndPassword(firebaseAuth, data.email, data.password),
     onSuccess: () => {
-      setError(null)
+      setError(undefined)
       invalidateUser()
     },
     onError: (error: unknown) => {
@@ -87,7 +90,7 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
     useMutation({
       mutationFn: () => signInWithPopup(firebaseAuth, provider),
       onSuccess: () => {
-        setError(null)
+        setError(undefined)
         invalidateUser()
       },
       onError: (error: unknown) => {
@@ -106,7 +109,7 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
   const { mutate: mutateLogout, isPending: isLogoutPending } = useMutation({
     mutationFn: () => signOut(firebaseAuth),
     onSuccess: () => {
-      setError(null)
+      setError(undefined)
       invalidateUser()
     },
     onError: (error: unknown) => {
@@ -129,6 +132,9 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
       isLoginPending ||
       isGoogleLoginPending ||
       isLogoutPending,
+    isRegisterPending: isRegisterPending || isLoginPending,
+    isGoogleLoginPending,
+    isLogoutPending,
     error,
     register: mutateRegister,
     loginWithGoogle: () => mutateGoogleLogin(),
