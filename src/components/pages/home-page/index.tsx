@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 
+import { ModeToggle } from '@/components/base'
 import {
   Avatar,
   AvatarFallback,
@@ -151,6 +152,7 @@ export const HomePage = () => {
               />
             </div>
           </form>
+          <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
