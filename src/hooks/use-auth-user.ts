@@ -15,5 +15,6 @@ export const useAuthUser = () => {
         // Cleanup the listener when the query is no longer needed
         return () => unsubscribe()
       }),
+    staleTime: Infinity,
   })
 }

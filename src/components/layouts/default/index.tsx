@@ -5,12 +5,12 @@ import { usePathname, useRouter } from 'next/navigation'
 import { PropsWithChildren, useEffect } from 'react'
 
 import { LoadingSpinner } from '@/components/base'
-import { useFirebaseAuth } from '@/hooks'
+import { useFirebase } from '@/contexts'
 import { middleware } from '@/utils'
 
 export const DefaultLayout = (props: PropsWithChildren) => {
   const { children } = props
-  const { user, isLoading } = useFirebaseAuth()
+  const { user, isLoading } = useFirebase()
   const { push } = useRouter()
   const pathname = usePathname()
 

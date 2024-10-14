@@ -18,8 +18,8 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="leading-relaxed antialiased">
-        <FirebaseProvider>
-          <QueryClientProvider client={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <FirebaseProvider>
             <ThemeProvider
               attribute="class"
               defaultTheme="system"
@@ -28,8 +28,8 @@ export default function RootLayout({
             >
               <DefaultLayout>{children}</DefaultLayout>
             </ThemeProvider>
-          </QueryClientProvider>
-        </FirebaseProvider>
+          </FirebaseProvider>
+        </QueryClientProvider>
       </body>
     </html>
   )

@@ -13,8 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
+import { useFirebase } from '@/contexts'
 import { metadata } from '@/data'
-import { useFirebaseAuth } from '@/hooks'
 import { TRegisterRequest } from '@/types'
 
 import { schema } from './validation'
@@ -27,7 +27,7 @@ export const AuthPage: FC = () => {
     isGoogleLoginPending,
     error,
     loginWithGoogle,
-  } = useFirebaseAuth()
+  } = useFirebase()
   const formMethods = useForm<TRegisterRequest>({
     resolver: zodResolver(schema),
     defaultValues: {

@@ -1,12 +1,30 @@
-import { Auth } from 'firebase/auth'
-import { Firestore } from 'firebase/firestore'
-import { createContext, PropsWithChildren, useContext } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { FirebaseError } from 'firebase/app'
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  User,
+} from 'firebase/auth'
+import { createContext, PropsWithChildren, useContext, useState } from 'react'
 
-import { firebaseAuth, firebaseDb } from '@/configs'
+import { firebaseAuth } from '@/configs'
+import { firebaseAuthError } from '@/data'
+import { useAuthUser, useQueryActions } from '@/hooks'
+import { TRegisterRequest } from '@/types'
 
 type TFirebaseContextValue = {
-  firebaseAuth: Auth
-  firebaseDb: Firestore
+  user?: User | null
+  isLoading: boolean
+  isRegisterPending: boolean
+  isGoogleLoginPending: boolean
+  isLogoutPending: boolean
+  error?: string
+  register: (data: TRegisterRequest) => void
+  loginWithGoogle: () => void
+  logout: () => void
 }
 
 const FirebaseContext = createContext<TFirebaseContextValue | undefined>(
@@ -15,7 +33,115 @@ const FirebaseContext = createContext<TFirebaseContextValue | undefined>(
 
 const FirebaseProvider = (props: PropsWithChildren) => {
   const { children } = props
-  const value = { firebaseAuth, firebaseDb }
+  const { data: user, isLoading: isUserLoading } = useAuthUser()
+  const [error, setError] = useState<string | undefined>()
+  const provider = new GoogleAuthProvider()
+  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
+
+  // Handle email/password registration
+  const { mutate: mutateRegister, isPending: isRegisterPending } = useMutation({
+    mutationFn: (data: { email: string; password: string }) =>
+      createUserWithEmailAndPassword(firebaseAuth, data.email, data.password),
+    onSuccess: () => {
+      setError(undefined)
+      invalidateUser()
+    },
+    onError: (
+      error: unknown,
+      variables: { email: string; password: string }
+    ) => {
+      if (error instanceof FirebaseError) {
+        const action = firebaseAuthError.find(
+          (item) => item.code === error.code
+        )?.action
+        if (action === 'signin') {
+          mutateLogin(variables)
+        } else {
+          const message =
+            firebaseAuthError.find((item) => item.code === error.code)
+              ?.message || error.message
+          setError(message)
+        }
+      } else {
+        setError(String(error))
+      }
+    },
+  })
+
+  // Handle email/password login
+  const { mutate: mutateLogin, isPending: isLoginPending } = useMutation({
+    mutationFn: (data: { email: string; password: string }) =>
+      signInWithEmailAndPassword(firebaseAuth, data.email, data.password),
+    onSuccess: () => {
+      setError(undefined)
+      invalidateUser()
+    },
+    onError: (error: unknown) => {
+      if (error instanceof FirebaseError) {
+        const message =
+          firebaseAuthError.find((item) => item.code === error.code)?.message ||
+          error.message
+        setError(message)
+      } else {
+        setError(String(error))
+      }
+    },
+  })
+
+  // Handle Google Sign-In
+  const { mutate: mutateGoogleLogin, isPending: isGoogleLoginPending } =
+    useMutation({
+      mutationFn: () => signInWithPopup(firebaseAuth, provider),
+      onSuccess: () => {
+        setError(undefined)
+        invalidateUser()
+      },
+      onError: (error: unknown) => {
+        if (error instanceof FirebaseError) {
+          const message =
+            firebaseAuthError.find((item) => item.code === error.code)
+              ?.message || error.message
+          setError(message)
+        } else {
+          setError(String(error))
+        }
+      },
+    })
+
+  // Handle user logout
+  const { mutate: mutateLogout, isPending: isLogoutPending } = useMutation({
+    mutationFn: () => signOut(firebaseAuth),
+    onSuccess: () => {
+      setError(undefined)
+      invalidateUser()
+    },
+    onError: (error: unknown) => {
+      if (error instanceof FirebaseError) {
+        const message =
+          firebaseAuthError.find((item) => item.code === error.code)?.message ||
+          error.message
+        setError(message)
+      } else {
+        setError(String(error))
+      }
+    },
+  })
+  const value = {
+    user,
+    isLoading:
+      isUserLoading ||
+      isRegisterPending ||
+      isLoginPending ||
+      isGoogleLoginPending ||
+      isLogoutPending,
+    isRegisterPending: isRegisterPending || isLoginPending,
+    isGoogleLoginPending,
+    isLogoutPending,
+    error,
+    register: mutateRegister,
+    loginWithGoogle: () => mutateGoogleLogin(),
+    logout: () => mutateLogout(),
+  }
 
   return (
     <FirebaseContext.Provider value={value}>
