@@ -1,19 +1,25 @@
 'use client'
 
-import { FC, FormEvent, useState } from 'react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { FC } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 import { PiSpinnerBallDuotone } from 'react-icons/pi'
 
+import { Input } from '@/components/base'
 import { useFirebaseAuth } from '@/hooks'
+import { TRegisterRequest } from '@/types'
+
+import { schema } from './validation'
 
 export const AuthPage: FC = () => {
   const { register, isLoading, error, loginWithGoogle } = useFirebaseAuth()
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-
-  const handleEmailPasswordSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    register(email, password)
-  }
+  const formMethods = useForm<TRegisterRequest>({
+    resolver: zodResolver(schema),
+  })
+  const { handleSubmit } = formMethods
+  const onSubmit = handleSubmit(async (data) => {
+    register(data)
+  })
 
   const handleGoogleSignIn = async () => {
     await loginWithGoogle()
@@ -23,61 +29,41 @@ export const AuthPage: FC = () => {
     <div className="flex min-h-screen items-center justify-center">
       <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md dark:bg-gray-800">
         <div>
-          <form
-            onSubmit={handleEmailPasswordSubmit}
-            className="space-y-6"
-          >
-            <h2 className="text-center text-2xl font-bold text-gray-800 dark:text-gray-200">
-              Welcome
-            </h2>
+          <FormProvider {...formMethods}>
+            <form
+              onSubmit={onSubmit}
+              className="space-y-6"
+            >
+              <h2 className="text-center text-2xl font-bold text-gray-800 dark:text-gray-200">
+                Welcome
+              </h2>
 
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
+              <Input
+                label="Email"
+                name="email"
                 placeholder="you@example.com"
                 required
               />
-            </div>
 
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Password
-              </label>
-              <input
+              <Input
+                label="Password"
+                name="password"
                 type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-800 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200"
-                placeholder="Your password"
                 required
               />
-            </div>
 
-            <button
-              type="submit"
-              className="flex h-11 w-full items-center justify-center gap-2 rounded bg-blue-500 text-white hover:bg-blue-600 focus:outline-none disabled:opacity-50"
-              disabled={isLoading}
-            >
-              <PiSpinnerBallDuotone
-                className={isLoading ? 'animate-spin text-lg' : 'hidden'}
-              />
-              {!isLoading && 'Continue'}
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="flex h-11 w-full items-center justify-center gap-2 rounded bg-blue-500 text-white hover:bg-blue-600 focus:outline-none disabled:opacity-50"
+                disabled={isLoading}
+              >
+                <PiSpinnerBallDuotone
+                  className={isLoading ? 'animate-spin text-lg' : 'hidden'}
+                />
+                {!isLoading && 'Continue'}
+              </button>
+            </form>
+          </FormProvider>
 
           {error && (
             <p className="mt-4 text-center text-red-600 dark:text-red-400">

@@ -4,12 +4,12 @@ import { createContext, PropsWithChildren, useContext } from 'react'
 
 import { firebaseAuth, firebaseDb } from '@/configs'
 
-type FirebaseContextValue = {
+type TFirebaseContextValue = {
   firebaseAuth: Auth
   firebaseDb: Firestore
 }
 
-const FirebaseContext = createContext<FirebaseContextValue | undefined>(
+const FirebaseContext = createContext<TFirebaseContextValue | undefined>(
   undefined
 )
 

@@ -12,6 +12,7 @@ import { useState } from 'react'
 
 import { firebaseAuth } from '@/configs'
 import { firebaseAuthError } from '@/data'
+import { TRegisterRequest } from '@/types'
 
 import { useAuthUser } from './use-auth-user'
 import { useQueryActions } from './use-query-actions'
@@ -20,7 +21,7 @@ type TFirebaseAuthReturn = {
   user?: User | null
   isLoading: boolean
   error: string | null
-  register: (email: string, password: string) => void
+  register: (data: TRegisterRequest) => void
   loginWithGoogle: () => void
   logout: () => void
 }
@@ -49,10 +50,7 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
           (item) => item.code === code
         )?.action
         if (action === 'signin') {
-          mutateLogin({
-            email: variables.email,
-            password: variables.password,
-          })
+          mutateLogin(variables)
         } else {
           const message =
             firebaseAuthError.find((item) => item.code === code)?.message ||
@@ -132,7 +130,7 @@ export const useFirebaseAuth = (): TFirebaseAuthReturn => {
       isGoogleLoginPending ||
       isLogoutPending,
     error,
-    register: (email, password) => mutateRegister({ email, password }),
+    register: mutateRegister,
     loginWithGoogle: () => mutateGoogleLogin(),
     logout: () => mutateLogout(),
   }
