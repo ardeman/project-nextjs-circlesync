@@ -30,6 +30,10 @@ export const AuthPage: FC = () => {
   } = useFirebaseAuth()
   const formMethods = useForm<TRegisterRequest>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   })
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
