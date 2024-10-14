@@ -3,8 +3,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FC } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { FcGoogle } from 'react-icons/fc'
 
 import { Button, Input } from '@/components/base'
+import { metadata } from '@/data'
 import { useFirebaseAuth } from '@/hooks'
 import { TRegisterRequest } from '@/types'
 
@@ -37,7 +39,7 @@ export const AuthPage: FC = () => {
               className="space-y-6"
             >
               <h2 className="text-center text-2xl font-bold text-gray-800 dark:text-gray-200">
-                Circle Sync
+                {metadata.title?.toString()}
               </h2>
 
               <Input
@@ -71,8 +73,9 @@ export const AuthPage: FC = () => {
             onClick={loginWithGoogle}
             disabled={isLoading}
             isLoading={isGoogleLoginPending}
-            variant="red"
+            variant="slate"
           >
+            <FcGoogle className="text-xl" />
             Continue with Google
           </Button>
         </div>

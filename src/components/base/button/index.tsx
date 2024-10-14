@@ -24,7 +24,7 @@ export const Button = (props: TButtonProps) => {
         onClick={onClick}
         type={type}
         className={twMerge(
-          'flex h-11 w-full items-center justify-center gap-2 rounded text-white focus:outline-none disabled:opacity-50',
+          'flex h-11 w-full items-center justify-center gap-2 rounded transition duration-150 hover:shadow focus:outline-none disabled:opacity-50',
           variants[variant],
           className
         )}

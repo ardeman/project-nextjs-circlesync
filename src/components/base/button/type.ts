@@ -7,7 +7,7 @@ import {
 
 export type TButtonProps<T extends ElementType = 'button'> = {
   type?: 'button' | 'submit' | 'reset'
-  variant?: 'blue' | 'red'
+  variant?: 'blue' | 'red' | 'slate'
   onClick?: MouseEventHandler<HTMLButtonElement>
   className?: HTMLAttributes<HTMLButtonElement>['className']
   containerClassName?: HTMLAttributes<HTMLDivElement>['className']
