@@ -1,9 +1,12 @@
+import { type VariantProps } from 'class-variance-authority'
 import {
   ElementType,
   HTMLAttributes,
   MouseEventHandler,
   ReactNode,
 } from 'react'
+
+import { buttonVariants } from '@/components/ui'
 
 export type TButtonProps<T extends ElementType = 'button'> = {
   type?: 'button' | 'submit' | 'reset'
@@ -15,4 +18,5 @@ export type TButtonProps<T extends ElementType = 'button'> = {
   isLoading?: boolean
   error?: string
   as?: T
+  variant?: VariantProps<typeof buttonVariants>['variant']
 }

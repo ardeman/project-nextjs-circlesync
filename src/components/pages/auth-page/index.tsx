@@ -6,6 +6,13 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { FcGoogle } from 'react-icons/fc'
 
 import { Button, Input, ModeToggle } from '@/components/base'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui'
 import { metadata } from '@/data'
 import { useFirebaseAuth } from '@/hooks'
 import { TRegisterRequest } from '@/types'
@@ -31,16 +38,14 @@ export const AuthPage: FC = () => {
 
   return (
     <div className="flex min-h-dvh items-center justify-center">
-      <div className="min-h-dvh w-full max-w-md rounded-lg bg-white p-8 shadow-md md:min-h-fit dark:bg-gray-800">
-        <div className="grid space-y-8">
-          <div className="relative">
-            <h2 className="text-center text-2xl font-bold text-gray-800 dark:text-gray-200">
-              {metadata.title?.toString()}
-            </h2>
-            <div className="absolute right-0 top-0">
-              <ModeToggle />
-            </div>
+      <Card className="min-h-dvh w-full max-w-md md:min-h-fit">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>{metadata.title?.toString()}</CardTitle>
+            <ModeToggle />
           </div>
+        </CardHeader>
+        <CardContent>
           <FormProvider {...formMethods}>
             <form
               onSubmit={onSubmit}
@@ -53,14 +58,12 @@ export const AuthPage: FC = () => {
                 autoFocus
                 required
               />
-
               <Input
                 label="Password"
                 name="password"
                 type="password"
                 required
               />
-
               <Button
                 disabled={isLoading}
                 isLoading={isRegisterPending}
@@ -71,8 +74,11 @@ export const AuthPage: FC = () => {
               </Button>
             </form>
           </FormProvider>
-
+        </CardContent>
+        <CardFooter>
           <Button
+            containerClassName="w-full"
+            variant="outline"
             onClick={loginWithGoogle}
             disabled={isLoading}
             isLoading={isGoogleLoginPending}
@@ -80,8 +86,8 @@ export const AuthPage: FC = () => {
             <FcGoogle className="text-xl" />
             Continue with Google
           </Button>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   )
 }

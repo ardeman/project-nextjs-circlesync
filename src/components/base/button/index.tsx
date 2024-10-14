@@ -1,8 +1,8 @@
-import { PiSpinnerBallDuotone } from 'react-icons/pi'
+import { PiSpinnerGapDuotone } from 'react-icons/pi'
 import { twMerge } from 'tailwind-merge'
 
 import { ErrorText } from '@/components/base'
-import { Button as ShadcnButton } from '@/components/ui'
+import { Button as UIButton } from '@/components/ui'
 
 import { TButtonProps } from './type'
 
@@ -16,24 +16,22 @@ export const Button = (props: TButtonProps) => {
     onClick,
     error,
     containerClassName,
+    variant,
   } = props
   return (
     <div className={twMerge('grid space-y-1', containerClassName)}>
-      <ShadcnButton
+      <UIButton
+        variant={variant}
         onClick={onClick}
         type={type}
-        className={twMerge(
-          'flex items-center justify-center gap-2',
-          // 'flex h-11 w-full items-center justify-center gap-2 rounded transition duration-150 hover:shadow focus:outline-none disabled:opacity-50',
-          className
-        )}
+        className={twMerge('flex items-center justify-center gap-2', className)}
         disabled={disabled}
       >
-        <PiSpinnerBallDuotone
+        <PiSpinnerGapDuotone
           className={isLoading ? 'animate-spin text-lg' : 'hidden'}
         />
         {!isLoading && children}
-      </ShadcnButton>
+      </UIButton>
       {error && <ErrorText className="text-center">{error}</ErrorText>}
     </div>
   )
