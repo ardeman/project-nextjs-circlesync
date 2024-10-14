@@ -23,4 +23,5 @@ export type TProps<TFormValues extends FieldValues> = {
   readOnly?: boolean
   inputMode?: HTMLAttributes<HTMLInputElement>['inputMode']
   rules?: RegisterOptions
+  autoFocus?: boolean
 }

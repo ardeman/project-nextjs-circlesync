@@ -27,7 +27,7 @@ export const AuthPage: FC = () => {
 
   return (
     <div className="flex min-h-dvh items-center justify-center">
-      <div className="w-full max-w-md rounded-lg bg-white p-8 shadow-md dark:bg-gray-800">
+      <div className="min-h-dvh w-full max-w-md rounded-lg bg-white p-8 shadow-md md:min-h-fit dark:bg-gray-800">
         <div>
           <FormProvider {...formMethods}>
             <form
@@ -42,6 +42,7 @@ export const AuthPage: FC = () => {
                 label="Email"
                 name="email"
                 placeholder="you@example.com"
+                autoFocus
                 required
               />
 
