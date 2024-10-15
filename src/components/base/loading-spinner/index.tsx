@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { cn } from '@/utils'
+import { metadata } from '@/data'
+import { cn, getRandomIndex } from '@/utils'
 
-import { icons } from './data'
+import { IconComponent, icons } from './data'
 import { TProps } from './type'
 
 export const LoadingSpinner = (props: TProps) => {
   const { classname } = props
-  const [counter, setCounter] = useState(0)
+  const [counter, setCounter] = useState(getRandomIndex(icons.length, -1))
   const [animate, setAnimate] = useState(false)
 
   useEffect(() => {
@@ -16,9 +17,7 @@ export const LoadingSpinner = (props: TProps) => {
 
     // Change the icon at the end of each animation cycle
     const interval = setInterval(() => {
-      setCounter((prevCounter) =>
-        prevCounter === icons.length - 1 ? 0 : prevCounter + 1
-      )
+      setCounter((prevCounter) => getRandomIndex(icons.length, prevCounter))
       // Reset animation state to trigger re-render
       setAnimate(false) // Stop animation
       setTimeout(() => setAnimate(true), 50) // Restart animation after a brief moment
@@ -26,8 +25,6 @@ export const LoadingSpinner = (props: TProps) => {
 
     return () => clearInterval(interval)
   }, [])
-
-  const IconComponent = icons[counter]
 
   return (
     <div
@@ -40,10 +37,10 @@ export const LoadingSpinner = (props: TProps) => {
             animate ? 'animate-rotate' : 'opacity-0'
           )}
         >
-          <IconComponent className="" />
+          <IconComponent counter={counter} />
         </div>
-        <span className="absolute bottom-0 text-base font-semibold">
-          Loading...
+        <span className="absolute bottom-0 whitespace-nowrap text-base font-semibold">
+          {metadata.title?.toString()}
         </span>
       </div>
     </div>
