@@ -1,18 +1,21 @@
 import { Package2 } from 'lucide-react'
 import Link from 'next/link'
 
+import { metadata } from '@/data'
+import { cn } from '@/utils'
+
 import { TProps } from './type'
 
 export const Navigation = (props: TProps) => {
   const { className } = props
   return (
-    <nav className={className}>
+    <nav className={cn('gap-6 text-lg font-medium', className)}>
       <Link
         href="#"
         className="flex items-center gap-2 text-lg font-semibold md:text-base"
       >
         <Package2 className="h-6 w-6" />
-        <span className="sr-only">Acme Inc</span>
+        <span className="sr-only">{metadata.title?.toString()}</span>
       </Link>
       <Link
         href="#"

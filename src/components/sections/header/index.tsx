@@ -16,6 +16,7 @@ import {
   SheetTrigger,
 } from '@/components/ui'
 import { useFirebase } from '@/contexts'
+import { cn } from '@/utils'
 
 import { TProps } from './type'
 
@@ -23,8 +24,13 @@ export const Header = (props: TProps) => {
   const { className } = props
   const { user, logout } = useFirebase()
   return (
-    <header className={className}>
-      <Navigation className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
+    <header
+      className={cn(
+        'bg-background sticky top-0 flex h-16 items-center gap-4 border-b px-4 md:px-6',
+        className
+      )}
+    >
+      <Navigation className="hidden flex-col md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6" />
       <Sheet>
         <SheetTrigger asChild>
           <Button
@@ -37,7 +43,7 @@ export const Header = (props: TProps) => {
           </Button>
         </SheetTrigger>
         <SheetContent side="left">
-          <Navigation className="grid gap-6 text-lg font-medium" />
+          <Navigation className="grid" />
         </SheetContent>
       </Sheet>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
