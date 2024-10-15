@@ -21,7 +21,7 @@ export function middleware(props: TProps) {
   }
 
   if (authPages.has(extractedPath) && user) {
-    const url = '/'
+    const url = '/dashboard'
     return push(url)
   }
 }

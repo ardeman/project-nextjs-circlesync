@@ -1,3 +1,3 @@
-export const protectedPages = new Set(['/', '/settings'])
+export const protectedPages = new Set(['/', '/dashboard'])
 
-export const authPages = new Set(['/auth'])
+export const authPages = new Set(['/', '/auth'])
