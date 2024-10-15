@@ -1,7 +1,5 @@
 import { DashboardPage } from '@/components/pages'
 
-export default function Dashboard() {
-  return <DashboardPage />
-}
+const Dashboard = () => <DashboardPage />
 
-export { metadata } from '@/data'
+export default Dashboard

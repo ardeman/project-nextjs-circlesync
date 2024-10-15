@@ -7,11 +7,11 @@ import { FirebaseProvider, ThemeProvider } from '@/contexts'
 
 const queryClient = new QueryClient()
 
-export default function RootLayout({
+const RootLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode
-}>) {
+}>) => {
   return (
     <html
       lang="en"
@@ -34,3 +34,5 @@ export default function RootLayout({
     </html>
   )
 }
+
+export default RootLayout

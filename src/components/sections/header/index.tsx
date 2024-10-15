@@ -1,4 +1,5 @@
 import { CircleUser, Menu, Search } from 'lucide-react'
+import Link from 'next/link'
 
 import { ModeToggle } from '@/components/base'
 import { Navigation } from '@/components/sections'
@@ -18,6 +19,7 @@ import {
 import { useFirebase } from '@/contexts'
 import { cn } from '@/utils'
 
+import { userMenus } from './data'
 import { TProps } from './type'
 
 export const Header = (props: TProps) => {
@@ -72,8 +74,14 @@ export const Header = (props: TProps) => {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>{user?.email}</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
+            {userMenus.map((menu, index) => (
+              <Link
+                key={index}
+                href={menu.href}
+              >
+                <DropdownMenuItem>{menu.name}</DropdownMenuItem>
+              </Link>
+            ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
           </DropdownMenuContent>

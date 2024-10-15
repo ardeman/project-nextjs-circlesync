@@ -11,7 +11,7 @@ type TProps = {
   user?: User | null
 }
 
-export function middleware(props: TProps) {
+export const middleware = (props: TProps) => {
   const { push, pathname, user } = props
   const extractedPath = extractPathSegment(pathname)
 

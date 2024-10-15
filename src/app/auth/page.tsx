@@ -1,7 +1,9 @@
 import { AuthPage } from '@/components/pages'
 
-export default function Auth() {
+const Auth = () => {
   return <AuthPage />
 }
+
+export default Auth
 
 export { metadata } from '@/data'

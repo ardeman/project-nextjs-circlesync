@@ -1,7 +1,7 @@
 import { HomePage } from '@/components/pages'
 
-export default function Home() {
-  return <HomePage />
-}
+const Home = () => <HomePage />
+
+export default Home
 
 export { metadata } from '@/data'
