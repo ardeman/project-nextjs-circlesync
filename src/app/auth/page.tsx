@@ -1,4 +1,4 @@
-import { AuthPage } from '@/components/pages'
+import { AuthPage } from '@/components/layouts'
 
 const Auth = () => {
   return <AuthPage />

@@ -1,5 +1,4 @@
-import { Eye, EyeClosed } from 'lucide-react'
-import { useId, useState } from 'react'
+import { useId } from 'react'
 import { useFormContext } from 'react-hook-form'
 
 import {
@@ -31,14 +30,11 @@ export const Input = <TFormValues extends Record<string, unknown>>(
     inputClassName,
     labelClassName,
     required,
+    leftNode,
+    rightNode,
     ...rest
   } = props
   const { control } = useFormContext()
-  const [newType, setNewType] = useState(type)
-
-  const toggleEye = () => {
-    setNewType((prev) => (prev === 'password' ? 'text' : 'password'))
-  }
 
   return (
     <FormField
@@ -55,28 +51,26 @@ export const Input = <TFormValues extends Record<string, unknown>>(
             </FormLabel>
           )}
           <div className={cn('relative flex items-center', containerClassName)}>
+            {leftNode && (
+              <div className="text-muted-foreground absolute left-2.5 hover:cursor-pointer">
+                {leftNode}
+              </div>
+            )}
             <FormControl>
               <UIInput
                 id={id}
-                type={newType}
+                type={type}
                 className={cn('pr-10', inputClassName)}
                 onClick={onClick}
                 {...field}
                 {...rest}
               />
             </FormControl>
-            {type === 'password' &&
-              (newType === 'password' ? (
-                <EyeClosed
-                  className="text-muted-foreground absolute right-3.5 h-4 w-4 hover:cursor-pointer"
-                  onClick={toggleEye}
-                />
-              ) : (
-                <Eye
-                  className="text-muted-foreground absolute right-3.5 h-4 w-4 hover:cursor-pointer"
-                  onClick={toggleEye}
-                />
-              ))}
+            {rightNode && (
+              <div className="text-muted-foreground absolute right-2.5 hover:cursor-pointer">
+                {rightNode}
+              </div>
+            )}
           </div>
           {hint && <FormDescription>{hint}</FormDescription>}
           <FormMessage />

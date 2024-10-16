@@ -56,6 +56,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
       setError(undefined)
     },
     onSuccess: () => {
+      push('/')
       invalidateUser()
     },
     onError: (
@@ -88,6 +89,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
       setError(undefined)
     },
     onSuccess: () => {
+      push('/')
       invalidateUser()
     },
     onError: (error: unknown) => {
@@ -110,6 +112,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
         setError(undefined)
       },
       onSuccess: () => {
+        push('/')
         invalidateUser()
       },
       onError: (error: unknown) => {

@@ -1,6 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Eye, EyeClosed } from 'lucide-react'
 import { FC, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FcGoogle } from 'react-icons/fc'
@@ -23,6 +24,7 @@ import { schema } from './validation'
 
 export const AuthPage: FC = () => {
   const [disabled, setDisabled] = useState(false)
+  const [passwordType, setPasswordType] = useState('password')
   const {
     register,
     isLoading,
@@ -44,6 +46,9 @@ export const AuthPage: FC = () => {
     setDisabled(true)
     register(data)
   })
+  const togglePassword = () => {
+    setPasswordType((prev) => (prev === 'password' ? 'text' : 'password'))
+  }
 
   useEffect(() => {
     if (error) {
@@ -89,9 +94,16 @@ export const AuthPage: FC = () => {
               <Input
                 label="Password"
                 name="password"
-                type="password"
+                type={passwordType}
                 required
                 disabled={disabled}
+                rightNode={
+                  passwordType === 'password' ? (
+                    <EyeClosed onClick={togglePassword} />
+                  ) : (
+                    <Eye onClick={togglePassword} />
+                  )
+                }
               />
               <Button
                 disabled={isLoading || disabled}

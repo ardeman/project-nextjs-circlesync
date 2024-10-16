@@ -19,4 +19,6 @@ export type TProps<TFormValues extends FieldValues> = {
   readOnly?: boolean
   inputMode?: HTMLAttributes<HTMLInputElement>['inputMode']
   autoFocus?: boolean
+  leftNode?: ReactNode
+  rightNode?: ReactNode
 }

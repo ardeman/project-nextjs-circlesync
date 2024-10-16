@@ -25,7 +25,7 @@ export const Button = (props: TButtonProps) => {
         className={cn('flex items-center justify-center gap-2', className)}
         disabled={disabled}
       >
-        <Loader2 className={isLoading ? 'animate-spin text-lg' : 'hidden'} />
+        <Loader2 className={isLoading ? 'animate-spin' : 'hidden'} />
         {!isLoading && children}
       </UIButton>
     </div>

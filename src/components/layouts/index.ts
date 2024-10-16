@@ -1,1 +1,5 @@
 export * from './default'
+export * from './auth'
+export * from './home'
+export * from './dashboard'
+export * from './settings'
