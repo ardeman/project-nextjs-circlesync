@@ -1,4 +1,4 @@
-import { PiSpinnerGapDuotone } from 'react-icons/pi'
+import { Loader2 } from 'lucide-react'
 
 import { Button as UIButton } from '@/components/ui'
 import { cn } from '@/utils'
@@ -25,9 +25,7 @@ export const Button = (props: TButtonProps) => {
         className={cn('flex items-center justify-center gap-2', className)}
         disabled={disabled}
       >
-        <PiSpinnerGapDuotone
-          className={isLoading ? 'animate-spin text-lg' : 'hidden'}
-        />
+        <Loader2 className={isLoading ? 'animate-spin text-lg' : 'hidden'} />
         {!isLoading && children}
       </UIButton>
     </div>
