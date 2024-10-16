@@ -65,13 +65,14 @@ export const Header = (props: TProps) => {
         <FormProvider {...formMethods}>
           <form
             onSubmit={onSubmit}
-            className="ml-auto flex-1 sm:flex-initial"
+            className="ml-auto"
           >
             <Input
+              autoFocus
               name="query"
               type="search"
               placeholder="Search"
-              className="sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              inputClassName="sm:w-[300px] md:w-[200px] lg:w-[300px]"
               LeftNode={({ className }) => <Search className={className} />}
             />
           </form>
