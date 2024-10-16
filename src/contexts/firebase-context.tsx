@@ -19,7 +19,7 @@ import {
 } from 'react'
 
 import { firebaseAuth } from '@/configs'
-import { firebaseAuthError } from '@/data'
+import { firebaseAuthError } from '@/constants'
 import { useAuthUser, useQueryActions } from '@/hooks'
 import { TRegisterRequest } from '@/types'
 

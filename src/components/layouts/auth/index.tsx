@@ -15,8 +15,8 @@ import {
   CardTitle,
   ToastAction,
 } from '@/components/ui'
+import { metadata } from '@/constants'
 import { useFirebase } from '@/contexts'
-import { metadata } from '@/data'
 import { toast } from '@/hooks'
 import { TRegisterRequest } from '@/types'
 
@@ -97,11 +97,17 @@ export const AuthPage: FC = () => {
                 type={passwordType}
                 required
                 disabled={disabled}
-                rightNode={
+                RightNode={({ className }) =>
                   passwordType === 'password' ? (
-                    <EyeClosed onClick={togglePassword} />
+                    <EyeClosed
+                      className={className}
+                      onClick={togglePassword}
+                    />
                   ) : (
-                    <Eye onClick={togglePassword} />
+                    <Eye
+                      className={className}
+                      onClick={togglePassword}
+                    />
                   )
                 }
               />

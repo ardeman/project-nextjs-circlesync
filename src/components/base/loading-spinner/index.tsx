@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { metadata } from '@/data'
+import { metadata } from '@/constants'
 import { cn, getRandomIndex } from '@/utils'
 
 import { IconComponent, icons } from './data'

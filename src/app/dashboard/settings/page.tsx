@@ -6,4 +6,4 @@ const Settings = () => {
 
 export default Settings
 
-export { metadata } from '@/data'
+export { metadata } from '@/constants'

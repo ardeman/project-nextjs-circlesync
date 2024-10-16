@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import {
   PiBankDuotone,
   PiBellSimpleRingingDuotone,
@@ -31,6 +32,14 @@ export const icons = [
 ]
 
 export const IconComponent = ({ counter }: { counter: number }) => {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  if (!isMounted) return null // Prevent server-side rendering
+
   const Icon = icons[counter]
   return <Icon />
 }

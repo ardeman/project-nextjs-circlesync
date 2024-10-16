@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-import { metadata } from '@/data'
+import { metadata } from '@/constants'
 import { cn } from '@/utils'
 
 import { navs } from './data'

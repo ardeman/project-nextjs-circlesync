@@ -30,8 +30,8 @@ export const Input = <TFormValues extends Record<string, unknown>>(
     inputClassName,
     labelClassName,
     required,
-    leftNode,
-    rightNode,
+    LeftNode,
+    RightNode,
     ...rest
   } = props
   const { control } = useFormContext()
@@ -51,25 +51,25 @@ export const Input = <TFormValues extends Record<string, unknown>>(
             </FormLabel>
           )}
           <div className={cn('relative flex items-center', containerClassName)}>
-            {leftNode && (
-              <div className="text-muted-foreground absolute left-2.5 hover:cursor-pointer">
-                {leftNode}
-              </div>
+            {LeftNode && (
+              <LeftNode className="text-muted-foreground absolute left-3.5 h-4 w-4 hover:cursor-pointer" />
             )}
             <FormControl>
               <UIInput
                 id={id}
                 type={type}
-                className={cn('pr-10', inputClassName)}
+                className={cn(
+                  LeftNode && 'pl-10',
+                  RightNode && 'pr-10',
+                  inputClassName
+                )}
                 onClick={onClick}
                 {...field}
                 {...rest}
               />
             </FormControl>
-            {rightNode && (
-              <div className="text-muted-foreground absolute right-2.5 hover:cursor-pointer">
-                {rightNode}
-              </div>
+            {RightNode && (
+              <RightNode className="text-muted-foreground absolute right-3.5 h-4 w-4 hover:cursor-pointer" />
             )}
           </div>
           {hint && <FormDescription>{hint}</FormDescription>}

@@ -6,4 +6,4 @@ const Auth = () => {
 
 export default Auth
 
-export { metadata } from '@/data'
+export { metadata } from '@/constants'

@@ -23,8 +23,11 @@ export const DefaultLayout = (props: PropsWithChildren) => {
 
   return (
     <div className="bg-background text-foreground">
-      <LoadingSpinner classname={isLoading ? 'flex' : 'hidden'} />
-      <div className={isLoading ? 'hidden' : 'block'}>{children}</div>
+      {isLoading ? (
+        <LoadingSpinner classname="flex" />
+      ) : (
+        <div className="block">{children}</div>
+      )}
       <Toaster />
     </div>
   )

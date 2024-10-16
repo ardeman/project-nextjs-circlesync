@@ -14,12 +14,15 @@
       "error",
       {
         "patterns": [
-          "components/*/*",
-          "features/*/*",
-          "hooks/*",
-          "layouts/*/*",
-          "types/*",
-          "utils/*"
+          "@/components/*/*",
+          "@/config/*",
+          "@/constants/*",
+          "@/context/*",
+          "@/hooks/*",
+          "@/lib/*",
+          "@/types/*",
+          "@/utils/*",
+          "../*"
         ],
         "paths": ["react-i18next"]
       }

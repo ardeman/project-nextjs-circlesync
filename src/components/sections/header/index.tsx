@@ -1,7 +1,9 @@
+import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleUser, Menu, Search } from 'lucide-react'
 import Link from 'next/link'
+import { FormProvider, useForm } from 'react-hook-form'
 
-import { ModeToggle } from '@/components/base'
+import { ModeToggle, Input } from '@/components/base'
 import {
   Button,
   DropdownMenu,
@@ -10,7 +12,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Input,
   Sheet,
   SheetContent,
   SheetTrigger,
@@ -20,11 +21,23 @@ import { cn } from '@/utils'
 
 import { userMenus } from './data'
 import { Navigation } from './navigation'
-import { TProps } from './type'
+import { TProps, TSearchRequest } from './type'
+import { schema } from './validation'
 
 export const Header = (props: TProps) => {
   const { className } = props
   const { user, logout } = useFirebase()
+  const formMethods = useForm<TSearchRequest>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      query: '',
+    },
+  })
+  const { handleSubmit } = formMethods
+  const onSubmit = handleSubmit(async (data) => {
+    // eslint-disable-next-line no-console
+    console.log('data', data)
+  })
   return (
     <header
       className={cn(
@@ -49,16 +62,20 @@ export const Header = (props: TProps) => {
         </SheetContent>
       </Sheet>
       <div className="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-        <form className="ml-auto flex-1 sm:flex-initial">
-          <div className="relative">
-            <Search className="text-muted-foreground absolute left-2.5 top-2.5 h-4 w-4" />
+        <FormProvider {...formMethods}>
+          <form
+            onSubmit={onSubmit}
+            className="ml-auto flex-1 sm:flex-initial"
+          >
             <Input
+              name="query"
               type="search"
-              placeholder="Search products..."
-              className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              placeholder="Search"
+              className="sm:w-[300px] md:w-[200px] lg:w-[300px]"
+              LeftNode={({ className }) => <Search className={className} />}
             />
-          </div>
-        </form>
+          </form>
+        </FormProvider>
         <ModeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
