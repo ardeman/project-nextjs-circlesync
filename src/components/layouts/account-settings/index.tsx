@@ -6,19 +6,16 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  Checkbox,
   Input,
 } from '@/components/ui'
 
-export const SettingsPage = () => {
+export const AccountSettingsPage = () => {
   return (
     <div className="grid gap-6">
       <Card x-chunk="dashboard-04-chunk-1">
         <CardHeader>
-          <CardTitle>Store Name</CardTitle>
-          <CardDescription>
-            Used to identify your store in the marketplace.
-          </CardDescription>
+          <CardTitle>Change email address</CardTitle>
+          <CardDescription>Update your email address.</CardDescription>
         </CardHeader>
         <CardContent>
           <form>
@@ -31,10 +28,9 @@ export const SettingsPage = () => {
       </Card>
       <Card x-chunk="dashboard-04-chunk-2">
         <CardHeader>
-          <CardTitle>Plugins Directory</CardTitle>
+          <CardTitle>Link Google account</CardTitle>
           <CardDescription>
-            The directory within your project, in which your plugins are
-            located.
+            Link your Google account to use single sign-on.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -43,18 +39,6 @@ export const SettingsPage = () => {
               placeholder="Project Name"
               defaultValue="/content/plugins"
             />
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="include"
-                defaultChecked
-              />
-              <label
-                htmlFor="include"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                Allow administrators to change the directory.
-              </label>
-            </div>
           </form>
         </CardContent>
         <CardFooter className="border-t px-6 py-4">

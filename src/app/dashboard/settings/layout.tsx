@@ -1,7 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { ReactNode } from 'react'
+
+import { Sidebar } from '@/components/sections'
 
 const SettingsLayout = ({ children }: { children: ReactNode }) => {
   return (
@@ -10,22 +11,7 @@ const SettingsLayout = ({ children }: { children: ReactNode }) => {
         <h1 className="text-3xl font-semibold">Settings</h1>
       </div>
       <div className="mx-auto grid w-full max-w-6xl items-start gap-6 md:grid-cols-[180px_1fr] lg:grid-cols-[250px_1fr]">
-        <nav
-          className="text-muted-foreground grid gap-4 text-sm"
-          x-chunk="dashboard-04-chunk-0"
-        >
-          <Link
-            href="#"
-            className="text-primary font-semibold"
-          >
-            General
-          </Link>
-          <Link href="#">Security</Link>
-          <Link href="#">Integrations</Link>
-          <Link href="#">Support</Link>
-          <Link href="#">Organizations</Link>
-          <Link href="#">Advanced</Link>
-        </nav>
+        <Sidebar />
         {children}
       </div>
     </main>

@@ -1,9 +1,9 @@
-import { SettingsPage } from '@/components/layouts'
+import { GeneralSettingsPage } from '@/components/layouts'
 
-const Settings = () => {
-  return <SettingsPage />
+const GeneralSettings = () => {
+  return <GeneralSettingsPage />
 }
 
-export default Settings
+export default GeneralSettings
 
 export { metadata } from '@/constants'
