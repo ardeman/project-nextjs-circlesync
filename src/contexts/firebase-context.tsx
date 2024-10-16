@@ -52,8 +52,10 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   const { mutate: mutateRegister, isPending: isRegisterPending } = useMutation({
     mutationFn: (data: { email: string; password: string }) =>
       createUserWithEmailAndPassword(firebaseAuth, data.email, data.password),
-    onSuccess: () => {
+    onMutate: () => {
       setError(undefined)
+    },
+    onSuccess: () => {
       invalidateUser()
     },
     onError: (
@@ -82,8 +84,10 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   const { mutate: mutateLogin, isPending: isLoginPending } = useMutation({
     mutationFn: (data: { email: string; password: string }) =>
       signInWithEmailAndPassword(firebaseAuth, data.email, data.password),
-    onSuccess: () => {
+    onMutate: () => {
       setError(undefined)
+    },
+    onSuccess: () => {
       invalidateUser()
     },
     onError: (error: unknown) => {
@@ -102,8 +106,10 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   const { mutate: mutateGoogleLogin, isPending: isGoogleLoginPending } =
     useMutation({
       mutationFn: () => signInWithPopup(firebaseAuth, provider),
-      onSuccess: () => {
+      onMutate: () => {
         setError(undefined)
+      },
+      onSuccess: () => {
         invalidateUser()
       },
       onError: (error: unknown) => {
@@ -121,9 +127,11 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   // Handle user logout
   const { mutate: mutateLogout, isPending: isLogoutPending } = useMutation({
     mutationFn: () => signOut(firebaseAuth),
-    onSuccess: () => {
+    onMutate: () => {
       push('/auth')
       setError(undefined)
+    },
+    onSuccess: () => {
       invalidateUser()
     },
     onError: (error: unknown) => {
