@@ -24,7 +24,7 @@ import { Navigation } from './navigation'
 import { TProps, TSearchRequest } from './type'
 import { schema } from './validation'
 
-export const Header = (props: TProps) => {
+export const Navbar = (props: TProps) => {
   const { className } = props
   const { user, logout } = useFirebase()
   const formMethods = useForm<TSearchRequest>({
