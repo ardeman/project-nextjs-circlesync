@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { PropsWithChildren, useEffect } from 'react'
 
 import { LoadingSpinner } from '@/components/base'
+import { Toaster } from '@/components/ui'
 import { useFirebase } from '@/contexts'
 import { middleware } from '@/utils'
 
@@ -24,6 +25,7 @@ export const DefaultLayout = (props: PropsWithChildren) => {
     <div className="bg-background text-foreground">
       <LoadingSpinner classname={isLoading ? 'flex' : 'hidden'} />
       <div className={isLoading ? 'hidden' : 'block'}>{children}</div>
+      <Toaster />
     </div>
   )
 }

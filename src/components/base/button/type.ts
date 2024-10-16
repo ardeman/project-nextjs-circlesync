@@ -16,7 +16,6 @@ export type TButtonProps<T extends ElementType = 'button'> = {
   disabled?: boolean
   children: ReactNode
   isLoading?: boolean
-  error?: string
   as?: T
   variant?: VariantProps<typeof buttonVariants>['variant']
 }

@@ -8,7 +8,14 @@ import {
   signOut,
   User,
 } from 'firebase/auth'
-import { createContext, PropsWithChildren, useContext, useState } from 'react'
+import {
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useContext,
+  useState,
+} from 'react'
 
 import { firebaseAuth } from '@/configs'
 import { firebaseAuthError } from '@/data'
@@ -22,6 +29,7 @@ type TFirebaseContextValue = {
   isGoogleLoginPending: boolean
   isLogoutPending: boolean
   error?: string
+  setError: Dispatch<SetStateAction<string | undefined>>
   register: (data: TRegisterRequest) => void
   loginWithGoogle: () => void
   logout: () => void
@@ -128,16 +136,12 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   })
   const value = {
     user,
-    isLoading:
-      isUserLoading ||
-      isRegisterPending ||
-      isLoginPending ||
-      isGoogleLoginPending ||
-      isLogoutPending,
+    isLoading: isUserLoading || isLogoutPending,
     isRegisterPending: isRegisterPending || isLoginPending,
     isGoogleLoginPending,
     isLogoutPending,
     error,
+    setError,
     register: mutateRegister,
     loginWithGoogle: () => mutateGoogleLogin(),
     logout: () => mutateLogout(),

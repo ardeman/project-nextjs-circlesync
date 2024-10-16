@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FcGoogle } from 'react-icons/fc'
 
@@ -12,9 +12,11 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
+  ToastAction,
 } from '@/components/ui'
 import { useFirebase } from '@/contexts'
 import { metadata } from '@/data'
+import { toast } from '@/hooks'
 import { TRegisterRequest } from '@/types'
 
 import { schema } from './validation'
@@ -26,6 +28,7 @@ export const AuthPage: FC = () => {
     isRegisterPending,
     isGoogleLoginPending,
     error,
+    setError,
     loginWithGoogle,
   } = useFirebase()
   const formMethods = useForm<TRegisterRequest>({
@@ -39,6 +42,23 @@ export const AuthPage: FC = () => {
   const onSubmit = handleSubmit(async (data) => {
     register(data)
   })
+
+  useEffect(() => {
+    if (error) {
+      toast({
+        variant: 'destructive',
+        description: error,
+        action: (
+          <ToastAction
+            altText="Try again"
+            onClick={() => setError(undefined)}
+          >
+            Try again
+          </ToastAction>
+        ),
+      })
+    }
+  }, [error, setError])
 
   return (
     <div className="bg-muted/40 flex min-h-dvh items-center justify-center">
@@ -72,7 +92,6 @@ export const AuthPage: FC = () => {
                 disabled={isLoading}
                 isLoading={isRegisterPending}
                 type="submit"
-                error={error}
               >
                 Continue
               </Button>

@@ -1,6 +1,6 @@
 import { PiSpinnerGapDuotone } from 'react-icons/pi'
 
-import { FormMessage, Button as UIButton } from '@/components/ui'
+import { Button as UIButton } from '@/components/ui'
 import { cn } from '@/utils'
 
 import { TButtonProps } from './type'
@@ -13,7 +13,6 @@ export const Button = (props: TButtonProps) => {
     className,
     type = 'button',
     onClick,
-    error,
     containerClassName,
     variant,
   } = props
@@ -31,7 +30,6 @@ export const Button = (props: TButtonProps) => {
         />
         {!isLoading && children}
       </UIButton>
-      {error && <FormMessage className="text-center">{error}</FormMessage>}
     </div>
   )
 }
