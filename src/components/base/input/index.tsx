@@ -30,11 +30,13 @@ export const Input = <TFormValues extends Record<string, unknown>>(
     inputClassName,
     labelClassName,
     required,
-    LeftNode,
-    RightNode,
+    leftNode,
+    rightNode,
     ...rest
   } = props
   const { control } = useFormContext()
+  const LeftNode = leftNode
+  const RightNode = rightNode
 
   return (
     <FormField

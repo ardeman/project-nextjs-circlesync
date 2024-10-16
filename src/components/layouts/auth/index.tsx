@@ -13,11 +13,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-  ToastAction,
 } from '@/components/ui'
 import { metadata } from '@/constants'
 import { useFirebase } from '@/contexts'
-import { toast } from '@/hooks'
 import { TRegisterRequest } from '@/types'
 
 import { schema } from './validation'
@@ -31,7 +29,6 @@ export const AuthPage: FC = () => {
     isRegisterPending,
     isGoogleLoginPending,
     error,
-    setError,
     loginWithGoogle,
   } = useFirebase()
   const formMethods = useForm<TRegisterRequest>({
@@ -53,20 +50,8 @@ export const AuthPage: FC = () => {
   useEffect(() => {
     if (error) {
       setDisabled(false)
-      toast({
-        variant: 'destructive',
-        description: error,
-        action: (
-          <ToastAction
-            altText="Try again"
-            onClick={() => setError(undefined)}
-          >
-            Try again
-          </ToastAction>
-        ),
-      })
     }
-  }, [error, setError])
+  }, [error])
 
   return (
     <div className="bg-muted/40 flex min-h-dvh items-center justify-center">
@@ -97,7 +82,7 @@ export const AuthPage: FC = () => {
                 type={passwordType}
                 required
                 disabled={disabled}
-                RightNode={({ className }) =>
+                rightNode={({ className }) =>
                   passwordType === 'password' ? (
                     <EyeClosed
                       className={className}

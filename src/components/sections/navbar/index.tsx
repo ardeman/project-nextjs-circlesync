@@ -76,7 +76,7 @@ export const Navbar = (props: TProps) => {
               type="search"
               placeholder="Search"
               inputClassName="sm:w-[300px] md:w-[200px] lg:w-[300px]"
-              LeftNode={({ className }) => <Search className={className} />}
+              leftNode={({ className }) => <Search className={className} />}
             />
           </form>
         </FormProvider>
@@ -93,7 +93,9 @@ export const Navbar = (props: TProps) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>{user?.email}</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              {user?.displayName || user?.email}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {userMenus.map((menu, index) => (
               <Link

@@ -50,7 +50,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
 
   // Handle email/password registration
   const { mutate: mutateRegister, isPending: isRegisterPending } = useMutation({
-    mutationFn: (data: { email: string; password: string }) =>
+    mutationFn: (data: TRegisterRequest) =>
       createUserWithEmailAndPassword(firebaseAuth, data.email, data.password),
     onMutate: () => {
       setError(undefined)
@@ -83,7 +83,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
 
   // Handle email/password login
   const { mutate: mutateLogin, isPending: isLoginPending } = useMutation({
-    mutationFn: (data: { email: string; password: string }) =>
+    mutationFn: (data: TRegisterRequest) =>
       signInWithEmailAndPassword(firebaseAuth, data.email, data.password),
     onMutate: () => {
       setError(undefined)
@@ -148,6 +148,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
       }
     },
   })
+
   const value = {
     user,
     isLoading: isUserLoading || isLogoutPending,
@@ -157,8 +158,8 @@ const FirebaseProvider = (props: PropsWithChildren) => {
     error,
     setError,
     register: mutateRegister,
-    loginWithGoogle: () => mutateGoogleLogin(),
-    logout: () => mutateLogout(),
+    loginWithGoogle: mutateGoogleLogin,
+    logout: mutateLogout,
   }
 
   return (
