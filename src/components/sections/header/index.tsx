@@ -2,7 +2,6 @@ import { CircleUser, Menu, Search } from 'lucide-react'
 import Link from 'next/link'
 
 import { ModeToggle } from '@/components/base'
-import { Navigation } from '@/components/sections'
 import {
   Button,
   DropdownMenu,
@@ -20,6 +19,7 @@ import { useFirebase } from '@/contexts'
 import { cn } from '@/utils'
 
 import { userMenus } from './data'
+import { Navigation } from './navigation'
 import { TProps } from './type'
 
 export const Header = (props: TProps) => {
