@@ -96,6 +96,7 @@ export const Header = (props: TProps) => {
               <Link
                 key={index}
                 href={menu.href}
+                target={menu.href.startsWith('http') ? '_blank' : undefined}
               >
                 <DropdownMenuItem>{menu.name}</DropdownMenuItem>
               </Link>

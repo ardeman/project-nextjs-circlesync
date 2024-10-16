@@ -5,7 +5,7 @@ export const userMenus = [
   },
   {
     name: 'Support',
-    href: '/dashboard/support',
+    href: 'https://github.com/ardeman/project-nextjs-circlesync/issues',
   },
 ]
 
