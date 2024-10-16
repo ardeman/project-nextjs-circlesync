@@ -128,7 +128,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   const { mutate: mutateLogout, isPending: isLogoutPending } = useMutation({
     mutationFn: () => signOut(firebaseAuth),
     onMutate: () => {
-      push('/auth')
+      push('/')
       setError(undefined)
     },
     onSuccess: () => {
