@@ -8,6 +8,7 @@ import {
   signOut,
   User,
 } from 'firebase/auth'
+import { useRouter } from 'next/navigation'
 import {
   createContext,
   Dispatch,
@@ -45,6 +46,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   const [error, setError] = useState<string | undefined>()
   const provider = new GoogleAuthProvider()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
+  const { push } = useRouter()
 
   // Handle email/password registration
   const { mutate: mutateRegister, isPending: isRegisterPending } = useMutation({
@@ -120,6 +122,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   const { mutate: mutateLogout, isPending: isLogoutPending } = useMutation({
     mutationFn: () => signOut(firebaseAuth),
     onSuccess: () => {
+      push('/auth')
       setError(undefined)
       invalidateUser()
     },
