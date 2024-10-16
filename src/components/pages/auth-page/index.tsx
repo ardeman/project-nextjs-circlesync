@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FcGoogle } from 'react-icons/fc'
 
@@ -22,6 +22,7 @@ import { TRegisterRequest } from '@/types'
 import { schema } from './validation'
 
 export const AuthPage: FC = () => {
+  const [disabled, setDisabled] = useState(false)
   const {
     register,
     isLoading,
@@ -40,11 +41,13 @@ export const AuthPage: FC = () => {
   })
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
+    setDisabled(true)
     register(data)
   })
 
   useEffect(() => {
     if (error) {
+      setDisabled(false)
       toast({
         variant: 'destructive',
         description: error,
@@ -81,15 +84,17 @@ export const AuthPage: FC = () => {
                 placeholder="you@example.com"
                 autoFocus
                 required
+                disabled={disabled}
               />
               <Input
                 label="Password"
                 name="password"
                 type="password"
                 required
+                disabled={disabled}
               />
               <Button
-                disabled={isLoading}
+                disabled={isLoading || disabled}
                 isLoading={isRegisterPending}
                 type="submit"
               >
@@ -103,7 +108,7 @@ export const AuthPage: FC = () => {
             containerClassName="w-full"
             variant="outline"
             onClick={loginWithGoogle}
-            disabled={isLoading}
+            disabled={isLoading || disabled}
             isLoading={isGoogleLoginPending}
           >
             <FcGoogle className="text-xl" />
