@@ -17,6 +17,7 @@ import {
   SheetTrigger,
 } from '@/components/ui'
 import { useFirebase } from '@/contexts'
+import { toast } from '@/hooks'
 import { cn } from '@/utils'
 
 import { userMenus } from './data'
@@ -35,8 +36,10 @@ export const Navbar = (props: TProps) => {
   })
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
-    // eslint-disable-next-line no-console
-    console.log('data', data)
+    toast({
+      title: 'Search',
+      description: <pre>{JSON.stringify(data, null, 2)}</pre>,
+    })
   })
   return (
     <header
