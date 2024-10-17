@@ -19,7 +19,7 @@ import {
 import { firebaseAuth } from '@/configs'
 import { firebaseAuthError } from '@/constants'
 import { useFirebase } from '@/contexts'
-import { toast, useQueryActions } from '@/hooks'
+import { toast, useAuthUser, useQueryActions } from '@/hooks'
 import { TUpdateProfileRequest } from '@/types'
 
 import { schema } from './validation'
@@ -27,11 +27,12 @@ import { schema } from './validation'
 export const GeneralSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
-  const { user, setError } = useFirebase()
+  const { setError } = useFirebase()
+  const { data: userData } = useAuthUser()
   const formMethods = useForm<TUpdateProfileRequest>({
     resolver: zodResolver(schema),
     defaultValues: {
-      displayName: user?.displayName,
+      displayName: userData?.displayName,
     },
   })
   const { handleSubmit } = formMethods

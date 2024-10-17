@@ -6,7 +6,6 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
-  User,
 } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import {
@@ -24,7 +23,6 @@ import { useAuthUser, useQueryActions } from '@/hooks'
 import { TRegisterRequest } from '@/types'
 
 type TFirebaseContextValue = {
-  user?: User | null
   isLoading: boolean
   isRegisterPending: boolean
   isGoogleLoginPending: boolean
@@ -42,7 +40,7 @@ const FirebaseContext = createContext<TFirebaseContextValue | undefined>(
 
 const FirebaseProvider = (props: PropsWithChildren) => {
   const { children } = props
-  const { data: user, isLoading: isUserLoading } = useAuthUser()
+  const { isLoading: isUserLoading } = useAuthUser()
   const [error, setError] = useState<string | undefined>()
   const provider = new GoogleAuthProvider()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
@@ -150,7 +148,6 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   })
 
   const value = {
-    user,
     isLoading: isUserLoading || isLogoutPending,
     isRegisterPending: isRegisterPending || isLoginPending,
     isGoogleLoginPending,

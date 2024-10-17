@@ -1,3 +1,5 @@
+'use client'
+
 import {
   Button,
   Card,
@@ -8,8 +10,10 @@ import {
   CardTitle,
   Input,
 } from '@/components/ui'
+import { useAuthUser } from '@/hooks'
 
 export const AccountSettingsPage = () => {
+  const { data: userData } = useAuthUser()
   return (
     <div className="grid gap-6">
       <Card x-chunk="dashboard-04-chunk-1">
@@ -18,6 +22,7 @@ export const AccountSettingsPage = () => {
           <CardDescription>Update your email address.</CardDescription>
         </CardHeader>
         <CardContent>
+          <pre>{JSON.stringify(userData, null, 2)}</pre>
           <form>
             <Input placeholder="Store Name" />
           </form>

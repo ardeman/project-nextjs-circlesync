@@ -17,7 +17,7 @@ import {
   SheetTrigger,
 } from '@/components/ui'
 import { useFirebase } from '@/contexts'
-import { toast } from '@/hooks'
+import { toast, useAuthUser } from '@/hooks'
 import { cn } from '@/utils'
 
 import { userMenus } from './data'
@@ -27,7 +27,8 @@ import { schema } from './validation'
 
 export const Navbar = (props: TProps) => {
   const { className } = props
-  const { user, logout } = useFirebase()
+  const { logout } = useFirebase()
+  const { data: userData } = useAuthUser()
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -94,7 +95,7 @@ export const Navbar = (props: TProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
-              {user?.displayName || user?.email}
+              {userData?.displayName || userData?.email}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {userMenus.map((menu, index) => (
