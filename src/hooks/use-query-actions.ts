@@ -15,9 +15,14 @@ export const useQueryActions = (queryKey: QueryKey) => {
     queryClient.removeQueries({ queryKey })
   }
 
+  const refetchQueries = () => {
+    queryClient.refetchQueries({ queryKey })
+  }
+
   return {
     invalidateQueries,
     resetQueries,
     removeQueries,
+    refetchQueries,
   }
 }

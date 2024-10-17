@@ -13,24 +13,19 @@ import { middleware } from '@/utils'
 export const DefaultLayout = (props: PropsWithChildren) => {
   const { children } = props
   const { isLoading } = useFirebase()
-  const {
-    data: userData,
-    isLoading: userIsLoading,
-    isFetching: userIsFetching,
-  } = useAuthUser()
+  const { data: user, isLoading: userIsLoading } = useAuthUser()
   const { push } = useRouter()
   const pathname = usePathname()
-  const isUserLoading = userIsLoading || userIsFetching
 
   useEffect(() => {
-    if (!isUserLoading) {
-      middleware({ userData, push, pathname })
+    if (!userIsLoading) {
+      middleware({ user, push, pathname })
     }
-  }, [userData, isUserLoading, push, pathname])
+  }, [user, userIsLoading, push, pathname])
 
   return (
     <div className="bg-background text-foreground">
-      {isLoading || isUserLoading ? (
+      {isLoading || userIsLoading ? (
         <LoadingSpinner classname="flex" />
       ) : (
         <div className="block">{children}</div>

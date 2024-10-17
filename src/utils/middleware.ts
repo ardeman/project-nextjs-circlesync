@@ -8,19 +8,19 @@ import { extractPathSegment } from './parser'
 type TProps = {
   push: (href: string, options?: NavigateOptions) => void
   pathname: string
-  userData?: User | null
+  user?: User | null
 }
 
 export const middleware = (props: TProps) => {
-  const { push, pathname, userData } = props
+  const { push, pathname, user } = props
   const extractedPath = extractPathSegment(pathname)
 
-  if (protectedPages.has(extractedPath) && !userData) {
+  if (protectedPages.has(extractedPath) && !user) {
     const url = '/auth'
     return push(url)
   }
 
-  if (authPages.has(extractedPath) && userData) {
+  if (authPages.has(extractedPath) && user) {
     const url = '/dashboard'
     return push(url)
   }

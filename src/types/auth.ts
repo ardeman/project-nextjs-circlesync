@@ -4,5 +4,9 @@ export type TRegisterRequest = {
 }
 
 export type TUpdateProfileRequest = {
-  displayName?: string | null
+  displayName: string
+}
+
+export type TUpdateEmailRequest = {
+  email: string
 }

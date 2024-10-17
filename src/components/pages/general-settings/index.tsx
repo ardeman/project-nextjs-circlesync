@@ -18,19 +18,18 @@ import {
 } from '@/components/ui'
 import { firebaseAuth } from '@/configs'
 import { firebaseAuthError } from '@/constants'
-import { toast, useAuthUser, useQueryActions } from '@/hooks'
+import { toast, useAuthUser } from '@/hooks'
 import { TUpdateProfileRequest } from '@/types'
 
 import { schema } from './validation'
 
 export const GeneralSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
-  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const { data: userData } = useAuthUser()
   const formMethods = useForm<TUpdateProfileRequest>({
     resolver: zodResolver(schema),
     defaultValues: {
-      displayName: userData?.displayName,
+      displayName: userData?.displayName || '',
     },
   })
   const { handleSubmit } = formMethods
@@ -50,8 +49,7 @@ export const GeneralSettingsPage = () => {
           throw new Error('No user is currently signed in.')
         }
       },
-      onSuccess: () => {
-        invalidateUser()
+      onSuccess: async () => {
         toast({
           description: 'Your profile has been updated successfully.',
         })

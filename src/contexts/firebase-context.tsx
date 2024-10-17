@@ -21,7 +21,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const value = {
-    isLoading: isLoading,
+    isLoading,
     setIsLoading,
   }
 
