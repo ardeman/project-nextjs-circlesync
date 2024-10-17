@@ -7,8 +7,6 @@ import {
   useState,
 } from 'react'
 
-import { useAuthUser } from '@/hooks'
-
 type TFirebaseContextValue = {
   isLoading: boolean
   setIsLoading: Dispatch<SetStateAction<boolean>>
@@ -20,11 +18,10 @@ const FirebaseContext = createContext<TFirebaseContextValue | undefined>(
 
 const FirebaseProvider = (props: PropsWithChildren) => {
   const { children } = props
-  const { isLoading: isUserLoading } = useAuthUser()
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const value = {
-    isLoading: isUserLoading || isLoading,
+    isLoading: isLoading,
     setIsLoading,
   }
 
