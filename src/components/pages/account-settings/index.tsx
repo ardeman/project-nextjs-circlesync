@@ -5,9 +5,9 @@ import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { sendEmailVerification, verifyBeforeUpdateEmail } from 'firebase/auth'
 import { BadgeAlert, BadgeCheck } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { FcGoogle } from 'react-icons/fc'
 
 import { Button, Input } from '@/components/base'
 import {
@@ -31,7 +31,6 @@ import { cn } from '@/utils'
 import { schema } from './validation'
 
 export const AccountSettingsPage = () => {
-  const { refresh } = useRouter()
   const [disabled, setDisabled] = useState(false)
   const [timerVerification, setTimerVerification] = useState<
     number | undefined
@@ -121,14 +120,14 @@ export const AccountSettingsPage = () => {
   useEffect(() => {
     if (timerVerification === 0) {
       setTimerVerification(undefined)
-      refresh()
+      window.location.reload()
     } else if (timerVerification) {
       const timer = setTimeout(() => {
         setTimerVerification((prev) => prev! - 1)
       }, 1000)
       return () => clearTimeout(timer)
     }
-  }, [timerVerification, refresh])
+  }, [timerVerification])
 
   return (
     <div className="grid gap-6">
@@ -137,6 +136,7 @@ export const AccountSettingsPage = () => {
           <CardTitle>Change email address</CardTitle>
           <CardDescription>Update your email address.</CardDescription>
         </CardHeader>
+        <pre>{JSON.stringify(userData, null, 2)}</pre>
         <FormProvider {...formMethods}>
           <form onSubmit={onSubmit}>
             <CardContent className="flex items-end space-x-4">
@@ -205,16 +205,17 @@ export const AccountSettingsPage = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {/* <form className="flex flex-col gap-4">
-            <Input
-              placeholder="Project Name"
-              defaultValue="/content/plugins"
-            />
-          </form> */}
+          <Button
+            containerClassName="w-full sm:w-fit"
+            variant="outline"
+            // onClick={() => mutateGoogleLogin()}
+            // disabled={isLoading || disabled}
+            // isLoading={isGoogleLoginPending}
+          >
+            <FcGoogle className="text-xl" />
+            Link your Google account
+          </Button>
         </CardContent>
-        <CardFooter className="border-t px-6 py-4">
-          <Button>Save</Button>
-        </CardFooter>
       </Card>
     </div>
   )
