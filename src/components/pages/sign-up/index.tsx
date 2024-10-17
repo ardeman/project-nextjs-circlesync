@@ -181,12 +181,12 @@ export const SignUpPage: FC = () => {
         </CardContent>
         <CardFooter className="grid">
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
+            Already have an account?{' '}
             <UIButton
               variant="link"
               asChild
             >
-              <Link href="/sign-up">Sign up</Link>
+              <Link href="/sign-in">Sign in</Link>
             </UIButton>
           </div>
         </CardFooter>
