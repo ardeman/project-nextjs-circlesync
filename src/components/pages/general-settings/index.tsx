@@ -18,7 +18,6 @@ import {
 } from '@/components/ui'
 import { firebaseAuth } from '@/configs'
 import { firebaseAuthError } from '@/constants'
-import { useFirebase } from '@/contexts'
 import { toast, useAuthUser, useQueryActions } from '@/hooks'
 import { TUpdateProfileRequest } from '@/types'
 
@@ -27,7 +26,6 @@ import { schema } from './validation'
 export const GeneralSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
-  const { setError } = useFirebase()
   const { data: userData } = useAuthUser()
   const formMethods = useForm<TUpdateProfileRequest>({
     resolver: zodResolver(schema),
@@ -59,14 +57,16 @@ export const GeneralSettingsPage = () => {
         })
       },
       onError: (error: unknown) => {
+        let message = String(error)
         if (error instanceof FirebaseError) {
-          const message =
+          message =
             firebaseAuthError.find((item) => item.code === error.code)
               ?.message || error.message
-          setError(message)
-        } else {
-          setError(String(error))
         }
+        toast({
+          variant: 'destructive',
+          description: message,
+        })
       },
       onSettled: () => {
         setDisabled(false)

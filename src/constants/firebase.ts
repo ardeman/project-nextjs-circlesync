@@ -21,4 +21,9 @@ export const firebaseAuthError: TFirebaseAuthError[] = [
     code: 'auth/popup-closed-by-user',
     message: 'Popup closed by user',
   },
+  {
+    code: 'auth/too-many-requests',
+    message:
+      'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.',
+  },
 ]
