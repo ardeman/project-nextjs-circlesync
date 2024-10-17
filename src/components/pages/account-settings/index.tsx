@@ -23,7 +23,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui'
 import { firebaseAuth } from '@/configs'
-import { firebaseAuthError } from '@/constants'
+import { firebaseAuthError, metadata } from '@/constants'
 import { toast, useAuthUser } from '@/hooks'
 import { TUpdateEmailRequest } from '@/types'
 import { cn } from '@/utils'
@@ -32,9 +32,8 @@ import { schema } from './validation'
 
 export const AccountSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
-  const [timerVerification, setTimerVerification] = useState<
-    number | undefined
-  >()
+  const [timerEmailVerify, setTimerEmailVerify] = useState<number | undefined>()
+  const [timerUpdateEmail, setTimerUpdateEmail] = useState<number | undefined>()
   const { data: userData } = useAuthUser()
   const formMethods = useForm<TUpdateEmailRequest>({
     resolver: zodResolver(schema),
@@ -62,6 +61,7 @@ export const AccountSettingsPage = () => {
         toast({
           description: 'Your email has been updated successfully.',
         })
+        setTimerUpdateEmail(30)
       },
       onError: (error: unknown) => {
         let message = String(error)
@@ -98,7 +98,7 @@ export const AccountSettingsPage = () => {
       toast({
         description: 'Verification email has been sent successfully.',
       })
-      setTimerVerification(30)
+      setTimerEmailVerify(30)
     },
     onError: (error: unknown) => {
       let message = String(error)
@@ -118,16 +118,28 @@ export const AccountSettingsPage = () => {
   })
 
   useEffect(() => {
-    if (timerVerification === 0) {
-      setTimerVerification(undefined)
+    if (timerEmailVerify === 0) {
+      setTimerEmailVerify(undefined)
       window.location.reload()
-    } else if (timerVerification) {
+    } else if (timerEmailVerify) {
       const timer = setTimeout(() => {
-        setTimerVerification((prev) => prev! - 1)
+        setTimerEmailVerify((prev) => prev! - 1)
       }, 1000)
       return () => clearTimeout(timer)
     }
-  }, [timerVerification])
+  }, [timerEmailVerify])
+
+  useEffect(() => {
+    if (timerUpdateEmail === 0) {
+      setTimerUpdateEmail(undefined)
+      window.location.reload()
+    } else if (timerUpdateEmail) {
+      const timer = setTimeout(() => {
+        setTimerUpdateEmail((prev) => prev! - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [timerUpdateEmail])
 
   return (
     <div className="grid gap-6">
@@ -136,7 +148,6 @@ export const AccountSettingsPage = () => {
           <CardTitle>Change email address</CardTitle>
           <CardDescription>Update your email address.</CardDescription>
         </CardHeader>
-        <pre>{JSON.stringify(userData, null, 2)}</pre>
         <FormProvider {...formMethods}>
           <form onSubmit={onSubmit}>
             <CardContent className="flex items-end space-x-4">
@@ -174,24 +185,27 @@ export const AccountSettingsPage = () => {
               {!userData?.emailVerified && (
                 <Button
                   className="w-fit"
-                  disabled={disabled || !!timerVerification}
+                  disabled={disabled || !!timerEmailVerify}
                   type="button"
                   isLoading={isSendEmailVerificationPending}
                   onClick={() => mutateSendEmailVerification()}
                 >
-                  Verify Email {timerVerification && `(${timerVerification})`}
+                  Verify Email {timerEmailVerify && `(${timerEmailVerify})`}
                 </Button>
               )}
             </CardContent>
             <CardFooter className="space-x-4 border-t px-6 py-4">
               <Button
                 disabled={
-                  isUpdateEmailPending || disabled || !userData?.emailVerified
+                  isUpdateEmailPending ||
+                  disabled ||
+                  !userData?.emailVerified ||
+                  !!timerUpdateEmail
                 }
                 isLoading={isUpdateEmailPending}
                 type="submit"
               >
-                Save
+                Save {timerUpdateEmail && `(${timerUpdateEmail})`}
               </Button>
             </CardFooter>
           </form>
@@ -201,7 +215,9 @@ export const AccountSettingsPage = () => {
         <CardHeader>
           <CardTitle>Link Google account</CardTitle>
           <CardDescription>
-            Link your Google account to use single sign-on.
+            After linking your Google account, you can sign in to{' '}
+            {metadata.title?.toString()} with your Google account, in addition
+            to using your email and password.
           </CardDescription>
         </CardHeader>
         <CardContent>
