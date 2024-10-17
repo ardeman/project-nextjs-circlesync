@@ -19,11 +19,9 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  ToastAction,
 } from '@/components/ui'
 import { firebaseAuth } from '@/configs'
 import { firebaseAuthError } from '@/constants'
-import { useFirebase } from '@/contexts'
 import { toast, useAuthUser, useQueryActions } from '@/hooks'
 import { cn } from '@/utils'
 
@@ -34,8 +32,7 @@ import { schema } from './validation'
 
 export const Navbar = (props: TProps) => {
   const { className } = props
-  const { refresh } = useRouter()
-  const { setIsLoading } = useFirebase()
+  const { push } = useRouter()
   const { data: userData } = useAuthUser()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const formMethods = useForm<TSearchRequest>({
@@ -52,8 +49,8 @@ export const Navbar = (props: TProps) => {
     })
   })
   const handleLogout = () => {
+    push('/')
     mutateLogout()
-    setIsLoading(true)
   }
 
   const { mutate: mutateLogout } = useMutation({
@@ -71,18 +68,7 @@ export const Navbar = (props: TProps) => {
       toast({
         variant: 'destructive',
         description: message,
-        action: (
-          <ToastAction
-            altText="Reload page"
-            onClick={refresh}
-          >
-            Reload page
-          </ToastAction>
-        ),
       })
-    },
-    onSettled: () => {
-      setIsLoading(false)
     },
   })
 
