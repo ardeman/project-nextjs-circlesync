@@ -16,7 +16,7 @@ export const middleware = (props: TProps) => {
   const extractedPath = extractPathSegment(pathname)
 
   if (protectedPages.has(extractedPath) && !user) {
-    const url = '/auth'
+    const url = '/sign-in'
     return push(url)
   }
 

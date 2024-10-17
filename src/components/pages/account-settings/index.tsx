@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { sendEmailVerification, verifyBeforeUpdateEmail } from 'firebase/auth'
 import { BadgeAlert, BadgeCheck } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -30,6 +31,7 @@ import { cn } from '@/utils'
 import { schema } from './validation'
 
 export const AccountSettingsPage = () => {
+  const { refresh } = useRouter()
   const [disabled, setDisabled] = useState(false)
   const [timerVerification, setTimerVerification] = useState<
     number | undefined
@@ -119,14 +121,14 @@ export const AccountSettingsPage = () => {
   useEffect(() => {
     if (timerVerification === 0) {
       setTimerVerification(undefined)
-      window.location.reload()
+      refresh()
     } else if (timerVerification) {
       const timer = setTimeout(() => {
         setTimerVerification((prev) => prev! - 1)
       }, 1000)
       return () => clearTimeout(timer)
     }
-  }, [timerVerification])
+  }, [timerVerification, refresh])
 
   return (
     <div className="grid gap-6">

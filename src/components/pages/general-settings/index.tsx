@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { updateProfile } from 'firebase/auth'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
@@ -24,6 +25,7 @@ import { TUpdateProfileRequest } from '@/types'
 import { schema } from './validation'
 
 export const GeneralSettingsPage = () => {
+  const { refresh } = useRouter()
   const [disabled, setDisabled] = useState(false)
   const { data: userData } = useAuthUser()
   const formMethods = useForm<TUpdateProfileRequest>({
@@ -49,10 +51,11 @@ export const GeneralSettingsPage = () => {
           throw new Error('No user is currently signed in.')
         }
       },
-      onSuccess: async () => {
+      onSuccess: () => {
         toast({
           description: 'Your profile has been updated successfully.',
         })
+        refresh()
       },
       onError: (error: unknown) => {
         let message = String(error)

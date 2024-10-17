@@ -102,7 +102,6 @@ export const Navbar = (props: TProps) => {
             className="ml-auto"
           >
             <Input
-              autoFocus
               name="query"
               type="search"
               placeholder="Search"

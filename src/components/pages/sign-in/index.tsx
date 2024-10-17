@@ -4,20 +4,22 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import {
-  createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth'
 import { Eye, EyeClosed } from 'lucide-react'
+import Link from 'next/link'
 import { FC, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FcGoogle } from 'react-icons/fc'
 
 import { Button, Input, ModeToggle } from '@/components/base'
 import {
+  Button as UIButton,
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -26,17 +28,17 @@ import { firebaseAuth } from '@/configs'
 import { firebaseAuthError, metadata } from '@/constants'
 import { useFirebase } from '@/contexts'
 import { toast, useQueryActions } from '@/hooks'
-import { TRegisterRequest } from '@/types'
+import { TSignInRequest } from '@/types'
 
 import { schema } from './validation'
 
-export const AuthPage: FC = () => {
+export const SignInPage: FC = () => {
   const provider = new GoogleAuthProvider()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const { isLoading } = useFirebase()
-  const formMethods = useForm<TRegisterRequest>({
+  const formMethods = useForm<TSignInRequest>({
     resolver: zodResolver(schema),
     defaultValues: {
       email: '',
@@ -46,7 +48,7 @@ export const AuthPage: FC = () => {
   const { handleSubmit } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
-    mutateRegister(data)
+    mutateLogin(data)
   })
   const togglePassword = () => {
     setPasswordType((prev) => (prev === 'password' ? 'text' : 'password'))
@@ -76,43 +78,8 @@ export const AuthPage: FC = () => {
       },
     })
 
-  const { mutate: mutateRegister, isPending: isRegisterPending } = useMutation({
-    mutationFn: (data: TRegisterRequest) =>
-      createUserWithEmailAndPassword(firebaseAuth, data.email, data.password),
-    onSuccess: () => {
-      invalidateUser()
-    },
-    onError: (
-      error: unknown,
-      variables: { email: string; password: string }
-    ) => {
-      let message = ''
-      if (error instanceof FirebaseError) {
-        const action = firebaseAuthError.find(
-          (item) => item.code === error.code
-        )?.action
-        if (action === 'signin') {
-          mutateLogin(variables)
-        } else {
-          message =
-            firebaseAuthError.find((item) => item.code === error.code)
-              ?.message || error.message
-        }
-      } else {
-        message = String(error)
-      }
-      if (message) {
-        setDisabled(false)
-        toast({
-          variant: 'destructive',
-          description: message,
-        })
-      }
-    },
-  })
-
   const { mutate: mutateLogin, isPending: isLoginPending } = useMutation({
-    mutationFn: (data: TRegisterRequest) =>
+    mutationFn: (data: TSignInRequest) =>
       signInWithEmailAndPassword(firebaseAuth, data.email, data.password),
     onSuccess: () => {
       invalidateUser()
@@ -137,7 +104,12 @@ export const AuthPage: FC = () => {
       <Card className="min-h-dvh w-full max-w-md rounded-none md:min-h-fit md:rounded-md">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>{metadata.title?.toString()}</CardTitle>
+            <div className="grid">
+              <CardTitle>Sign in</CardTitle>
+              <CardDescription>
+                to continue to {metadata.title?.toString()}
+              </CardDescription>
+            </div>
             <ModeToggle />
           </div>
         </CardHeader>
@@ -177,7 +149,7 @@ export const AuthPage: FC = () => {
               />
               <Button
                 disabled={isLoading || disabled}
-                isLoading={isRegisterPending || isLoginPending}
+                isLoading={isLoginPending}
                 type="submit"
               >
                 Continue
@@ -185,7 +157,7 @@ export const AuthPage: FC = () => {
             </form>
           </FormProvider>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="grid">
           <Button
             containerClassName="w-full"
             variant="outline"
@@ -196,6 +168,15 @@ export const AuthPage: FC = () => {
             <FcGoogle className="text-xl" />
             Continue with Google
           </Button>
+          <div className="mt-4 text-center text-sm">
+            Don&apos;t have an account?{' '}
+            <UIButton
+              variant="link"
+              asChild
+            >
+              <Link href="/sign-up">Sign up</Link>
+            </UIButton>
+          </div>
         </CardFooter>
       </Card>
     </div>
