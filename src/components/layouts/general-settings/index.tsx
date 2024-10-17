@@ -83,6 +83,7 @@ export const GeneralSettingsPage = () => {
           <form onSubmit={onSubmit}>
             <CardContent>
               <Input
+                label="Display Name"
                 name="displayName"
                 disabled={disabled}
                 placeholder="Display Name"
