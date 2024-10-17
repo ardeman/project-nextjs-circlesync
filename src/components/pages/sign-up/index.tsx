@@ -179,8 +179,8 @@ export const SignUpPage: FC = () => {
             </form>
           </FormProvider>
         </CardContent>
-        <CardFooter className="grid">
-          <div className="mt-4 text-center text-sm">
+        <CardFooter className="grid space-y-4">
+          <div className="text-center text-sm">
             Already have an account?{' '}
             <UIButton
               variant="link"

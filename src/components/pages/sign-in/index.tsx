@@ -157,7 +157,7 @@ export const SignInPage: FC = () => {
             </form>
           </FormProvider>
         </CardContent>
-        <CardFooter className="grid">
+        <CardFooter className="grid space-y-4">
           <Button
             containerClassName="w-full"
             variant="outline"
@@ -168,7 +168,7 @@ export const SignInPage: FC = () => {
             <FcGoogle className="text-xl" />
             Continue with Google
           </Button>
-          <div className="mt-4 text-center text-sm">
+          <div className="text-center text-sm">
             Don&apos;t have an account?{' '}
             <UIButton
               variant="link"
