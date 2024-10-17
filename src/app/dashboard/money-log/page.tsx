@@ -1,4 +1,4 @@
-import { MoneyLogPage } from '@/components/layouts'
+import { MoneyLogPage } from '@/components/pages'
 
 const MoneyLog = () => {
   return <MoneyLogPage />

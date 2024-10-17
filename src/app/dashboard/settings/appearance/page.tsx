@@ -1,4 +1,4 @@
-import { AppearanceSettingsPage } from '@/components/layouts'
+import { AppearanceSettingsPage } from '@/components/pages'
 
 const AppearanceSettings = () => {
   return <AppearanceSettingsPage />

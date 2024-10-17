@@ -1,4 +1,4 @@
-import { HomePage } from '@/components/layouts'
+import { HomePage } from '@/components/pages'
 
 const Home = () => <HomePage />
 

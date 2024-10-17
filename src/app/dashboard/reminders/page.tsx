@@ -1,4 +1,4 @@
-import { RemindersPage } from '@/components/layouts'
+import { RemindersPage } from '@/components/pages'
 
 const Reminders = () => {
   return <RemindersPage />

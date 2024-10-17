@@ -2,8 +2,9 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import { DefaultLayout } from '@/components/layouts'
 import { FirebaseProvider, ThemeProvider } from '@/contexts'
+
+import { DefaultLayout } from './default-layout'
 
 const queryClient = new QueryClient()
 

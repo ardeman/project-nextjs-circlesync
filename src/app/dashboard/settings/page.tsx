@@ -1,4 +1,4 @@
-import { GeneralSettingsPage } from '@/components/layouts'
+import { GeneralSettingsPage } from '@/components/pages'
 
 const GeneralSettings = () => {
   return <GeneralSettingsPage />

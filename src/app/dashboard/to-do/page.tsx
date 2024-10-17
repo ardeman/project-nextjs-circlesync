@@ -1,4 +1,4 @@
-import { ToDoPage } from '@/components/layouts'
+import { ToDoPage } from '@/components/pages'
 
 const ToDo = () => {
   return <ToDoPage />
