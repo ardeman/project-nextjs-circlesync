@@ -9,15 +9,18 @@ import {
   updateProfile,
 } from 'firebase/auth'
 import { Eye, EyeClosed } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FC, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { Button, Input, ModeToggle } from '@/components/base'
 import {
+  Button as UIButton,
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui'
@@ -176,6 +179,17 @@ export const SignUpPage: FC = () => {
             </form>
           </FormProvider>
         </CardContent>
+        <CardFooter className="grid">
+          <div className="mt-4 text-center text-sm">
+            Don&apos;t have an account?{' '}
+            <UIButton
+              variant="link"
+              asChild
+            >
+              <Link href="/sign-up">Sign up</Link>
+            </UIButton>
+          </div>
+        </CardFooter>
       </Card>
     </div>
   )
