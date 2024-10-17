@@ -49,8 +49,8 @@ export const Navbar = (props: TProps) => {
     })
   })
   const handleLogout = () => {
-    push('/')
     mutateLogout()
+    push('/')
   }
 
   const { mutate: mutateLogout } = useMutation({
