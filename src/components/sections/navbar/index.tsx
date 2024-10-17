@@ -1,6 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import { FirebaseError } from 'firebase/app'
+import { signOut } from 'firebase/auth'
 import { CircleUser, Menu, Search } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { ModeToggle, Input } from '@/components/base'
@@ -15,9 +19,12 @@ import {
   Sheet,
   SheetContent,
   SheetTrigger,
+  ToastAction,
 } from '@/components/ui'
+import { firebaseAuth } from '@/configs'
+import { firebaseAuthError } from '@/constants'
 import { useFirebase } from '@/contexts'
-import { toast, useAuthUser } from '@/hooks'
+import { toast, useAuthUser, useQueryActions } from '@/hooks'
 import { cn } from '@/utils'
 
 import { userMenus } from './data'
@@ -27,8 +34,10 @@ import { schema } from './validation'
 
 export const Navbar = (props: TProps) => {
   const { className } = props
-  const { logout } = useFirebase()
+  const { refresh } = useRouter()
+  const { setIsLoading } = useFirebase()
   const { data: userData } = useAuthUser()
+  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -42,6 +51,41 @@ export const Navbar = (props: TProps) => {
       description: <pre>{JSON.stringify(data, null, 2)}</pre>,
     })
   })
+  const handleLogout = () => {
+    mutateLogout()
+    setIsLoading(true)
+  }
+
+  const { mutate: mutateLogout } = useMutation({
+    mutationFn: () => signOut(firebaseAuth),
+    onSuccess: () => {
+      invalidateUser()
+    },
+    onError: (error: unknown) => {
+      let message = String(error)
+      if (error instanceof FirebaseError) {
+        message =
+          firebaseAuthError.find((item) => item.code === error.code)?.message ||
+          error.message
+      }
+      toast({
+        variant: 'destructive',
+        description: message,
+        action: (
+          <ToastAction
+            altText="Reload page"
+            onClick={refresh}
+          >
+            Reload page
+          </ToastAction>
+        ),
+      })
+    },
+    onSettled: () => {
+      setIsLoading(false)
+    },
+  })
+
   return (
     <header
       className={cn(
@@ -108,7 +152,7 @@ export const Navbar = (props: TProps) => {
               </Link>
             ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

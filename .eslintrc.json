@@ -24,7 +24,7 @@
           "@/utils/*",
           "../*"
         ],
-        "paths": ["react-i18next"]
+        "paths": ["react-i18next", "next/router"]
       }
     ],
     "linebreak-style": ["error", "unix"],

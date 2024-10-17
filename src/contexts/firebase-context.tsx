@@ -5,7 +5,6 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
-  signOut,
 } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import {
@@ -24,14 +23,13 @@ import { TRegisterRequest } from '@/types'
 
 type TFirebaseContextValue = {
   isLoading: boolean
+  setIsLoading: Dispatch<SetStateAction<boolean>>
   isRegisterPending: boolean
   isGoogleLoginPending: boolean
-  isLogoutPending: boolean
   error?: string
   setError: Dispatch<SetStateAction<string | undefined>>
   register: (data: TRegisterRequest) => void
   loginWithGoogle: () => void
-  logout: () => void
 }
 
 const FirebaseContext = createContext<TFirebaseContextValue | undefined>(
@@ -42,6 +40,7 @@ const FirebaseProvider = (props: PropsWithChildren) => {
   const { children } = props
   const { isLoading: isUserLoading } = useAuthUser()
   const [error, setError] = useState<string | undefined>()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const provider = new GoogleAuthProvider()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const { push } = useRouter()
@@ -125,38 +124,15 @@ const FirebaseProvider = (props: PropsWithChildren) => {
       },
     })
 
-  // Handle user logout
-  const { mutate: mutateLogout, isPending: isLogoutPending } = useMutation({
-    mutationFn: () => signOut(firebaseAuth),
-    onMutate: () => {
-      push('/')
-      setError(undefined)
-    },
-    onSuccess: () => {
-      invalidateUser()
-    },
-    onError: (error: unknown) => {
-      if (error instanceof FirebaseError) {
-        const message =
-          firebaseAuthError.find((item) => item.code === error.code)?.message ||
-          error.message
-        setError(message)
-      } else {
-        setError(String(error))
-      }
-    },
-  })
-
   const value = {
-    isLoading: isUserLoading || isLogoutPending,
+    isLoading: isUserLoading || isLoading,
+    setIsLoading,
     isRegisterPending: isRegisterPending || isLoginPending,
     isGoogleLoginPending,
-    isLogoutPending,
     error,
     setError,
     register: mutateRegister,
     loginWithGoogle: mutateGoogleLogin,
-    logout: mutateLogout,
   }
 
   return (
