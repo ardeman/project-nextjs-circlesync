@@ -110,7 +110,7 @@ export const SignInPage: FC = () => {
 
   return (
     <div className="bg-muted/40 flex min-h-dvh items-center justify-center">
-      <Card className="min-h-dvh w-full max-w-md rounded-none md:min-h-fit md:rounded-md">
+      <Card className="min-h-dvh w-full max-w-md rounded-none border-none md:min-h-fit md:rounded-md md:border">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="grid">
