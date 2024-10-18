@@ -8,6 +8,10 @@ export const useAuthUser = () => {
     queryKey: ['auth-user'],
     queryFn: () =>
       new Promise<User | null>((resolve) => {
+        if (!firebaseAuth) {
+          resolve(null)
+          return
+        }
         const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
           resolve(currentUser) // Resolve the current user or null
         })

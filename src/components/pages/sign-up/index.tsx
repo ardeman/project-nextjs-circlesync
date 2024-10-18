@@ -58,6 +58,9 @@ export const SignUpPage: FC = () => {
 
   const { mutate: mutateRegister, isPending: isRegisterPending } = useMutation({
     mutationFn: async (data: TSignUpRequest) => {
+      if (!firebaseAuth) {
+        throw new Error('Firebase Auth is not initialized.')
+      }
       await createUserWithEmailAndPassword(
         firebaseAuth,
         data.email,

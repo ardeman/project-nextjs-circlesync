@@ -54,7 +54,11 @@ export const Navbar = (props: TProps) => {
   }
 
   const { mutate: mutateLogout } = useMutation({
-    mutationFn: () => signOut(firebaseAuth),
+    mutationFn: async () => {
+      if (firebaseAuth) {
+        await signOut(firebaseAuth)
+      }
+    },
     onSuccess: () => {
       invalidateUser()
     },

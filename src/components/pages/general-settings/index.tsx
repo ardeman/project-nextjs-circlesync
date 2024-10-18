@@ -43,7 +43,7 @@ export const GeneralSettingsPage = () => {
   const { mutate: mutateUpdateProfile, isPending: isUpdateProfilePending } =
     useMutation({
       mutationFn: (data: TUpdateProfileRequest) => {
-        if (firebaseAuth.currentUser) {
+        if (firebaseAuth?.currentUser) {
           return updateProfile(firebaseAuth.currentUser, {
             displayName: data.displayName,
           })

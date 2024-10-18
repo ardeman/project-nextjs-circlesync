@@ -66,7 +66,7 @@ export const AccountSettingsPage = () => {
   const { mutate: mutateUpdateEmail, isPending: isUpdateEmailPending } =
     useMutation({
       mutationFn: (data: TEmailRequest) => {
-        if (firebaseAuth.currentUser) {
+        if (firebaseAuth?.currentUser) {
           return verifyBeforeUpdateEmail(firebaseAuth.currentUser, data.email)
         } else {
           throw new Error('No user is currently signed in.')
@@ -112,7 +112,7 @@ export const AccountSettingsPage = () => {
     isPending: isSendEmailVerificationPending,
   } = useMutation({
     mutationFn: () => {
-      if (firebaseAuth.currentUser) {
+      if (firebaseAuth?.currentUser) {
         return sendEmailVerification(firebaseAuth.currentUser)
       } else {
         throw new Error('No user is currently signed in.')
@@ -159,7 +159,7 @@ export const AccountSettingsPage = () => {
   const { mutate: mutateLinkGoogle, isPending: isLinkGooglePending } =
     useMutation({
       mutationFn: () => {
-        if (firebaseAuth.currentUser) {
+        if (firebaseAuth?.currentUser) {
           return linkWithPopup(firebaseAuth.currentUser, provider)
         } else {
           throw new Error('No user is currently signed in.')
@@ -194,7 +194,7 @@ export const AccountSettingsPage = () => {
   const { mutate: mutateSetPassword, isPending: isSetPasswordPending } =
     useMutation({
       mutationFn: () => {
-        if (firebaseAuth.currentUser && userData?.email) {
+        if (firebaseAuth && userData?.email) {
           return sendPasswordResetEmail(firebaseAuth, userData.email)
         } else {
           throw new Error('No user is currently signed in.')

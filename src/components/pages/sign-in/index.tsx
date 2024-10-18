@@ -55,8 +55,12 @@ export const SignInPage: FC = () => {
   }
 
   const { mutate: mutateLogin, isPending: isLoginPending } = useMutation({
-    mutationFn: (data: TSignInRequest) =>
-      signInWithEmailAndPassword(firebaseAuth, data.email, data.password),
+    mutationFn: (data: TSignInRequest) => {
+      if (!firebaseAuth) {
+        throw new Error('Firebase Auth is not initialized.')
+      }
+      return signInWithEmailAndPassword(firebaseAuth, data.email, data.password)
+    },
     onSuccess: () => {
       invalidateUser()
     },
@@ -77,7 +81,12 @@ export const SignInPage: FC = () => {
 
   const { mutate: mutateGoogleLogin, isPending: isGoogleLoginPending } =
     useMutation({
-      mutationFn: () => signInWithPopup(firebaseAuth, provider),
+      mutationFn: () => {
+        if (!firebaseAuth) {
+          throw new Error('Firebase Auth is not initialized.')
+        }
+        return signInWithPopup(firebaseAuth, provider)
+      },
       onMutate: () => {
         setDisabled(true)
       },

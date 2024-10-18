@@ -45,6 +45,9 @@ export const ForgotPasswordPage: FC = () => {
   const { mutate: mutateForgotPassword, isPending: isForgotPasswordPending } =
     useMutation({
       mutationFn: async (data: TEmailRequest) => {
+        if (!firebaseAuth) {
+          throw new Error('Firebase Auth is not initialized.')
+        }
         await sendPasswordResetEmail(firebaseAuth, data.email)
       },
       onSuccess: () => {
