@@ -7,8 +7,4 @@ export const settings = [
     name: 'Account',
     href: '/dashboard/settings/account',
   },
-  {
-    name: 'Appearance',
-    href: '/dashboard/settings/appearance',
-  },
 ]
