@@ -19,7 +19,7 @@ const RootLayout = ({
   const pathname = usePathname()
 
   useEffect(() => {
-    if (firebaseAnalytics) {
+    if (firebaseAnalytics && process.env.NODE_ENV === 'production') {
       logEvent(firebaseAnalytics, 'page_view', { page_path: pathname })
     }
   }, [pathname])
