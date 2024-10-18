@@ -14,6 +14,6 @@ export type TUpdateProfileRequest = {
   displayName: string
 }
 
-export type TUpdateEmailRequest = {
+export type TEmailRequest = {
   email: string
 }

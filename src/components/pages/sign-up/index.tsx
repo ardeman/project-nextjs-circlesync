@@ -186,7 +186,7 @@ export const SignUpPage: FC = () => {
               variant="link"
               asChild
             >
-              <Link href="/sign-in">Sign in</Link>
+              <Link href="/auth/sign-in">Sign in</Link>
             </UIButton>
           </div>
         </CardFooter>

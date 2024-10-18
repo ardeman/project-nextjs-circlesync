@@ -7,6 +7,7 @@ import {
   GoogleAuthProvider,
   linkWithPopup,
   sendEmailVerification,
+  sendPasswordResetEmail,
   verifyBeforeUpdateEmail,
 } from 'firebase/auth'
 import { BadgeAlert, BadgeCheck } from 'lucide-react'
@@ -30,7 +31,7 @@ import {
 import { firebaseAuth } from '@/configs'
 import { firebaseAuthError, metadata } from '@/constants'
 import { toast, useAuthUser, useQueryActions } from '@/hooks'
-import { TUpdateEmailRequest } from '@/types'
+import { TEmailRequest } from '@/types'
 import { cn } from '@/utils'
 
 import { schema } from './validation'
@@ -41,16 +42,20 @@ export const AccountSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
   const [timerEmailVerify, setTimerEmailVerify] = useState<number | undefined>()
   const [timerUpdateEmail, setTimerUpdateEmail] = useState<number | undefined>()
+  const [timerSetPassword, setTimerSetPassword] = useState<number | undefined>()
   const { data: userData } = useAuthUser()
-  const formMethods = useForm<TUpdateEmailRequest>({
+  const userGoogleProvider = userData?.providerData.find(
+    (provider) => provider.providerId === 'google.com'
+  )
+  const userPasswordProvider = userData?.providerData.find(
+    (provider) => provider.providerId === 'password'
+  )
+  const formMethods = useForm<TEmailRequest>({
     resolver: zodResolver(schema),
     defaultValues: {
       email: userData?.email || '',
     },
   })
-  const userGoogleProvider = userData?.providerData.find(
-    (provider) => provider.providerId === 'google.com'
-  )
   const { handleSubmit, watch } = formMethods
   const watchEmail = watch('email')
   const onSubmit = handleSubmit(async (data) => {
@@ -60,7 +65,7 @@ export const AccountSettingsPage = () => {
 
   const { mutate: mutateUpdateEmail, isPending: isUpdateEmailPending } =
     useMutation({
-      mutationFn: (data: TUpdateEmailRequest) => {
+      mutationFn: (data: TEmailRequest) => {
         if (firebaseAuth.currentUser) {
           return verifyBeforeUpdateEmail(firebaseAuth.currentUser, data.email)
         } else {
@@ -186,6 +191,50 @@ export const AccountSettingsPage = () => {
       },
     })
 
+  const { mutate: mutateSetPassword, isPending: isSetPasswordPending } =
+    useMutation({
+      mutationFn: () => {
+        if (firebaseAuth.currentUser && userData?.email) {
+          return sendPasswordResetEmail(firebaseAuth, userData.email)
+        } else {
+          throw new Error('No user is currently signed in.')
+        }
+      },
+      onSuccess: () => {
+        toast({
+          description: 'Password reset email has been sent.',
+        })
+        setTimerSetPassword(30)
+      },
+      onError: (error: unknown) => {
+        let message = String(error)
+        if (error instanceof FirebaseError) {
+          message =
+            firebaseAuthError.find((item) => item.code === error.code)
+              ?.message || error.message
+        }
+        toast({
+          variant: 'destructive',
+          description: message,
+        })
+      },
+      onSettled: () => {
+        setDisabled(false)
+      },
+    })
+
+  useEffect(() => {
+    if (timerSetPassword === 0) {
+      setTimerSetPassword(undefined)
+      window.location.reload()
+    } else if (timerSetPassword) {
+      const timer = setTimeout(() => {
+        setTimerSetPassword((prev) => prev! - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [timerSetPassword])
+
   return (
     <div className="grid gap-6">
       <Card x-chunk="dashboard-04-chunk-1">
@@ -199,7 +248,9 @@ export const AccountSettingsPage = () => {
               <Input
                 label="Email"
                 name="email"
-                disabled={disabled || !userData?.emailVerified}
+                disabled={
+                  disabled || !userData?.emailVerified || !userPasswordProvider
+                }
                 placeholder="Display Name"
                 className="w-full"
                 rightNode={({ className }) =>
@@ -238,6 +289,17 @@ export const AccountSettingsPage = () => {
                   Verify Email {timerEmailVerify && `(${timerEmailVerify})`}
                 </Button>
               )}
+              {!userPasswordProvider && (
+                <Button
+                  className="w-fit"
+                  disabled={disabled || !!timerSetPassword}
+                  type="button"
+                  isLoading={isSetPasswordPending}
+                  onClick={() => mutateSetPassword()}
+                >
+                  Set Password {timerSetPassword && `(${timerSetPassword})`}
+                </Button>
+              )}
             </CardContent>
             <CardFooter className="space-x-4 border-t px-6 py-4">
               <Button
@@ -245,7 +307,8 @@ export const AccountSettingsPage = () => {
                   isUpdateEmailPending ||
                   disabled ||
                   !userData?.emailVerified ||
-                  !!timerUpdateEmail
+                  !!timerUpdateEmail ||
+                  !userPasswordProvider
                 }
                 isLoading={isUpdateEmailPending}
                 type="submit"

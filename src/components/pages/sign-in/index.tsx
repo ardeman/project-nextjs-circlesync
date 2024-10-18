@@ -54,6 +54,27 @@ export const SignInPage: FC = () => {
     setPasswordType((prev) => (prev === 'password' ? 'text' : 'password'))
   }
 
+  const { mutate: mutateLogin, isPending: isLoginPending } = useMutation({
+    mutationFn: (data: TSignInRequest) =>
+      signInWithEmailAndPassword(firebaseAuth, data.email, data.password),
+    onSuccess: () => {
+      invalidateUser()
+    },
+    onError: (error: unknown) => {
+      let message = String(error)
+      if (error instanceof FirebaseError) {
+        message =
+          firebaseAuthError.find((item) => item.code === error.code)?.message ||
+          error.message
+      }
+      setDisabled(false)
+      toast({
+        variant: 'destructive',
+        description: message,
+      })
+    },
+  })
+
   const { mutate: mutateGoogleLogin, isPending: isGoogleLoginPending } =
     useMutation({
       mutationFn: () => signInWithPopup(firebaseAuth, provider),
@@ -77,27 +98,6 @@ export const SignInPage: FC = () => {
         })
       },
     })
-
-  const { mutate: mutateLogin, isPending: isLoginPending } = useMutation({
-    mutationFn: (data: TSignInRequest) =>
-      signInWithEmailAndPassword(firebaseAuth, data.email, data.password),
-    onSuccess: () => {
-      invalidateUser()
-    },
-    onError: (error: unknown) => {
-      let message = String(error)
-      if (error instanceof FirebaseError) {
-        message =
-          firebaseAuthError.find((item) => item.code === error.code)?.message ||
-          error.message
-      }
-      setDisabled(false)
-      toast({
-        variant: 'destructive',
-        description: message,
-      })
-    },
-  })
 
   return (
     <div className="bg-muted/40 flex min-h-dvh items-center justify-center">
@@ -131,6 +131,14 @@ export const SignInPage: FC = () => {
                 label="Password"
                 name="password"
                 type={passwordType}
+                hint={
+                  <Link
+                    href="/auth/forgot-password"
+                    className="block text-right hover:underline"
+                  >
+                    Forgot your password?
+                  </Link>
+                }
                 required
                 disabled={disabled}
                 rightNode={({ className }) =>
@@ -174,7 +182,7 @@ export const SignInPage: FC = () => {
               variant="link"
               asChild
             >
-              <Link href="/sign-up">Sign up</Link>
+              <Link href="/auth/sign-up">Sign up</Link>
             </UIButton>
           </div>
         </CardFooter>
