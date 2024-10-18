@@ -3,7 +3,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
-import { sendEmailVerification, verifyBeforeUpdateEmail } from 'firebase/auth'
+import {
+  GoogleAuthProvider,
+  linkWithPopup,
+  sendEmailVerification,
+  verifyBeforeUpdateEmail,
+} from 'firebase/auth'
 import { BadgeAlert, BadgeCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -24,13 +29,15 @@ import {
 } from '@/components/ui'
 import { firebaseAuth } from '@/configs'
 import { firebaseAuthError, metadata } from '@/constants'
-import { toast, useAuthUser } from '@/hooks'
+import { toast, useAuthUser, useQueryActions } from '@/hooks'
 import { TUpdateEmailRequest } from '@/types'
 import { cn } from '@/utils'
 
 import { schema } from './validation'
 
 export const AccountSettingsPage = () => {
+  const provider = new GoogleAuthProvider()
+  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const [disabled, setDisabled] = useState(false)
   const [timerEmailVerify, setTimerEmailVerify] = useState<number | undefined>()
   const [timerUpdateEmail, setTimerUpdateEmail] = useState<number | undefined>()
@@ -41,6 +48,9 @@ export const AccountSettingsPage = () => {
       email: userData?.email || '',
     },
   })
+  const userGoogleProvider = userData?.providerData.find(
+    (provider) => provider.providerId === 'google.com'
+  )
   const { handleSubmit, watch } = formMethods
   const watchEmail = watch('email')
   const onSubmit = handleSubmit(async (data) => {
@@ -79,6 +89,18 @@ export const AccountSettingsPage = () => {
         setDisabled(false)
       },
     })
+
+  useEffect(() => {
+    if (timerUpdateEmail === 0) {
+      setTimerUpdateEmail(undefined)
+      window.location.reload()
+    } else if (timerUpdateEmail) {
+      const timer = setTimeout(() => {
+        setTimerUpdateEmail((prev) => prev! - 1)
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [timerUpdateEmail])
 
   const {
     mutate: mutateSendEmailVerification,
@@ -129,17 +151,40 @@ export const AccountSettingsPage = () => {
     }
   }, [timerEmailVerify])
 
-  useEffect(() => {
-    if (timerUpdateEmail === 0) {
-      setTimerUpdateEmail(undefined)
-      window.location.reload()
-    } else if (timerUpdateEmail) {
-      const timer = setTimeout(() => {
-        setTimerUpdateEmail((prev) => prev! - 1)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-  }, [timerUpdateEmail])
+  const { mutate: mutateLinkGoogle, isPending: isLinkGooglePending } =
+    useMutation({
+      mutationFn: () => {
+        if (firebaseAuth.currentUser) {
+          return linkWithPopup(firebaseAuth.currentUser, provider)
+        } else {
+          throw new Error('No user is currently signed in.')
+        }
+      },
+      onMutate: () => {
+        setDisabled(true)
+      },
+      onSuccess: () => {
+        toast({
+          description: 'Your Google account has been linked successfully.',
+        })
+        invalidateUser()
+      },
+      onError: (error: unknown) => {
+        let message = String(error)
+        if (error instanceof FirebaseError) {
+          message =
+            firebaseAuthError.find((item) => item.code === error.code)
+              ?.message || error.message
+        }
+        toast({
+          variant: 'destructive',
+          description: message,
+        })
+      },
+      onSettled: () => {
+        setDisabled(false)
+      },
+    })
 
   return (
     <div className="grid gap-6">
@@ -213,7 +258,9 @@ export const AccountSettingsPage = () => {
       </Card>
       <Card x-chunk="dashboard-04-chunk-2">
         <CardHeader>
-          <CardTitle>Link Google account</CardTitle>
+          <CardTitle className="flex items-center space-x-1">
+            <span>Link Google account</span>
+          </CardTitle>
           <CardDescription>
             After linking your Google account, you can sign in to{' '}
             {metadata.title?.toString()} with your Google account, in addition
@@ -224,12 +271,14 @@ export const AccountSettingsPage = () => {
           <Button
             containerClassName="w-full sm:w-fit"
             variant="outline"
-            // onClick={() => mutateGoogleLogin()}
-            // disabled={isLoading || disabled}
-            // isLoading={isGoogleLoginPending}
+            onClick={() => mutateLinkGoogle()}
+            disabled={disabled || !!userGoogleProvider}
+            isLoading={isLinkGooglePending}
           >
             <FcGoogle className="text-xl" />
-            Link your Google account
+            {userGoogleProvider
+              ? `Linked to ${userGoogleProvider.email}`
+              : 'Link your Google account'}
           </Button>
         </CardContent>
       </Card>

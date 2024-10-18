@@ -30,4 +30,8 @@ export const firebaseAuthError: TFirebaseAuthError[] = [
     code: 'auth/requires-recent-login',
     message: 'You need to sign in again to complete this operation.',
   },
+  {
+    code: 'auth/credential-already-in-use',
+    message: 'Credential already in use',
+  },
 ]
