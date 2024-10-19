@@ -5,5 +5,3 @@ const ForgotPassword = () => {
 }
 
 export default ForgotPassword
-
-export { metadata } from '@/constants'

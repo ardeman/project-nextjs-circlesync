@@ -5,5 +5,3 @@ const ToDo = () => {
 }
 
 export default ToDo
-
-export { metadata } from '@/constants'

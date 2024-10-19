@@ -5,5 +5,3 @@ const AccountSettings = () => {
 }
 
 export default AccountSettings
-
-export { metadata } from '@/constants'

@@ -5,5 +5,3 @@ const MoneyLog = () => {
 }
 
 export default MoneyLog
-
-export { metadata } from '@/constants'

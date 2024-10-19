@@ -5,5 +5,3 @@ const SignIn = () => {
 }
 
 export default SignIn
-
-export { metadata } from '@/constants'

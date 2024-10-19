@@ -5,5 +5,3 @@ const Reminders = () => {
 }
 
 export default Reminders
-
-export { metadata } from '@/constants'

@@ -5,5 +5,3 @@ const SignUp = () => {
 }
 
 export default SignUp
-
-export { metadata } from '@/constants'
