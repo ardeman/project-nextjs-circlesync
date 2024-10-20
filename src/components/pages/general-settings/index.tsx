@@ -1,11 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { FirebaseError } from 'firebase/app'
-import { updateProfile } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { Button, Input } from '@/components/base'
@@ -17,15 +13,12 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
-import { firebaseAuth } from '@/configs'
-import { firebaseAuthError } from '@/constants'
-import { toast, useAuthUser } from '@/hooks'
+import { useAuthUser, useUpdateProfile } from '@/hooks'
 import { TUpdateProfileRequest } from '@/types'
 
 import { schema } from './validation'
 
 export const GeneralSettingsPage = () => {
-  const { refresh } = useRouter()
   const [disabled, setDisabled] = useState(false)
   const { data: userData } = useAuthUser()
   const formMethods = useForm<TUpdateProfileRequest>({
@@ -40,39 +33,18 @@ export const GeneralSettingsPage = () => {
     mutateUpdateProfile(data)
   })
 
-  const { mutate: mutateUpdateProfile, isPending: isUpdateProfilePending } =
-    useMutation({
-      mutationFn: (data: TUpdateProfileRequest) => {
-        if (firebaseAuth?.currentUser) {
-          return updateProfile(firebaseAuth.currentUser, {
-            displayName: data.displayName,
-          })
-        } else {
-          throw new Error('No user is currently signed in.')
-        }
-      },
-      onSuccess: () => {
-        toast({
-          description: 'Your profile has been updated successfully.',
-        })
-        refresh()
-      },
-      onError: (error: unknown) => {
-        let message = String(error)
-        if (error instanceof FirebaseError) {
-          message =
-            firebaseAuthError.find((item) => item.code === error.code)
-              ?.message || error.message
-        }
-        toast({
-          variant: 'destructive',
-          description: message,
-        })
-      },
-      onSettled: () => {
-        setDisabled(false)
-      },
-    })
+  const {
+    mutate: mutateUpdateProfile,
+    isPending: isUpdateProfilePending,
+    isSuccess: isUpdateProfileSuccess,
+    isError: isUpdateProfileError,
+  } = useUpdateProfile()
+
+  useEffect(() => {
+    if (isUpdateProfileError || isUpdateProfileSuccess) {
+      setDisabled(false)
+    }
+  }, [isUpdateProfileSuccess, isUpdateProfileError])
 
   return (
     <div className="grid gap-6">

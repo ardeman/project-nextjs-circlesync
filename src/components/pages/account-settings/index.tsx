@@ -1,15 +1,6 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { FirebaseError } from 'firebase/app'
-import {
-  GoogleAuthProvider,
-  linkWithPopup,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  verifyBeforeUpdateEmail,
-} from 'firebase/auth'
 import { BadgeAlert, BadgeCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -28,17 +19,20 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui'
-import { firebaseAuth } from '@/configs'
-import { firebaseAuthError, metadata } from '@/constants'
-import { toast, useAuthUser, useQueryActions } from '@/hooks'
+import { metadata } from '@/constants'
+import {
+  useAuthUser,
+  useEmailVerification,
+  useLinkGoogle,
+  useResetPassword,
+  useUpdateEmail,
+} from '@/hooks'
 import { TEmailRequest } from '@/types'
 import { cn } from '@/utils'
 
 import { schema } from './validation'
 
 export const AccountSettingsPage = () => {
-  const provider = new GoogleAuthProvider()
-  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const [disabled, setDisabled] = useState(false)
   const [timerEmailVerify, setTimerEmailVerify] = useState<number | undefined>()
   const [timerUpdateEmail, setTimerUpdateEmail] = useState<number | undefined>()
@@ -63,37 +57,21 @@ export const AccountSettingsPage = () => {
     mutateUpdateEmail(data)
   })
 
-  const { mutate: mutateUpdateEmail, isPending: isUpdateEmailPending } =
-    useMutation({
-      mutationFn: (data: TEmailRequest) => {
-        if (firebaseAuth?.currentUser) {
-          return verifyBeforeUpdateEmail(firebaseAuth.currentUser, data.email)
-        } else {
-          throw new Error('No user is currently signed in.')
-        }
-      },
-      onSuccess: () => {
-        toast({
-          description: 'Your email has been updated successfully.',
-        })
-        setTimerUpdateEmail(30)
-      },
-      onError: (error: unknown) => {
-        let message = String(error)
-        if (error instanceof FirebaseError) {
-          message =
-            firebaseAuthError.find((item) => item.code === error.code)
-              ?.message || error.message
-        }
-        toast({
-          variant: 'destructive',
-          description: message,
-        })
-      },
-      onSettled: () => {
-        setDisabled(false)
-      },
-    })
+  const {
+    mutate: mutateUpdateEmail,
+    isPending: isUpdateEmailPending,
+    isSuccess: isUpdateEmailSuccess,
+    isError: isUpdateEmailError,
+  } = useUpdateEmail()
+
+  useEffect(() => {
+    if (isUpdateEmailSuccess || isUpdateEmailError) {
+      setDisabled(false)
+    }
+    if (isUpdateEmailSuccess) {
+      setTimerUpdateEmail(30)
+    }
+  }, [isUpdateEmailSuccess, isUpdateEmailError])
 
   useEffect(() => {
     if (timerUpdateEmail === 0) {
@@ -110,39 +88,23 @@ export const AccountSettingsPage = () => {
   const {
     mutate: mutateSendEmailVerification,
     isPending: isSendEmailVerificationPending,
-  } = useMutation({
-    mutationFn: () => {
-      if (firebaseAuth?.currentUser) {
-        return sendEmailVerification(firebaseAuth.currentUser)
-      } else {
-        throw new Error('No user is currently signed in.')
-      }
-    },
-    onMutate: () => {
-      setDisabled(true)
-    },
-    onSuccess: () => {
-      toast({
-        description: 'Verification email has been sent successfully.',
-      })
-      setTimerEmailVerify(30)
-    },
-    onError: (error: unknown) => {
-      let message = String(error)
-      if (error instanceof FirebaseError) {
-        message =
-          firebaseAuthError.find((item) => item.code === error.code)?.message ||
-          error.message
-      }
-      toast({
-        variant: 'destructive',
-        description: message,
-      })
-    },
-    onSettled: () => {
+    isSuccess: isSendEmailVerificationSuccess,
+    isError: isSendEmailVerificationError,
+  } = useEmailVerification()
+
+  const handleSendEmailVerification = () => {
+    mutateSendEmailVerification()
+    setDisabled(true)
+  }
+
+  useEffect(() => {
+    if (isSendEmailVerificationSuccess || isSendEmailVerificationError) {
       setDisabled(false)
-    },
-  })
+    }
+    if (isSendEmailVerificationSuccess) {
+      setTimerEmailVerify(30)
+    }
+  }, [isSendEmailVerificationSuccess, isSendEmailVerificationError])
 
   useEffect(() => {
     if (timerEmailVerify === 0) {
@@ -156,72 +118,39 @@ export const AccountSettingsPage = () => {
     }
   }, [timerEmailVerify])
 
-  const { mutate: mutateLinkGoogle, isPending: isLinkGooglePending } =
-    useMutation({
-      mutationFn: () => {
-        if (firebaseAuth?.currentUser) {
-          return linkWithPopup(firebaseAuth.currentUser, provider)
-        } else {
-          throw new Error('No user is currently signed in.')
-        }
-      },
-      onMutate: () => {
-        setDisabled(true)
-      },
-      onSuccess: () => {
-        toast({
-          description: 'Your Google account has been linked successfully.',
-        })
-        invalidateUser()
-      },
-      onError: (error: unknown) => {
-        let message = String(error)
-        if (error instanceof FirebaseError) {
-          message =
-            firebaseAuthError.find((item) => item.code === error.code)
-              ?.message || error.message
-        }
-        toast({
-          variant: 'destructive',
-          description: message,
-        })
-      },
-      onSettled: () => {
-        setDisabled(false)
-      },
-    })
+  const {
+    mutate: mutateLinkGoogle,
+    isPending: isLinkGooglePending,
+    isSuccess: isLinkGoogleSuccess,
+    isError: isLinkGoogleError,
+  } = useLinkGoogle()
 
-  const { mutate: mutateSetPassword, isPending: isSetPasswordPending } =
-    useMutation({
-      mutationFn: () => {
-        if (firebaseAuth && userData?.email) {
-          return sendPasswordResetEmail(firebaseAuth, userData.email)
-        } else {
-          throw new Error('No user is currently signed in.')
-        }
-      },
-      onSuccess: () => {
-        toast({
-          description: 'Password reset email has been sent.',
-        })
-        setTimerSetPassword(30)
-      },
-      onError: (error: unknown) => {
-        let message = String(error)
-        if (error instanceof FirebaseError) {
-          message =
-            firebaseAuthError.find((item) => item.code === error.code)
-              ?.message || error.message
-        }
-        toast({
-          variant: 'destructive',
-          description: message,
-        })
-      },
-      onSettled: () => {
-        setDisabled(false)
-      },
-    })
+  const handleLinkGoogle = () => {
+    mutateLinkGoogle()
+    setDisabled(true)
+  }
+
+  useEffect(() => {
+    if (isLinkGoogleSuccess || isLinkGoogleError) {
+      setDisabled(false)
+    }
+  }, [isLinkGoogleSuccess, isLinkGoogleError])
+
+  const {
+    mutate: mutateSetPassword,
+    isPending: isSetPasswordPending,
+    isSuccess: isSetPasswordSuccess,
+    isError: isSetPasswordError,
+  } = useResetPassword()
+
+  useEffect(() => {
+    if (isSetPasswordSuccess || isSetPasswordError) {
+      setDisabled(false)
+    }
+    if (isSetPasswordSuccess) {
+      setTimerSetPassword(30)
+    }
+  }, [isSetPasswordSuccess, isSetPasswordError])
 
   useEffect(() => {
     if (timerSetPassword === 0) {
@@ -284,7 +213,7 @@ export const AccountSettingsPage = () => {
                   disabled={disabled || !!timerEmailVerify}
                   type="button"
                   isLoading={isSendEmailVerificationPending}
-                  onClick={() => mutateSendEmailVerification()}
+                  onClick={handleSendEmailVerification}
                 >
                   Verify Email {timerEmailVerify && `(${timerEmailVerify})`}
                 </Button>
@@ -334,7 +263,7 @@ export const AccountSettingsPage = () => {
           <Button
             containerClassName="w-full sm:w-fit"
             variant="outline"
-            onClick={() => mutateLinkGoogle()}
+            onClick={handleLinkGoogle}
             disabled={disabled || !!userGoogleProvider}
             isLoading={isLinkGooglePending}
           >

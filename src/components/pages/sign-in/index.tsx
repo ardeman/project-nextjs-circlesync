@@ -1,17 +1,9 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { FirebaseError } from 'firebase/app'
-import {
-  GoogleAuthProvider,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from 'firebase/auth'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { Eye, EyeClosed } from 'lucide-react'
 import Link from 'next/link'
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FcGoogle } from 'react-icons/fc'
 
@@ -25,17 +17,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
-import { firebaseAuth, firebaseDb } from '@/configs'
-import { firebaseAuthError, metadata } from '@/constants'
+import { metadata } from '@/constants'
 import { useFirebase } from '@/contexts'
-import { toast, useQueryActions } from '@/hooks'
+import { useLogin, useLoginGoogle } from '@/hooks'
 import { TSignInRequest } from '@/types'
 
 import { schema } from './validation'
 
 export const SignInPage: FC = () => {
-  const provider = new GoogleAuthProvider()
-  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const { isLoading } = useFirebase()
@@ -55,82 +44,28 @@ export const SignInPage: FC = () => {
     setPasswordType((prev) => (prev === 'password' ? 'text' : 'password'))
   }
 
-  const { mutate: mutateLogin, isPending: isLoginPending } = useMutation({
-    mutationFn: (data: TSignInRequest) => {
-      if (!firebaseAuth) {
-        throw new Error('Firebase Auth is not initialized.')
-      }
-      return signInWithEmailAndPassword(firebaseAuth, data.email, data.password)
-    },
-    onSuccess: () => {
-      invalidateUser()
-    },
-    onError: (error: unknown) => {
-      let message = String(error)
-      if (error instanceof FirebaseError) {
-        message =
-          firebaseAuthError.find((item) => item.code === error.code)?.message ||
-          error.message
-      }
+  const {
+    mutate: mutateLogin,
+    isPending: isLoginPending,
+    isError: isLoginError,
+  } = useLogin()
+
+  const {
+    mutate: mutateLoginGoogle,
+    isPending: isLoginGooglePending,
+    isError: isLoginGoogleError,
+  } = useLoginGoogle()
+
+  const handleLoginGoogle = () => {
+    mutateLoginGoogle()
+    setDisabled(true)
+  }
+
+  useEffect(() => {
+    if (isLoginError || isLoginGoogleError) {
       setDisabled(false)
-      toast({
-        variant: 'destructive',
-        description: message,
-      })
-    },
-  })
-
-  const { mutate: mutateGoogleLogin, isPending: isGoogleLoginPending } =
-    useMutation({
-      mutationFn: async () => {
-        if (!firebaseAuth) {
-          throw new Error('Firebase Auth is not initialized.')
-        }
-        if (!firebaseDb) {
-          throw new Error('Firebase Firestore is not initialized.')
-        }
-
-        // Sign in with Google
-        const result = await signInWithPopup(firebaseAuth, provider)
-        const user = result.user
-
-        if (user) {
-          // Check if user exists in Firestore
-          const userRef = doc(firebaseDb, 'users', user.uid)
-          const userSnap = await getDoc(userRef)
-
-          // If user data doesn't exist, store it
-          if (!userSnap.exists()) {
-            await setDoc(userRef, {
-              uid: user.uid,
-              displayName: user.displayName,
-              email: user.email,
-              photoURL: user.photoURL || '',
-              createdAt: new Date().toISOString(),
-            })
-          }
-        }
-      },
-      onMutate: () => {
-        setDisabled(true)
-      },
-      onSuccess: () => {
-        invalidateUser()
-      },
-      onError: (error: unknown) => {
-        let message = String(error)
-        if (error instanceof FirebaseError) {
-          message =
-            firebaseAuthError.find((item) => item.code === error.code)
-              ?.message || error.message
-        }
-        setDisabled(false)
-        toast({
-          variant: 'destructive',
-          description: message,
-        })
-      },
-    })
+    }
+  }, [isLoginError, isLoginGoogleError])
 
   return (
     <div className="bg-muted/40 flex min-h-dvh items-center justify-center">
@@ -202,9 +137,9 @@ export const SignInPage: FC = () => {
           <Button
             containerClassName="w-full"
             variant="outline"
-            onClick={() => mutateGoogleLogin()}
+            onClick={handleLoginGoogle}
             disabled={isLoading || disabled}
-            isLoading={isGoogleLoginPending}
+            isLoading={isLoginGooglePending}
           >
             <FcGoogle className="text-xl" />
             Continue with Google

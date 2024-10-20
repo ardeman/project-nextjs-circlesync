@@ -1,7 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { FirebaseError } from 'firebase/app'
-import { signOut } from 'firebase/auth'
 import { CircleUser, Menu, Search } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -21,9 +18,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui'
-import { firebaseAuth } from '@/configs'
-import { firebaseAuthError } from '@/constants'
-import { toast, useQueryActions, useUserData } from '@/hooks'
+import { toast, useLogout, useUserData } from '@/hooks'
 import { cn } from '@/utils'
 
 import { userMenus } from './data'
@@ -35,7 +30,6 @@ export const Navbar = (props: TProps) => {
   const { className } = props
   const { push } = useRouter()
   const { data: userData } = useUserData()
-  const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -54,28 +48,7 @@ export const Navbar = (props: TProps) => {
     push('/')
   }
 
-  const { mutate: mutateLogout } = useMutation({
-    mutationFn: async () => {
-      if (firebaseAuth) {
-        await signOut(firebaseAuth)
-      }
-    },
-    onSuccess: () => {
-      invalidateUser()
-    },
-    onError: (error: unknown) => {
-      let message = String(error)
-      if (error instanceof FirebaseError) {
-        message =
-          firebaseAuthError.find((item) => item.code === error.code)?.message ||
-          error.message
-      }
-      toast({
-        variant: 'destructive',
-        description: message,
-      })
-    },
-  })
+  const { mutate: mutateLogout } = useLogout()
 
   return (
     <header

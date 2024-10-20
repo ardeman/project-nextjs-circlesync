@@ -1,9 +1,6 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation } from '@tanstack/react-query'
-import { FirebaseError } from 'firebase/app'
-import { sendPasswordResetEmail } from 'firebase/auth'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -18,9 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
-import { firebaseAuth } from '@/configs'
-import { firebaseAuthError } from '@/constants'
-import { toast } from '@/hooks'
+import { useForgotPassword } from '@/hooks'
 import { TEmailRequest } from '@/types'
 
 import { schema } from './validation'
@@ -42,36 +37,21 @@ export const ForgotPasswordPage: FC = () => {
     mutateForgotPassword(data)
   })
 
-  const { mutate: mutateForgotPassword, isPending: isForgotPasswordPending } =
-    useMutation({
-      mutationFn: async (data: TEmailRequest) => {
-        if (!firebaseAuth) {
-          throw new Error('Firebase Auth is not initialized.')
-        }
-        await sendPasswordResetEmail(firebaseAuth, data.email)
-      },
-      onSuccess: () => {
-        toast({
-          description: 'Password reset email has been sent.',
-        })
-        setTimerForgotPassword(30)
-      },
-      onError: (error: unknown) => {
-        let message = String(error)
-        if (error instanceof FirebaseError) {
-          message =
-            firebaseAuthError.find((item) => item.code === error.code)
-              ?.message || error.message
-        }
-        toast({
-          variant: 'destructive',
-          description: message,
-        })
-      },
-      onSettled: () => {
-        setDisabled(false)
-      },
-    })
+  const {
+    mutate: mutateForgotPassword,
+    isPending: isForgotPasswordPending,
+    isSuccess: isForgotPasswordSuccess,
+    isError: isForgotPasswordError,
+  } = useForgotPassword()
+
+  useEffect(() => {
+    if (isForgotPasswordError || isForgotPasswordSuccess) {
+      setDisabled(false)
+    }
+    if (isForgotPasswordSuccess) {
+      setTimerForgotPassword(30)
+    }
+  }, [isForgotPasswordSuccess, isForgotPasswordError])
 
   useEffect(() => {
     if (timerForgotPassword === 0) {
