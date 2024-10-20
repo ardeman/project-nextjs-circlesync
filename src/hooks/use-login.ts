@@ -35,7 +35,7 @@ export const useLogin = () => {
         const userSnap = await getDoc(userRef)
         const userData = userSnap.data()
 
-        // If user data doesn't exist, store it
+        // Update the email in Firestore if it's different
         if (userData && userData.email !== user.email) {
           await updateDoc(userRef, {
             email: user.email,
