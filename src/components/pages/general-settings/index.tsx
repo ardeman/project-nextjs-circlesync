@@ -13,21 +13,21 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
-import { useAuthUser, useUpdateProfile } from '@/hooks'
+import { useUpdateProfile, useUserData } from '@/hooks'
 import { TUpdateProfileRequest } from '@/types'
 
 import { schema } from './validation'
 
 export const GeneralSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
-  const { data: userData } = useAuthUser()
+  const { data: userData } = useUserData()
   const formMethods = useForm<TUpdateProfileRequest>({
     resolver: zodResolver(schema),
     defaultValues: {
-      displayName: userData?.displayName || '',
+      displayName: '',
     },
   })
-  const { handleSubmit } = formMethods
+  const { handleSubmit, setValue } = formMethods
   const onSubmit = handleSubmit(async (data) => {
     setDisabled(true)
     mutateUpdateProfile(data)
@@ -45,6 +45,12 @@ export const GeneralSettingsPage = () => {
       setDisabled(false)
     }
   }, [isUpdateProfileSuccess, isUpdateProfileError])
+
+  useEffect(() => {
+    if (userData) {
+      setValue('displayName', userData.displayName)
+    }
+  }, [userData, setValue])
 
   return (
     <div className="grid gap-6">

@@ -1,31 +1,42 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
-import { updateProfile } from 'firebase/auth'
-import { useRouter } from 'next/navigation'
+import { doc, updateDoc } from 'firebase/firestore'
 
-import { firebaseAuth } from '@/configs'
+import { firebaseAuth, firebaseDb } from '@/configs'
 import { firebaseAuthError } from '@/constants'
 import { TUpdateProfileRequest } from '@/types'
 
+import { useQueryActions } from './use-query-actions'
 import { toast } from './use-toast'
 
 export const useUpdateProfile = () => {
-  const { refresh } = useRouter()
+  const { invalidateQueries: invalidateCurrentUser } = useQueryActions([
+    'current-user',
+  ])
   return useMutation({
-    mutationFn: (data: TUpdateProfileRequest) => {
-      if (firebaseAuth?.currentUser) {
-        return updateProfile(firebaseAuth.currentUser, {
-          displayName: data.displayName,
-        })
-      } else {
+    mutationFn: async (data: TUpdateProfileRequest) => {
+      const user = firebaseAuth?.currentUser
+
+      if (!user) {
         throw new Error('No user is currently signed in.')
       }
+      if (!firebaseDb) {
+        throw new Error('Firebase Firestore is not initialized.')
+      }
+
+      // Reference to the user's document in Firestore
+      const userRef = doc(firebaseDb, 'users', user.uid)
+
+      // Update the displayName in Firestore
+      await updateDoc(userRef, {
+        displayName: data.displayName,
+      })
     },
     onSuccess: () => {
       toast({
         description: 'Your profile has been updated successfully.',
       })
-      refresh()
+      invalidateCurrentUser()
     },
     onError: (error: unknown) => {
       let message = String(error)
