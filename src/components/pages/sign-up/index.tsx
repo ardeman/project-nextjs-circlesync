@@ -8,6 +8,7 @@ import {
   sendEmailVerification,
   updateProfile,
 } from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
 import { Eye, EyeClosed } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -24,7 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
-import { firebaseAuth } from '@/configs'
+import { firebaseAuth, firebaseDb } from '@/configs'
 import { firebaseAuthError } from '@/constants'
 import { useFirebase } from '@/contexts'
 import { toast, useQueryActions } from '@/hooks'
@@ -61,16 +62,33 @@ export const SignUpPage: FC = () => {
       if (!firebaseAuth) {
         throw new Error('Firebase Auth is not initialized.')
       }
-      await createUserWithEmailAndPassword(
+      if (!firebaseDb) {
+        throw new Error('Firebase Firestore is not initialized.')
+      }
+      // Create the user with Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(
         firebaseAuth,
         data.email,
         data.password
       )
-      if (firebaseAuth.currentUser) {
-        updateProfile(firebaseAuth.currentUser, {
+      const user = userCredential.user
+
+      if (user) {
+        // Update the user's profile with the display name
+        await updateProfile(user, {
           displayName: data.displayName,
         })
-        sendEmailVerification(firebaseAuth.currentUser)
+
+        // Send email verification
+        await sendEmailVerification(user)
+
+        // Store user data in Firestore
+        await setDoc(doc(firebaseDb, 'users', user.uid), {
+          uid: user.uid,
+          displayName: data.displayName,
+          email: data.email,
+          createdAt: new Date().toISOString(),
+        })
       } else {
         throw new Error('No user is currently signed in.')
       }

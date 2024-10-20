@@ -8,6 +8,7 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
 } from 'firebase/auth'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { Eye, EyeClosed } from 'lucide-react'
 import Link from 'next/link'
 import { FC, useState } from 'react'
@@ -24,7 +25,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
-import { firebaseAuth } from '@/configs'
+import { firebaseAuth, firebaseDb } from '@/configs'
 import { firebaseAuthError, metadata } from '@/constants'
 import { useFirebase } from '@/contexts'
 import { toast, useQueryActions } from '@/hooks'
@@ -81,11 +82,34 @@ export const SignInPage: FC = () => {
 
   const { mutate: mutateGoogleLogin, isPending: isGoogleLoginPending } =
     useMutation({
-      mutationFn: () => {
+      mutationFn: async () => {
         if (!firebaseAuth) {
           throw new Error('Firebase Auth is not initialized.')
         }
-        return signInWithPopup(firebaseAuth, provider)
+        if (!firebaseDb) {
+          throw new Error('Firebase Firestore is not initialized.')
+        }
+
+        // Sign in with Google
+        const result = await signInWithPopup(firebaseAuth, provider)
+        const user = result.user
+
+        if (user) {
+          // Check if user exists in Firestore
+          const userRef = doc(firebaseDb, 'users', user.uid)
+          const userSnap = await getDoc(userRef)
+
+          // If user data doesn't exist, store it
+          if (!userSnap.exists()) {
+            await setDoc(userRef, {
+              uid: user.uid,
+              displayName: user.displayName,
+              email: user.email,
+              photoURL: user.photoURL || '',
+              createdAt: new Date().toISOString(),
+            })
+          }
+        }
       },
       onMutate: () => {
         setDisabled(true)
