@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { signOut } from 'firebase/auth'
 import { CircleUser, Menu, Search } from 'lucide-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -22,7 +23,7 @@ import {
 } from '@/components/ui'
 import { firebaseAuth } from '@/configs'
 import { firebaseAuthError } from '@/constants'
-import { toast, useAuthUser, useQueryActions } from '@/hooks'
+import { toast, useQueryActions, useUserData } from '@/hooks'
 import { cn } from '@/utils'
 
 import { userMenus } from './data'
@@ -33,7 +34,7 @@ import { schema } from './validation'
 export const Navbar = (props: TProps) => {
   const { className } = props
   const { push } = useRouter()
-  const { data: userData } = useAuthUser()
+  const { data: userData } = useUserData()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(schema),
@@ -122,7 +123,17 @@ export const Navbar = (props: TProps) => {
               size="icon"
               className="rounded-full"
             >
-              <CircleUser className="h-5 w-5" />
+              {userData?.photoURL ? (
+                <Image
+                  src={userData.photoURL}
+                  alt={userData.displayName}
+                  width={40}
+                  height={40}
+                  className="select-none rounded-full"
+                />
+              ) : (
+                <CircleUser className="h-5 w-5" />
+              )}
               <span className="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>

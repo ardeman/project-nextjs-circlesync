@@ -15,6 +15,7 @@
       {
         "patterns": [
           "@/components/*/*",
+          "@/firestore/*",
           "@/config/*",
           "@/constants/*",
           "@/context/*",
