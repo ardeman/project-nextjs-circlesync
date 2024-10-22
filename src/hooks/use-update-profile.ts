@@ -15,17 +15,12 @@ export const useUpdateProfile = () => {
   ])
   return useMutation({
     mutationFn: async (data: TUpdateProfileRequest) => {
-      const user = firebaseAuth?.currentUser
-
-      if (!user) {
-        throw new Error('No user is currently signed in.')
-      }
-      if (!firebaseDb) {
-        throw new Error('Firebase Firestore is not initialized.')
+      if (!firebaseAuth?.currentUser || !firebaseDb) {
+        throw new Error('Firebase is not initialized.')
       }
 
       // Reference to the user's document in Firestore
-      const userRef = doc(firebaseDb, 'users', user.uid)
+      const userRef = doc(firebaseDb, 'users', firebaseAuth?.currentUser.uid)
 
       // Update the displayName in Firestore
       await updateDoc(userRef, {

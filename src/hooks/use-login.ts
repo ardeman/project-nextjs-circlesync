@@ -14,11 +14,8 @@ export const useLogin = () => {
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   return useMutation({
     mutationFn: async (data: TSignInRequest) => {
-      if (!firebaseAuth) {
-        throw new Error('Firebase Auth is not initialized.')
-      }
-      if (!firebaseDb) {
-        throw new Error('Firebase Firestore is not initialized.')
+      if (!firebaseAuth || !firebaseDb) {
+        throw new Error('Firebase is not initialized.')
       }
 
       // Sign in with email and password

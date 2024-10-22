@@ -10,11 +10,10 @@ import { toast } from './use-toast'
 export const useEmailVerification = () => {
   return useMutation({
     mutationFn: () => {
-      if (firebaseAuth?.currentUser) {
-        return sendEmailVerification(firebaseAuth.currentUser)
-      } else {
+      if (!firebaseAuth?.currentUser) {
         throw new Error('No user is currently signed in.')
       }
+      return sendEmailVerification(firebaseAuth.currentUser)
     },
     onSuccess: () => {
       toast({

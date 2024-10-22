@@ -10,14 +10,13 @@ import { toast } from './use-toast'
 export const useResetPassword = () => {
   return useMutation({
     mutationFn: () => {
-      if (firebaseAuth && firebaseAuth.currentUser?.email) {
-        return sendPasswordResetEmail(
-          firebaseAuth,
-          firebaseAuth.currentUser.email
-        )
-      } else {
+      if (!firebaseAuth?.currentUser?.email) {
         throw new Error('No user is currently signed in.')
       }
+      return sendPasswordResetEmail(
+        firebaseAuth,
+        firebaseAuth.currentUser.email
+      )
     },
     onSuccess: () => {
       toast({

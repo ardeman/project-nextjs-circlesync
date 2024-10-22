@@ -11,13 +11,11 @@ import { toast } from './use-toast'
 export const useUpdateEmail = () => {
   return useMutation({
     mutationFn: async (data: TEmailRequest) => {
-      const user = firebaseAuth?.currentUser
-
-      if (!user) {
+      if (!firebaseAuth?.currentUser) {
         throw new Error('No user is currently signed in.')
       }
 
-      await verifyBeforeUpdateEmail(user, data.email)
+      await verifyBeforeUpdateEmail(firebaseAuth.currentUser, data.email)
     },
     onSuccess: () => {
       toast({

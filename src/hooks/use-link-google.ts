@@ -13,11 +13,10 @@ export const useLinkGoogle = () => {
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   return useMutation({
     mutationFn: () => {
-      if (firebaseAuth?.currentUser) {
-        return linkWithPopup(firebaseAuth.currentUser, provider)
-      } else {
+      if (!firebaseAuth?.currentUser) {
         throw new Error('No user is currently signed in.')
       }
+      return linkWithPopup(firebaseAuth.currentUser, provider)
     },
     onSuccess: () => {
       toast({

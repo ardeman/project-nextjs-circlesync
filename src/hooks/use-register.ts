@@ -20,11 +20,8 @@ export const useRegister = () => {
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   return useMutation({
     mutationFn: async (data: TSignUpRequest) => {
-      if (!firebaseAuth) {
-        throw new Error('Firebase Auth is not initialized.')
-      }
-      if (!firebaseDb) {
-        throw new Error('Firebase Firestore is not initialized.')
+      if (!firebaseAuth || !firebaseDb) {
+        throw new Error('Firebase is not initialized.')
       }
       // Create the user with Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
