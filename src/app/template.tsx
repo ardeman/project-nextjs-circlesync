@@ -11,7 +11,7 @@ import { FirebaseProvider, ThemeProvider } from '@/contexts'
 
 import { Wrapper } from './wrapper'
 
-export const Providers = (props: PropsWithChildren) => {
+const Template = (props: PropsWithChildren) => {
   const { children } = props
   const pathname = usePathname()
   const [queryClient] = useState(() => new QueryClient())
@@ -37,3 +37,5 @@ export const Providers = (props: PropsWithChildren) => {
     </QueryClientProvider>
   )
 }
+
+export default Template

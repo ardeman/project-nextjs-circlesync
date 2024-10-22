@@ -1,3 +1,5 @@
+'use client'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleUser, Menu, Search } from 'lucide-react'
 import Image from 'next/image'

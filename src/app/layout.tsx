@@ -1,5 +1,3 @@
-import { Providers } from './providers'
-
 const RootLayout = ({
   children,
 }: Readonly<{
@@ -10,9 +8,7 @@ const RootLayout = ({
       lang="en"
       suppressHydrationWarning
     >
-      <body className="leading-relaxed antialiased">
-        <Providers>{children}</Providers>
-      </body>
+      <body className="leading-relaxed antialiased">{children}</body>
     </html>
   )
 }

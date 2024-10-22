@@ -1,10 +1,8 @@
-'use client'
-
 import { ReactNode } from 'react'
 
 import { Sidebar } from '@/components/sections'
 
-const SettingsLayout = ({ children }: { children: ReactNode }) => {
+const SettingsTemplate = ({ children }: { children: ReactNode }) => {
   return (
     <main className="bg-muted/40 flex min-h-[calc(100vh_-_theme(spacing.16))] flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
       <div className="mx-auto grid w-full max-w-6xl gap-2">
@@ -18,4 +16,4 @@ const SettingsLayout = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export default SettingsLayout
+export default SettingsTemplate
