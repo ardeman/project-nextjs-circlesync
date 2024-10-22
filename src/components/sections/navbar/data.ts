@@ -15,6 +15,10 @@ export const navs = [
     href: '/dashboard',
   },
   {
+    name: 'Notes',
+    href: '/dashboard/notes',
+  },
+  {
     name: 'To-Do',
     href: '/dashboard/to-do',
   },
