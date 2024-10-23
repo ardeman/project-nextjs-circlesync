@@ -46,7 +46,7 @@ export const AccountSettingsPage = () => {
   )
   const formMethods = useForm<TEmailRequest>({
     resolver: zodResolver(schema),
-    defaultValues: {
+    values: {
       email: authData?.email || '',
     },
   })
