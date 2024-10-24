@@ -17,6 +17,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui'
+import { cn } from '@/utils'
 
 import { TProps } from './type'
 
@@ -31,14 +32,12 @@ export const Modal = (props: TProps) => {
         onOpenChange={setOpen}
       >
         <DialogContent className="max-w-md rounded-lg">
-          {(title || description) && (
-            <DialogHeader>
-              {title && <DialogTitle>{title}</DialogTitle>}
-              {description && (
-                <DialogDescription>{description}</DialogDescription>
-              )}
-            </DialogHeader>
-          )}
+          <DialogHeader className={title || description ? '' : 'hidden'}>
+            <DialogTitle className={title ? '' : 'hidden'}>{title}</DialogTitle>
+            <DialogDescription className={description ? '' : 'hidden'}>
+              {description}
+            </DialogDescription>
+          </DialogHeader>
           {children}
         </DialogContent>
       </Dialog>
@@ -51,14 +50,14 @@ export const Modal = (props: TProps) => {
       onOpenChange={setOpen}
     >
       <DrawerContent className="rounded-t-lg">
-        {(title || description) && (
-          <DrawerHeader className="text-left">
-            {title && <DrawerTitle>{title}</DrawerTitle>}
-            {description && (
-              <DrawerDescription>{description}</DrawerDescription>
-            )}
-          </DrawerHeader>
-        )}
+        <DrawerHeader
+          className={cn(title || description ? '' : 'hidden', 'text-left')}
+        >
+          <DrawerTitle className={title ? '' : 'hidden'}>{title}</DrawerTitle>
+          <DrawerDescription className={description ? '' : 'hidden'}>
+            {description}
+          </DrawerDescription>
+        </DrawerHeader>
         {children}
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>

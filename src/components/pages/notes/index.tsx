@@ -12,6 +12,8 @@ import {
   CardTitle,
 } from '@/components/ui'
 
+import { Form } from './form'
+
 const getRandomContent = () => {
   const words = [
     'lorem',
@@ -44,7 +46,7 @@ const getRandomContent = () => {
 
 export const NotesPage = () => {
   const [open, setOpen] = useState(false)
-  // const [selectedNote, setSelectedNote] = useState<string>()
+  const [selectedNote, setSelectedNote] = useState<string>()
 
   const notes = Array.from({ length: 40 }, (_, i) => ({
     id: i + 1,
@@ -54,7 +56,7 @@ export const NotesPage = () => {
 
   const handleAddNote = () => {
     setOpen(true)
-    // setSelectedNote(undefined)
+    setSelectedNote(undefined)
   }
 
   return (
@@ -90,7 +92,7 @@ export const NotesPage = () => {
         open={open}
         setOpen={setOpen}
       >
-        Lorem Ipsum
+        <Form selectedNote={selectedNote} />
       </Modal>
     </main>
   )
