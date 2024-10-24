@@ -23,7 +23,10 @@ export const Wrapper = (props: PropsWithChildren) => {
   }, [user, userIsLoading, push, pathname])
 
   return (
-    <div className="bg-background text-foreground">
+    <div
+      className="bg-background text-foreground"
+      vaul-drawer-wrapper="true"
+    >
       {isLoading || userIsLoading ? (
         <LoadingSpinner classname="flex" />
       ) : (

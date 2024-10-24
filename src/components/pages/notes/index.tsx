@@ -92,7 +92,7 @@ export const NotesPage = () => {
           open={open}
           onOpenChange={setOpen}
         >
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className="max-w-md rounded-lg">
             <DialogHeader>
               <DialogTitle>Edit profile</DialogTitle>
               <DialogDescription>
@@ -108,7 +108,7 @@ export const NotesPage = () => {
           open={open}
           onOpenChange={setOpen}
         >
-          <DrawerContent>
+          <DrawerContent className="rounded-t-lg">
             <DrawerHeader className="text-left">
               <DrawerTitle>Edit profile</DrawerTitle>
               <DrawerDescription>
