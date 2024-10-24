@@ -34,9 +34,9 @@ import { schema } from './validation'
 
 export const AccountSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
-  const [timerEmailVerify, setTimerEmailVerify] = useState<number | undefined>()
-  const [timerUpdateEmail, setTimerUpdateEmail] = useState<number | undefined>()
-  const [timerSetPassword, setTimerSetPassword] = useState<number | undefined>()
+  const [timerEmailVerify, setTimerEmailVerify] = useState<number>()
+  const [timerUpdateEmail, setTimerUpdateEmail] = useState<number>()
+  const [timerSetPassword, setTimerSetPassword] = useState<number>()
   const { data: authData } = useAuthUser()
   const userGoogleProvider = authData?.providerData.find(
     (provider) => provider.providerId === 'google.com'

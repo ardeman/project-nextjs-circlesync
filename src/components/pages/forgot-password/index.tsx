@@ -22,9 +22,7 @@ import { schema } from './validation'
 
 export const ForgotPasswordPage: FC = () => {
   const [disabled, setDisabled] = useState(false)
-  const [timerForgotPassword, setTimerForgotPassword] = useState<
-    number | undefined
-  >()
+  const [timerForgotPassword, setTimerForgotPassword] = useState<number>()
   const formMethods = useForm<TEmailRequest>({
     resolver: zodResolver(schema),
     defaultValues: {
