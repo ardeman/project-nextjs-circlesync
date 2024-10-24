@@ -55,7 +55,7 @@ export const Navbar = (props: TProps) => {
   return (
     <header
       className={cn(
-        'bg-background sticky top-0 flex h-16 items-center gap-4 border-b px-4 md:px-6',
+        'border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 flex h-16 w-full items-center gap-4 border-b px-4 backdrop-blur md:px-6',
         className
       )}
     >
