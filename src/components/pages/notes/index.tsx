@@ -1,10 +1,28 @@
+'use client'
+
+import { useState } from 'react'
+import { useMediaQuery } from 'usehooks-ts'
+
 import {
+  Button as UIButton,
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerClose,
 } from '@/components/ui'
 
 const getRandomContent = () => {
@@ -38,11 +56,15 @@ const getRandomContent = () => {
 }
 
 export const NotesPage = () => {
+  const isDesktop = useMediaQuery('(min-width: 768px)')
+  const [open, setOpen] = useState(false)
+
   const notes = Array.from({ length: 40 }, (_, i) => ({
     id: i + 1,
     title: `Note ${i + 1}`,
     content: getRandomContent(),
   }))
+
   return (
     <main className="bg-muted/40 flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <div className="columns-1 space-y-4 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 2xl:columns-6">
@@ -50,6 +72,7 @@ export const NotesPage = () => {
           <Card
             key={note.id}
             className="break-inside-avoid"
+            onClick={() => setOpen(true)}
           >
             <CardHeader>
               <CardTitle>{note.title}</CardTitle>
@@ -63,6 +86,45 @@ export const NotesPage = () => {
           </Card>
         ))}
       </div>
+
+      {isDesktop ? (
+        <Dialog
+          open={open}
+          onOpenChange={setOpen}
+        >
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit profile</DialogTitle>
+              <DialogDescription>
+                Make changes to your profile here. Click save when you&apos;re
+                done.
+              </DialogDescription>
+            </DialogHeader>
+            {/* <ProfileForm /> */}
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Drawer
+          open={open}
+          onOpenChange={setOpen}
+        >
+          <DrawerContent>
+            <DrawerHeader className="text-left">
+              <DrawerTitle>Edit profile</DrawerTitle>
+              <DrawerDescription>
+                Make changes to your profile here. Click save when you&apos;re
+                done.
+              </DrawerDescription>
+            </DrawerHeader>
+            {/* <ProfileForm className="px-4" /> */}
+            <DrawerFooter className="pt-2">
+              <DrawerClose asChild>
+                <UIButton variant="outline">Cancel</UIButton>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      )}
     </main>
   )
 }
