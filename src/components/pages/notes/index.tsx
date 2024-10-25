@@ -62,7 +62,7 @@ export const NotesPage = () => {
   return (
     <main className="bg-muted/40 flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <Button
-        containerClassName="flex justify-center"
+        containerClassName="flex justify-center md:relative fixed bottom-4 left-1/2 transform -translate-x-1/2"
         className="w-full max-w-md"
         onClick={handleAddNote}
       >
