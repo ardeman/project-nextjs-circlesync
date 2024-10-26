@@ -31,13 +31,13 @@ export const Form = (props: TFormProps) => {
         <Input
           name="title"
           placeholder="Title"
-          inputClassName="border-none ring-0 text-xl font-semibold focus:ring-0 rounded-none p-0 focus:shadow-none focus:outline-none"
+          inputClassName="border-none ring-0 text-xl font-semibold focus-visible:ring-0 rounded-none p-0 focus-visible:shadow-none focus-visible:outline-none"
           autoFocus={true}
         />
         <Textarea
           name="content"
           placeholder="Content"
-          inputClassName="border-none ring-0 focus:ring-0 rounded-none p-0 focus:shadow-none focus:outline-none"
+          inputClassName="border-none ring-0 focus-visible:ring-0 rounded-none p-0 focus-visible:shadow-none focus-visible:outline-none"
         />
       </form>
     </FormProvider>
