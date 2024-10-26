@@ -6,5 +6,4 @@ export type TProps = {
   children: ReactNode
   title?: string
   description?: string
-  showCancel?: boolean
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useRef } from 'react'
+import { useId } from 'react'
 import { useFormContext } from 'react-hook-form'
 
 import {
@@ -31,35 +31,17 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
     required,
     leftNode,
     rightNode,
-    autoResize,
     ...rest
   } = props
   const { control } = useFormContext()
   const LeftNode = leftNode
   const RightNode = rightNode
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  // Function to adjust the height of the textarea
-  const handleResize = useCallback(() => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.style.height = 'auto'
-      textarea.style.height = `${textarea.scrollHeight}px`
-    }
-  }, [])
-
-  // Resize on initial render if autoresize is true
-  useEffect(() => {
-    if (autoResize) {
-      handleResize()
-    }
-  }, [autoResize, handleResize])
 
   return (
     <FormField
       control={control}
       name={name}
-      render={({ field: { ref: _ref, value, onChange, ...field } }) => (
+      render={({ field }) => (
         <FormItem className={cn('space-y-1', className)}>
           {label && (
             <FormLabel
@@ -76,18 +58,12 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
             <FormControl>
               <UITextarea
                 id={id}
-                ref={textareaRef}
                 className={cn(
                   LeftNode && 'pl-10',
                   RightNode && 'pr-10',
                   inputClassName
                 )}
                 onClick={onClick}
-                value={value}
-                onInput={(e) => {
-                  if (autoResize) handleResize()
-                  onChange(e)
-                }}
                 {...field}
                 {...rest}
               />

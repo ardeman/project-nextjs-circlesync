@@ -22,14 +22,7 @@ import { cn } from '@/utils'
 import { TProps } from './type'
 
 export const Modal = (props: TProps) => {
-  const {
-    open,
-    setOpen,
-    children,
-    title,
-    description,
-    showCancel = true,
-  } = props
+  const { open, setOpen, children, title, description } = props
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   if (isDesktop) {
@@ -67,13 +60,11 @@ export const Modal = (props: TProps) => {
             </DrawerDescription>
           </DrawerHeader>
           <div className="p-4">{children}</div>
-          {showCancel && (
-            <DrawerFooter className="pt-2">
-              <DrawerClose asChild>
-                <Button variant="outline">Cancel</Button>
-              </DrawerClose>
-            </DrawerFooter>
-          )}
+          <DrawerFooter className="pt-2">
+            <DrawerClose asChild>
+              <Button variant="outline">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
         </div>
       </DrawerContent>
     </Drawer>

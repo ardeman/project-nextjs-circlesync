@@ -37,8 +37,7 @@ export const Form = (props: TFormProps) => {
         <Textarea
           name="content"
           placeholder="Content"
-          inputClassName="border-none ring-0 focus-visible:ring-0 rounded-none p-0 resize-none"
-          autoResize={true}
+          inputClassName="border-none ring-0 focus-visible:ring-0 rounded-none p-0"
         />
       </form>
     </FormProvider>
