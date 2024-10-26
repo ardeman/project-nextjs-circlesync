@@ -22,8 +22,14 @@ import { cn } from '@/utils'
 import { TProps } from './type'
 
 export const Modal = (props: TProps) => {
-  const { open, setOpen, children, title, description, repositionInputs } =
-    props
+  const {
+    open,
+    setOpen,
+    children,
+    title,
+    description,
+    showCancel = true,
+  } = props
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   if (isDesktop) {
@@ -49,29 +55,26 @@ export const Modal = (props: TProps) => {
     <Drawer
       open={open}
       onOpenChange={setOpen}
-      repositionInputs={repositionInputs}
     >
-      <DrawerContent
-        className={
-          repositionInputs
-            ? 'h-dvh overflow-y-auto rounded-none'
-            : 'rounded-t-lg'
-        }
-      >
-        <DrawerHeader
-          className={cn(title || description ? '' : 'hidden', 'text-left')}
-        >
-          <DrawerTitle className={title ? '' : 'hidden'}>{title}</DrawerTitle>
-          <DrawerDescription className={description ? '' : 'hidden'}>
-            {description}
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="p-4">{children}</div>
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
+      <DrawerContent className="max-h-[80dvh] rounded-t-lg">
+        <div className="flex-1 overflow-y-auto">
+          <DrawerHeader
+            className={cn(title || description ? '' : 'hidden', 'text-left')}
+          >
+            <DrawerTitle className={title ? '' : 'hidden'}>{title}</DrawerTitle>
+            <DrawerDescription className={description ? '' : 'hidden'}>
+              {description}
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="p-4">{children}</div>
+          {showCancel && (
+            <DrawerFooter className="pt-2">
+              <DrawerClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          )}
+        </div>
       </DrawerContent>
     </Drawer>
   )
