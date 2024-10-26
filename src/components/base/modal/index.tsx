@@ -58,7 +58,7 @@ export const Modal = (props: TProps) => {
             {description}
           </DrawerDescription>
         </DrawerHeader>
-        {children}
+        <div className="p-4">{children}</div>
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
