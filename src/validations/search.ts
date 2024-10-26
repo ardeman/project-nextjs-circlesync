@@ -1,4 +1,4 @@
 import * as z from 'zod'
-export const schema = z.object({
+export const searchSchema = z.object({
   query: z.string(),
 })

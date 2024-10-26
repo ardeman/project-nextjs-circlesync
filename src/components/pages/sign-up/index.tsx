@@ -19,15 +19,14 @@ import {
 import { useFirebase } from '@/contexts'
 import { useRegister } from '@/hooks'
 import { TSignUpRequest } from '@/types'
-
-import { schema } from './validation'
+import { signUpSchema } from '@/validations'
 
 export const SignUpPage: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const { isLoading } = useFirebase()
   const formMethods = useForm<TSignUpRequest>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       displayName: '',
       email: '',

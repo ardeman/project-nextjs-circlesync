@@ -23,6 +23,7 @@
           "@/lib/*",
           "@/types/*",
           "@/utils/*",
+          "@/validations/*",
           "../*"
         ],
         "paths": ["react-i18next", "next/router"]

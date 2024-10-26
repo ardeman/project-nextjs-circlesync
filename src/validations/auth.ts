@@ -1,5 +1,11 @@
 import * as z from 'zod'
-export const schema = z
+
+export const signInSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+})
+
+export const signUpSchema = z
   .object({
     displayName: z.string().min(1, { message: 'Display name is required' }),
     email: z.string().email(),
@@ -10,3 +16,7 @@ export const schema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
+
+export const emailSchema = z.object({
+  email: z.string().email(),
+})

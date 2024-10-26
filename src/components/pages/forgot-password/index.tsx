@@ -17,14 +17,13 @@ import {
 } from '@/components/ui'
 import { useForgotPassword } from '@/hooks'
 import { TEmailRequest } from '@/types'
-
-import { schema } from './validation'
+import { emailSchema } from '@/validations'
 
 export const ForgotPasswordPage: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [timerForgotPassword, setTimerForgotPassword] = useState<number>()
   const formMethods = useForm<TEmailRequest>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(emailSchema),
     defaultValues: {
       email: '',
     },

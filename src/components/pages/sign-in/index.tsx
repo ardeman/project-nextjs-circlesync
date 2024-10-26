@@ -21,15 +21,14 @@ import { metadata } from '@/constants'
 import { useFirebase } from '@/contexts'
 import { useLogin, useLoginGoogle } from '@/hooks'
 import { TSignInRequest } from '@/types'
-
-import { schema } from './validation'
+import { signInSchema } from '@/validations'
 
 export const SignInPage: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
   const { isLoading } = useFirebase()
   const formMethods = useForm<TSignInRequest>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: '',
       password: '',

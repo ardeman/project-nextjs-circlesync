@@ -15,14 +15,13 @@ import {
 } from '@/components/ui'
 import { useUpdateProfile, useUserData } from '@/hooks'
 import { TUpdateProfileRequest } from '@/types'
-
-import { schema } from './validation'
+import { generalSettingSchema } from '@/validations'
 
 export const GeneralSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
   const { data: userData } = useUserData()
   const formMethods = useForm<TUpdateProfileRequest>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(generalSettingSchema),
     defaultValues: {
       displayName: '',
     },

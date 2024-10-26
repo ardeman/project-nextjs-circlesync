@@ -21,19 +21,20 @@ import {
   SheetTrigger,
 } from '@/components/ui'
 import { toast, useLogout, useUserData } from '@/hooks'
+import { TSearchRequest } from '@/types'
 import { cn } from '@/utils'
+import { searchSchema } from '@/validations'
 
 import { userMenus } from './data'
 import { Navigation } from './navigation'
-import { TProps, TSearchRequest } from './type'
-import { schema } from './validation'
+import { TProps } from './type'
 
 export const Navbar = (props: TProps) => {
   const { className } = props
   const { push } = useRouter()
   const { data: userData } = useUserData()
   const formMethods = useForm<TSearchRequest>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(searchSchema),
     defaultValues: {
       query: '',
     },

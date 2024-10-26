@@ -1,19 +1,9 @@
-export type TSignInRequest = {
-  email: string
-  password: string
-}
+import { z } from 'zod'
 
-export type TSignUpRequest = {
-  displayName: string
-  email: string
-  password: string
-  confirmPassword: string
-}
+import { emailSchema, signInSchema, signUpSchema } from '@/validations'
 
-export type TUpdateProfileRequest = {
-  displayName: string
-}
+export type TSignInRequest = z.infer<typeof signInSchema>
 
-export type TEmailRequest = {
-  email: string
-}
+export type TSignUpRequest = z.infer<typeof signUpSchema>
+
+export type TEmailRequest = z.infer<typeof emailSchema>

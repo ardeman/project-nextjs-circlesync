@@ -29,8 +29,7 @@ import {
 } from '@/hooks'
 import { TEmailRequest } from '@/types'
 import { cn } from '@/utils'
-
-import { schema } from './validation'
+import { emailSchema } from '@/validations'
 
 export const AccountSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
@@ -45,7 +44,7 @@ export const AccountSettingsPage = () => {
     (provider) => provider.providerId === 'password'
   )
   const formMethods = useForm<TEmailRequest>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(emailSchema),
     values: {
       email: authData?.email || '',
     },
