@@ -22,7 +22,8 @@ import { cn } from '@/utils'
 import { TProps } from './type'
 
 export const Modal = (props: TProps) => {
-  const { open, setOpen, children, title, description } = props
+  const { open, setOpen, children, title, description, repositionInputs } =
+    props
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   if (isDesktop) {
@@ -48,8 +49,15 @@ export const Modal = (props: TProps) => {
     <Drawer
       open={open}
       onOpenChange={setOpen}
+      repositionInputs={repositionInputs}
     >
-      <DrawerContent className="rounded-t-lg">
+      <DrawerContent
+        className={
+          repositionInputs
+            ? 'h-dvh overflow-y-auto rounded-none'
+            : 'rounded-t-lg'
+        }
+      >
         <DrawerHeader
           className={cn(title || description ? '' : 'hidden', 'text-left')}
         >

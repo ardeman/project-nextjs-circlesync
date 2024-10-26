@@ -91,6 +91,7 @@ export const NotesPage = () => {
       <Modal
         open={open}
         setOpen={setOpen}
+        repositionInputs={true}
       >
         <Form selectedNote={selectedNote} />
       </Modal>
