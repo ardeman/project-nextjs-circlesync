@@ -22,14 +22,24 @@ import { cn } from '@/utils'
 import { TProps } from './type'
 
 export const Modal = (props: TProps) => {
-  const { open, setOpen, children, title, description } = props
+  const { open, setOpen, children, title, description, onClose } = props
   const isDesktop = useMediaQuery('(min-width: 768px)')
+
+  const handleClose = () => {
+    setOpen(false)
+    if (onClose) {
+      onClose() // Call onClose when the modal is closed
+    }
+  }
 
   if (isDesktop) {
     return (
       <Dialog
         open={open}
-        onOpenChange={setOpen}
+        onOpenChange={(isOpen) => {
+          setOpen(isOpen)
+          if (!isOpen) handleClose() // Trigger handleClose when closing
+        }}
       >
         <DialogContent className="max-w-md rounded-lg">
           <DialogHeader className={title || description ? '' : 'hidden'}>
@@ -47,7 +57,10 @@ export const Modal = (props: TProps) => {
   return (
     <Drawer
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={(isOpen) => {
+        setOpen(isOpen)
+        if (!isOpen) handleClose() // Trigger handleClose when closing
+      }}
     >
       <DrawerContent className="max-h-[80dvh] rounded-t-lg">
         <div className="overflow-y-auto">

@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { forwardRef, useEffect, useImperativeHandle } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { Textarea } from '@/components/base'
@@ -17,7 +17,7 @@ import { noteSchema } from '@/validations'
 
 import { TFormProps } from './type'
 
-export const Form = (props: TFormProps) => {
+export const Form = forwardRef((props: TFormProps, ref) => {
   const { selectedNote, setSelectedNote } = props
   const { mutate: mutateCreateNote, data } = useCreateNote()
   const { mutate: mutateUpdateNote } = useUpdateNote()
@@ -39,6 +39,9 @@ export const Form = (props: TFormProps) => {
   const watchContent = watch('content')
 
   const onSubmit = handleSubmit(async (data) => {
+    if ((data.title.length === 0 && data.content.length === 0) || !isDirty) {
+      return
+    }
     if (selectedNote) {
       mutateUpdateNote({ id: selectedNote, ...data })
       return
@@ -49,7 +52,7 @@ export const Form = (props: TFormProps) => {
   useDebounce({
     trigger: () => onSubmit(),
     watch: [watchTitle, watchContent],
-    condition: isDirty && (watchTitle.length > 0 || watchContent.length > 0),
+    condition: !!selectedNote,
   })
 
   useEffect(() => {
@@ -65,6 +68,11 @@ export const Form = (props: TFormProps) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedNote])
+
+  // Expose the submit function to the parent component via ref
+  useImperativeHandle(ref, () => ({
+    submit: () => onSubmit(),
+  }))
 
   return (
     <FormProvider {...formMethods}>
@@ -95,4 +103,5 @@ export const Form = (props: TFormProps) => {
       </form>
     </FormProvider>
   )
-}
+})
+Form.displayName = 'Form'

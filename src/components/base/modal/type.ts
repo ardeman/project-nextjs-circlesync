@@ -6,4 +6,5 @@ export type TProps = {
   children: ReactNode
   title?: string
   description?: string
+  onClose?: () => void
 }

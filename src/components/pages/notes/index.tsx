@@ -21,6 +21,7 @@ export const NotesPage = () => {
   const [selectedNote, setSelectedNote] = useState<string>()
   const { data: notesData } = useGetNotes()
   const masonryRef = useRef(null)
+  const formRef = useRef<{ submit: () => void } | null>(null)
 
   const handleCreateNote = () => {
     setOpen(true)
@@ -30,6 +31,14 @@ export const NotesPage = () => {
   const handleEditNote = (id: string) => {
     setOpen(true)
     setSelectedNote(id)
+  }
+
+  const handleModalClose = () => {
+    setOpen(false)
+    // Only submit the form if no `selectedNote` is present
+    if (!selectedNote) {
+      formRef.current?.submit() // Trigger the form submission through a ref
+    }
   }
 
   useEffect(() => {
@@ -94,8 +103,10 @@ export const NotesPage = () => {
       <Modal
         open={open}
         setOpen={setOpen}
+        onClose={handleModalClose}
       >
         <Form
+          ref={formRef}
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}
         />
