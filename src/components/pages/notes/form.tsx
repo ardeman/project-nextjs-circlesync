@@ -76,7 +76,7 @@ export const Form = (props: TFormProps) => {
           disabled={isFetching}
           name="title"
           placeholder="Title"
-          inputClassName="border-none ring-0 text-xl font-semibold focus-visible:ring-0 rounded-none p-0 focus-visible:shadow-none focus-visible:outline-none resize-none min-h-0"
+          inputClassName="border-none ring-0 text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-0"
           autoFocus
           rows={1}
           onKeyDown={(e) => {
@@ -90,7 +90,7 @@ export const Form = (props: TFormProps) => {
           disabled={isFetching}
           name="content"
           placeholder="Content"
-          inputClassName="border-none ring-0 focus-visible:ring-0 rounded-none p-0 focus-visible:shadow-none focus-visible:outline-none"
+          inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none"
         />
       </form>
     </FormProvider>
