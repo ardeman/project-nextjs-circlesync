@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
-import { Input, Textarea } from '@/components/base'
+import { Textarea } from '@/components/base'
 import {
   useCreateNote,
   useDebounce,
@@ -49,7 +49,7 @@ export const Form = (props: TFormProps) => {
   useDebounce({
     trigger: () => onSubmit(),
     watch: [watchTitle, watchContent],
-    condition: isDirty && (!!watchTitle || !!watchContent),
+    condition: isDirty && (watchTitle.length > 0 || watchContent.length > 0),
   })
 
   useEffect(() => {
@@ -72,14 +72,19 @@ export const Form = (props: TFormProps) => {
         onSubmit={onSubmit}
         className="space-y-4"
       >
-        <Input
+        <Textarea
           disabled={isFetching}
           name="title"
           placeholder="Title"
-          inputClassName="border-none ring-0 text-xl font-semibold focus-visible:ring-0 rounded-none p-0 focus-visible:shadow-none focus-visible:outline-none"
+          inputClassName="border-none ring-0 text-xl font-semibold focus-visible:ring-0 rounded-none p-0 focus-visible:shadow-none focus-visible:outline-none resize-none min-h-0"
           autoFocus
-          autoComplete="off"
-          inputMode="text"
+          rows={1}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              formMethods.setFocus('content')
+            }
+          }}
         />
         <Textarea
           disabled={isFetching}

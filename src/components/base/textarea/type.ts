@@ -1,4 +1,10 @@
-import { HTMLAttributes, MouseEventHandler, ReactNode } from 'react'
+import {
+  HTMLAttributes,
+  KeyboardEventHandler,
+  MouseEventHandler,
+  ReactNode,
+  TextareaHTMLAttributes,
+} from 'react'
 import { FieldValues, Path } from 'react-hook-form'
 
 export type TProps<TFormValues extends FieldValues> = {
@@ -21,4 +27,6 @@ export type TProps<TFormValues extends FieldValues> = {
   leftNode?: (props: HTMLAttributes<HTMLDivElement>) => ReactNode
   rightNode?: (props: HTMLAttributes<HTMLDivElement>) => ReactNode
   autoResize?: boolean
+  rows?: TextareaHTMLAttributes<HTMLTextAreaElement>['rows']
+  onKeyDown?: KeyboardEventHandler<HTMLTextAreaElement>
 }
