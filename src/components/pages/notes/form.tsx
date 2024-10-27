@@ -78,6 +78,7 @@ export const Form = (props: TFormProps) => {
           placeholder="Title"
           inputClassName="border-none ring-0 text-xl font-semibold focus-visible:ring-0 rounded-none p-0 focus-visible:shadow-none focus-visible:outline-none"
           autoFocus
+          autoComplete="off"
         />
         <Textarea
           disabled={isFetching}
