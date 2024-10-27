@@ -1,26 +1,70 @@
+'use client'
+
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { Input, Textarea } from '@/components/base'
-import { TNoteRequest } from '@/types'
+import {
+  useCreateNote,
+  useDebounce,
+  useQueryActions,
+  useUpdateNote,
+} from '@/hooks'
+import { useGetNote } from '@/hooks'
+import { TNoteForm } from '@/types'
 import { noteSchema } from '@/validations'
 
 import { TFormProps } from './type'
 
 export const Form = (props: TFormProps) => {
-  const { selectedNote } = props
-  const formMethods = useForm<TNoteRequest>({
+  const { selectedNote, setSelectedNote } = props
+  const { mutate: mutateCreateNote, data } = useCreateNote()
+  const { mutate: mutateUpdateNote } = useUpdateNote()
+  const { invalidateQueries: invalidateNote } = useQueryActions(['note'])
+  const { data: noteData } = useGetNote(selectedNote || '')
+  const formMethods = useForm<TNoteForm>({
     resolver: zodResolver(noteSchema),
-    defaultValues: {
-      title: '',
-      content: '',
+    values: {
+      title: noteData?.title || '',
+      content: noteData?.content || '',
     },
   })
-  const { handleSubmit } = formMethods
+  const {
+    handleSubmit,
+    watch,
+    formState: { isDirty },
+  } = formMethods
+  const watchTitle = watch('title')
+  const watchContent = watch('content')
+
   const onSubmit = handleSubmit(async (data) => {
-    // mutateLogin(data)
-    console.log(selectedNote, data) // eslint-disable-line no-console
+    if (selectedNote) {
+      mutateUpdateNote({ id: selectedNote, ...data })
+      return
+    }
+    mutateCreateNote(data)
   })
+
+  useDebounce({
+    trigger: () => onSubmit(),
+    watch: [watchTitle, watchContent],
+    condition: isDirty && (!!watchTitle || !!watchContent),
+  })
+
+  useEffect(() => {
+    if (data && !selectedNote) {
+      setSelectedNote(data.id)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, selectedNote])
+
+  useEffect(() => {
+    if (selectedNote) {
+      invalidateNote()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNote])
 
   return (
     <FormProvider {...formMethods}>

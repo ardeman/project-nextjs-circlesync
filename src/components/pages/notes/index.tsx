@@ -11,52 +11,23 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
+import { useGetNotes } from '@/hooks'
 
 import { Form } from './form'
-
-const getRandomContent = () => {
-  const words = [
-    'lorem',
-    'ipsum',
-    'dolor',
-    'sit',
-    'amet',
-    'consectetur',
-    'adipiscing',
-    'elit',
-    'sed',
-    'do',
-    'eiusmod',
-    'tempor',
-    'incididunt',
-    'ut',
-    'labore',
-    'et',
-    'dolore',
-    'magna',
-    'aliqua',
-  ]
-  const sentenceLength = Math.floor(Math.random() * 20) + 5 // Random sentence length between 5 and 25 words
-  const content = Array.from({ length: sentenceLength })
-    .fill('')
-    .map(() => words[Math.floor(Math.random() * words.length)])
-    .join(' ')
-  return content.charAt(0).toUpperCase() + content.slice(1) + '.'
-}
 
 export const NotesPage = () => {
   const [open, setOpen] = useState(false)
   const [selectedNote, setSelectedNote] = useState<string>()
+  const { data: notesData } = useGetNotes()
 
-  const notes = Array.from({ length: 40 }, (_, i) => ({
-    id: i + 1,
-    title: `Note ${i + 1}`,
-    content: getRandomContent(),
-  }))
-
-  const handleAddNote = () => {
+  const handleCreateNote = () => {
     setOpen(true)
     setSelectedNote(undefined)
+  }
+
+  const handleEditNote = (id: string) => {
+    setOpen(true)
+    setSelectedNote(id)
   }
 
   return (
@@ -64,35 +35,52 @@ export const NotesPage = () => {
       <Button
         containerClassName="flex justify-center md:static md:transform-none fixed bottom-4 left-1/2 -translate-x-1/2"
         className="w-full max-w-md"
-        onClick={handleAddNote}
+        onClick={handleCreateNote}
       >
         Add Note
       </Button>
       <div className="columns-1 space-y-4 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 2xl:columns-6">
-        {notes.map((note) => (
-          <Card
-            key={note.id}
-            className="break-inside-avoid"
-            onClick={() => setOpen(true)}
-          >
-            <CardHeader>
-              <CardTitle>{note.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{note.content}</p>
-            </CardContent>
-            <CardFooter>
-              <CardDescription>Edited Mmm DD, YYYY</CardDescription>
-            </CardFooter>
-          </Card>
-        ))}
+        {notesData
+          ?.sort((a, b) => b.updatedAt.seconds - a.updatedAt.seconds)
+          .map((note) => (
+            <Card
+              key={note.id}
+              className="break-inside-avoid"
+              onClick={() => handleEditNote(note.id)}
+            >
+              <CardHeader>
+                <CardTitle>{note.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>{note.content}</p>
+              </CardContent>
+              <CardFooter>
+                <CardDescription>
+                  Edited{' '}
+                  {new Date(note.updatedAt.seconds * 1000).toLocaleDateString(
+                    'en-US',
+                    {
+                      month: 'short',
+                      day: '2-digit',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    }
+                  )}
+                </CardDescription>
+              </CardFooter>
+            </Card>
+          ))}
       </div>
 
       <Modal
         open={open}
         setOpen={setOpen}
       >
-        <Form selectedNote={selectedNote} />
+        <Form
+          selectedNote={selectedNote}
+          setSelectedNote={setSelectedNote}
+        />
       </Modal>
     </main>
   )

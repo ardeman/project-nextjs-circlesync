@@ -50,7 +50,7 @@ export const Modal = (props: TProps) => {
       onOpenChange={setOpen}
     >
       <DrawerContent className="max-h-[80dvh] rounded-t-lg">
-        <div className="flex-1 overflow-y-auto">
+        <div className="overflow-y-auto">
           <DrawerHeader
             className={cn(title || description ? '' : 'hidden', 'text-left')}
           >

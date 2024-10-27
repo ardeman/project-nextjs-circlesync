@@ -1,4 +1,9 @@
-import { HTMLAttributes, MouseEventHandler, ReactNode } from 'react'
+import {
+  HTMLAttributes,
+  HTMLInputAutoCompleteAttribute,
+  MouseEventHandler,
+  ReactNode,
+} from 'react'
 import { FieldValues, Path } from 'react-hook-form'
 
 export type TProps<TFormValues extends FieldValues> = {
@@ -21,4 +26,5 @@ export type TProps<TFormValues extends FieldValues> = {
   autoFocus?: boolean
   leftNode?: (props: HTMLAttributes<HTMLDivElement>) => ReactNode
   rightNode?: (props: HTMLAttributes<HTMLDivElement>) => ReactNode
+  autoComplete?: HTMLInputAutoCompleteAttribute
 }
