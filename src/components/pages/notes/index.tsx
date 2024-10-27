@@ -1,7 +1,8 @@
 'use client'
 
+import { Pin, Trash } from 'lucide-react'
 import Masonry from 'masonry-layout'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, MouseEvent } from 'react'
 
 import { Button, Modal } from '@/components/base'
 import {
@@ -16,28 +17,45 @@ import { useGetNotes } from '@/hooks'
 import { Form } from './form'
 
 export const NotesPage = () => {
-  const [open, setOpen] = useState(false)
+  const [openForm, setOpenForm] = useState(false)
+  const [openConfirmation, setOpenConfirmation] = useState(false)
   const [selectedNote, setSelectedNote] = useState<string>()
+  const [selectedConfirmation, setSelectedConfirmation] = useState({
+    kind: '',
+    id: '',
+  })
   const { data: notesData } = useGetNotes()
   const masonryRef = useRef(null)
   const formRef = useRef<{ submit: () => void } | null>(null)
 
   const handleCreateNote = () => {
-    setOpen(true)
+    setOpenForm(true)
     setSelectedNote(undefined)
   }
 
   const handleEditNote = (id: string) => {
-    setOpen(true)
+    setOpenForm(true)
     setSelectedNote(id)
   }
 
   const handleModalClose = () => {
-    setOpen(false)
+    setOpenForm(false)
     // Only submit the form if no `selectedNote` is present
     if (!selectedNote) {
       formRef.current?.submit() // Trigger the form submission through a ref
     }
+  }
+
+  const handleDeleteNote = (event: MouseEvent<SVGSVGElement>, id: string) => {
+    event.stopPropagation() // Prevents the Card's onClick from triggering
+    setOpenConfirmation(true)
+    setSelectedConfirmation({ id, kind: 'delete' })
+  }
+
+  const handlePinNote = (event: MouseEvent<SVGSVGElement>, id: string) => {
+    event.stopPropagation() // Prevents the Card's onClick from triggering
+    setOpenConfirmation(true)
+    setSelectedConfirmation({ id, kind: 'pin' })
   }
 
   useEffect(() => {
@@ -73,6 +91,16 @@ export const NotesPage = () => {
                 className="masonry-item mb-4 w-full sm:max-w-xs"
                 onClick={() => handleEditNote(note.id)}
               >
+                <div className="absolute right-1 top-1 flex gap-2">
+                  <Pin
+                    className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-30"
+                    onClick={(e) => handlePinNote(e, note.id)}
+                  />
+                  <Trash
+                    className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-30"
+                    onClick={(e) => handleDeleteNote(e, note.id)}
+                  />
+                </div>
                 <CardHeader>
                   <CardDescription>
                     Edited{' '}
@@ -100,8 +128,8 @@ export const NotesPage = () => {
       </div>
 
       <Modal
-        open={open}
-        setOpen={setOpen}
+        open={openForm}
+        setOpen={setOpenForm}
         onClose={handleModalClose}
       >
         <Form
@@ -109,6 +137,14 @@ export const NotesPage = () => {
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}
         />
+      </Modal>
+
+      <Modal
+        open={openConfirmation}
+        setOpen={setOpenConfirmation}
+      >
+        Are you sure you want to {selectedConfirmation.kind} this note:{' '}
+        {selectedConfirmation.id}?
       </Modal>
     </main>
   )

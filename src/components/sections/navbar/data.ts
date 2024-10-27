@@ -19,12 +19,8 @@ export const navs = [
     href: '/dashboard/notes',
   },
   {
-    name: 'To-Do',
-    href: '/dashboard/to-do',
-  },
-  {
-    name: 'Reminders',
-    href: '/dashboard/reminders',
+    name: 'Tasks',
+    href: '/dashboard/tasks',
   },
   {
     name: 'Money Log',
