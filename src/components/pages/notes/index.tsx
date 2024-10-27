@@ -8,7 +8,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui'
@@ -64,23 +63,17 @@ export const NotesPage = () => {
       <div className="flex justify-center">
         <div
           ref={masonryRef}
-          className="masonry-grid mx-auto max-w-screen-lg" // Sets max width to control masonry width
+          className="masonry-grid mx-auto max-w-screen-2xl" // Sets max width to control masonry width
         >
           {notesData
             ?.sort((a, b) => b.updatedAt.seconds - a.updatedAt.seconds)
             .map((note) => (
               <Card
                 key={note.id}
-                className="masonry-item mb-4 w-full sm:w-auto"
+                className="masonry-item mb-4 w-full sm:max-w-xs"
                 onClick={() => handleEditNote(note.id)}
               >
                 <CardHeader>
-                  <CardTitle>{note.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p>{note.content}</p>
-                </CardContent>
-                <CardFooter>
                   <CardDescription>
                     Edited{' '}
                     {new Date(note.updatedAt.seconds * 1000).toLocaleDateString(
@@ -94,7 +87,13 @@ export const NotesPage = () => {
                       }
                     )}
                   </CardDescription>
-                </CardFooter>
+                  {note.title && <CardTitle>{note.title}</CardTitle>}
+                </CardHeader>
+                {note.content && (
+                  <CardContent>
+                    <p>{note.content}</p>
+                  </CardContent>
+                )}
               </Card>
             ))}
         </div>
