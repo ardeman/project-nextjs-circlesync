@@ -22,7 +22,7 @@ export const Form = (props: TFormProps) => {
   const { mutate: mutateCreateNote, data } = useCreateNote()
   const { mutate: mutateUpdateNote } = useUpdateNote()
   const { invalidateQueries: invalidateNote } = useQueryActions(['note'])
-  const { data: noteData } = useGetNote(selectedNote || '')
+  const { data: noteData, isFetching } = useGetNote(selectedNote || '')
   const formMethods = useForm<TNoteForm>({
     resolver: zodResolver(noteSchema),
     values: {
@@ -73,12 +73,14 @@ export const Form = (props: TFormProps) => {
         className="space-y-4"
       >
         <Input
+          disabled={isFetching}
           name="title"
           placeholder="Title"
           inputClassName="border-none ring-0 text-xl font-semibold focus-visible:ring-0 rounded-none p-0 focus-visible:shadow-none focus-visible:outline-none"
-          autoFocus={true}
+          autoFocus
         />
         <Textarea
+          disabled={isFetching}
           name="content"
           placeholder="Content"
           inputClassName="border-none ring-0 focus-visible:ring-0 rounded-none p-0 focus-visible:shadow-none focus-visible:outline-none"

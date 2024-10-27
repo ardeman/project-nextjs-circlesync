@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import Masonry from 'masonry-layout'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button, Modal } from '@/components/base'
 import {
@@ -19,6 +20,7 @@ export const NotesPage = () => {
   const [open, setOpen] = useState(false)
   const [selectedNote, setSelectedNote] = useState<string>()
   const { data: notesData } = useGetNotes()
+  const masonryRef = useRef(null)
 
   const handleCreateNote = () => {
     setOpen(true)
@@ -30,6 +32,17 @@ export const NotesPage = () => {
     setSelectedNote(id)
   }
 
+  useEffect(() => {
+    if (masonryRef.current) {
+      new Masonry(masonryRef.current, {
+        itemSelector: '.masonry-item',
+        columnWidth: '.masonry-item',
+        gutter: 16,
+        horizontalOrder: true,
+      })
+    }
+  }, [notesData])
+
   return (
     <main className="bg-muted/40 flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
       <Button
@@ -39,13 +52,16 @@ export const NotesPage = () => {
       >
         Add Note
       </Button>
-      <div className="columns-1 space-y-4 sm:columns-2 md:columns-3 lg:columns-4 xl:columns-5 2xl:columns-6">
+      <div
+        ref={masonryRef}
+        className="masonry-grid"
+      >
         {notesData
           ?.sort((a, b) => b.updatedAt.seconds - a.updatedAt.seconds)
           .map((note) => (
             <Card
               key={note.id}
-              className="break-inside-avoid"
+              className="masonry-item mb-4"
               onClick={() => handleEditNote(note.id)}
             >
               <CardHeader>
