@@ -92,13 +92,13 @@ export const NotesPage = () => {
                 onClick={() => handleEditNote(note.id)}
               >
                 <div className="absolute right-1 top-1 flex gap-2">
-                  <Pin
-                    className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-30"
-                    onClick={(e) => handlePinNote(e, note.id)}
-                  />
                   <Trash
                     className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-30"
                     onClick={(e) => handleDeleteNote(e, note.id)}
+                  />
+                  <Pin
+                    className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-30"
+                    onClick={(e) => handlePinNote(e, note.id)}
                   />
                 </div>
                 <CardHeader>
