@@ -119,7 +119,7 @@ export const NotesPage = () => {
                 </CardHeader>
                 {note.content && (
                   <CardContent>
-                    <p>{note.content}</p>
+                    <p className="whitespace-pre-wrap">{note.content}</p>
                   </CardContent>
                 )}
               </Card>
