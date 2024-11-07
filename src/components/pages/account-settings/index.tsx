@@ -188,11 +188,17 @@ export const AccountSettingsPage = () => {
                         <TooltipTrigger asChild>
                           {authData?.emailVerified ? (
                             <BadgeCheck
-                              className={cn(className, 'text-green-500')}
+                              className={cn(
+                                className,
+                                'text-green-500 hover:cursor-help'
+                              )}
                             />
                           ) : (
                             <BadgeAlert
-                              className={cn(className, 'text-red-500')}
+                              className={cn(
+                                className,
+                                'text-red-500 hover:cursor-help'
+                              )}
                             />
                           )}
                         </TooltipTrigger>
