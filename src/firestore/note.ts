@@ -5,12 +5,17 @@ import {
   where,
   getDocs,
   doc,
-  setDoc,
   getDoc,
+  updateDoc,
 } from 'firebase/firestore'
 
 import { firebaseAuth, firebaseDb } from '@/configs'
-import { TCreateNoteRequest, TNoteResponse, TUpdateNoteRequest } from '@/types'
+import {
+  TCreateNoteRequest,
+  TNoteResponse,
+  TPinNoteRequest,
+  TUpdateNoteRequest,
+} from '@/types'
 
 export const fetchNotes = async () => {
   if (!firebaseDb) {
@@ -30,11 +35,8 @@ export const fetchNotes = async () => {
   return notesSnapshot.docs.map((doc) => {
     const data = doc.data()
     return {
+      ...data,
       id: doc.id, // Get document ID
-      title: data.title,
-      content: data.content,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
     } as TNoteResponse
   })
 }
@@ -53,11 +55,8 @@ export const fetchNote = async (noteId: string) => {
   }
   const data = noteSnap.data()
   return {
+    ...data,
     id: noteSnap.id,
-    title: data.title,
-    content: data.content,
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
   } as TNoteResponse
 }
 
@@ -73,7 +72,6 @@ export const createNote = async (noteData: TCreateNoteRequest) => {
     ...noteData,
     owner: firebaseAuth.currentUser.uid,
     createdAt: new Date(),
-    updatedAt: new Date(),
   })
 }
 
@@ -86,10 +84,23 @@ export const updateNote = async (noteData: TUpdateNoteRequest) => {
     throw new Error('No user is currently signed in.')
   }
   const noteRef = doc(firebaseDb, 'notes', id)
-  return await setDoc(noteRef, {
+  return await updateDoc(noteRef, {
     ...rest,
-    owner: firebaseAuth.currentUser.uid,
-    createdAt: new Date(),
+    updatedAt: new Date(),
+  })
+}
+
+export const pinNote = async (noteData: TPinNoteRequest) => {
+  const { id, ...rest } = noteData
+  if (!firebaseDb) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  if (!firebaseAuth?.currentUser) {
+    throw new Error('No user is currently signed in.')
+  }
+  const noteRef = doc(firebaseDb, 'notes', id)
+  return await updateDoc(noteRef, {
+    ...rest,
     updatedAt: new Date(),
   })
 }
