@@ -23,6 +23,7 @@ export const NotesPage = () => {
   const [selectedConfirmation, setSelectedConfirmation] = useState({
     kind: '',
     id: '',
+    description: '',
   })
   const { data: notesData } = useGetNotes()
   const { mutate: mutatePinNote } = usePinNote()
@@ -51,13 +52,21 @@ export const NotesPage = () => {
   const handleDeleteNote = ({
     event,
     id,
+    title,
+    content,
   }: {
     event: MouseEvent<SVGSVGElement>
     id: string
+    title?: string
+    content?: string
   }) => {
     event.stopPropagation() // Prevents the Card's onClick from triggering
     setOpenConfirmation(true)
-    setSelectedConfirmation({ id, kind: 'delete' })
+    setSelectedConfirmation({
+      id,
+      kind: 'delete',
+      description: title || content || '',
+    })
   }
 
   const handlePinNote = ({
@@ -126,7 +135,12 @@ export const NotesPage = () => {
                   <Trash
                     className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-opacity hover:text-red-500 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-30"
                     onClick={(event) =>
-                      handleDeleteNote({ event, id: note.id })
+                      handleDeleteNote({
+                        event,
+                        id: note.id,
+                        title: note.title,
+                        content: note.content,
+                      })
                     }
                   />
                   <Pin
@@ -182,7 +196,12 @@ export const NotesPage = () => {
                   <Trash
                     className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-opacity hover:text-red-500 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-30"
                     onClick={(event) =>
-                      handleDeleteNote({ event, id: note.id })
+                      handleDeleteNote({
+                        event,
+                        id: note.id,
+                        title: note.title,
+                        content: note.content,
+                      })
                     }
                   />
                   <Pin
@@ -233,8 +252,9 @@ export const NotesPage = () => {
         open={openConfirmation}
         setOpen={setOpenConfirmation}
       >
-        Are you sure you want to {selectedConfirmation.kind} this note:{' '}
-        {selectedConfirmation.id}?
+        You will {selectedConfirmation.kind}
+        <br />
+        {selectedConfirmation.description}
       </Modal>
     </main>
   )
