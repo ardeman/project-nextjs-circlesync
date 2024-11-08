@@ -1,9 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
-import { doc, updateDoc } from 'firebase/firestore'
 
-import { firebaseAuth, firebaseDb } from '@/configs'
 import { firebaseAuthError } from '@/constants'
+import { updateProfile } from '@/firestore'
 import { TUpdateProfileRequest } from '@/types'
 
 import { useQueryActions } from './use-query-actions'
@@ -14,19 +13,7 @@ export const useUpdateProfile = () => {
     'current-user',
   ])
   return useMutation({
-    mutationFn: async (data: TUpdateProfileRequest) => {
-      if (!firebaseAuth?.currentUser || !firebaseDb) {
-        throw new Error('Firebase is not initialized.')
-      }
-
-      // Reference to the user's document in Firestore
-      const userRef = doc(firebaseDb, 'users', firebaseAuth?.currentUser.uid)
-
-      // Update the displayName in Firestore
-      await updateDoc(userRef, {
-        displayName: data.displayName,
-      })
-    },
+    mutationFn: (data: TUpdateProfileRequest) => updateProfile(data),
     onSuccess: () => {
       toast({
         description: 'Your profile has been updated successfully.',

@@ -1,15 +1,9 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  updateProfile,
-} from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'next/navigation'
 
-import { firebaseAuth, firebaseDb } from '@/configs'
 import { firebaseAuthError } from '@/constants'
+import { register } from '@/firestore'
 import { TSignUpRequest } from '@/types'
 
 import { useQueryActions } from './use-query-actions'
@@ -19,38 +13,7 @@ export const useRegister = () => {
   const { refresh } = useRouter()
   const { invalidateQueries: invalidateUser } = useQueryActions(['auth-user'])
   return useMutation({
-    mutationFn: async (data: TSignUpRequest) => {
-      if (!firebaseAuth || !firebaseDb) {
-        throw new Error('Firebase is not initialized.')
-      }
-      // Create the user with Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(
-        firebaseAuth,
-        data.email,
-        data.password
-      )
-      const user = userCredential.user
-
-      if (user) {
-        // Update the user's profile with the display name
-        await updateProfile(user, {
-          displayName: data.displayName,
-        })
-
-        // Send email verification
-        await sendEmailVerification(user)
-
-        // Store user data in Firestore
-        await setDoc(doc(firebaseDb, 'users', user.uid), {
-          uid: user.uid,
-          displayName: data.displayName,
-          email: data.email,
-          createdAt: new Date().toISOString(),
-        })
-      } else {
-        throw new Error('No user is currently signed in.')
-      }
-    },
+    mutationFn: (data: TSignUpRequest) => register(data),
     onSuccess: () => {
       invalidateUser()
       toast({
