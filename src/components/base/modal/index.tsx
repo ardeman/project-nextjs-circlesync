@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   Drawer,
@@ -22,7 +23,15 @@ import { cn } from '@/utils'
 import { TProps } from './type'
 
 export const Modal = (props: TProps) => {
-  const { open, setOpen, children, title, description, onClose } = props
+  const {
+    open,
+    setOpen,
+    children,
+    title,
+    description,
+    onClose,
+    handleConfirm,
+  } = props
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
   const handleClose = () => {
@@ -49,6 +58,16 @@ export const Modal = (props: TProps) => {
             </DialogDescription>
           </DialogHeader>
           {children}
+          {handleConfirm && (
+            <DialogFooter>
+              <Button
+                variant="default"
+                onClick={handleConfirm}
+              >
+                Confirm
+              </Button>
+            </DialogFooter>
+          )}
         </DialogContent>
       </Dialog>
     )
@@ -74,6 +93,14 @@ export const Modal = (props: TProps) => {
           </DrawerHeader>
           <div className="p-4">{children}</div>
           <DrawerFooter className="pt-2">
+            {handleConfirm && (
+              <Button
+                variant="default"
+                onClick={handleConfirm}
+              >
+                Confirm
+              </Button>
+            )}
             <DrawerClose asChild>
               <Button variant="outline">Close</Button>
             </DrawerClose>

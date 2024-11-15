@@ -7,4 +7,5 @@ export type TProps = {
   title?: string
   description?: string
   onClose?: () => void
+  handleConfirm?: () => void
 }

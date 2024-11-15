@@ -49,6 +49,10 @@ export const NotesPage = () => {
     }
   }
 
+  const handleConfirmDelete = () => {
+    setOpenConfirmation(false)
+  }
+
   const handleDeleteNote = ({
     event,
     id,
@@ -64,7 +68,7 @@ export const NotesPage = () => {
     setOpenConfirmation(true)
     setSelectedConfirmation({
       id,
-      kind: 'delete',
+      kind: 'Delete',
       description: title || content || '',
     })
   }
@@ -251,9 +255,9 @@ export const NotesPage = () => {
       <Modal
         open={openConfirmation}
         setOpen={setOpenConfirmation}
+        handleConfirm={handleConfirmDelete}
       >
-        You will {selectedConfirmation.kind}
-        <br />
+        <strong>{selectedConfirmation.kind} this note?</strong>
         {selectedConfirmation.description}
       </Modal>
     </main>
