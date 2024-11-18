@@ -9,7 +9,7 @@ import {
   updateDoc,
 } from 'firebase/firestore'
 
-import { firebaseAuth, firebaseDb } from '@/configs'
+import { auth, firestore } from '@/configs'
 import {
   TCreateNoteRequest,
   TNoteResponse,
@@ -18,17 +18,17 @@ import {
 } from '@/types'
 
 export const fetchNotes = async () => {
-  if (!firebaseDb) {
+  if (!firestore) {
     throw new Error('Firebase DB is not initialized')
   }
-  if (!firebaseAuth?.currentUser) {
+  if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
 
   const notesQuery = query(
-    collection(firebaseDb, 'notes'),
-    where('owner', '==', firebaseAuth.currentUser.uid)
-    // where('sharedWith', 'array-contains', firebaseAuth?.currentUser.uid)
+    collection(firestore, 'notes'),
+    where('owner', '==', auth.currentUser.uid)
+    // where('sharedWith', 'array-contains', auth?.currentUser.uid)
   )
   const notesSnapshot = await getDocs(notesQuery)
   // Map over the snapshot documents, including both data and ID
@@ -42,13 +42,13 @@ export const fetchNotes = async () => {
 }
 
 export const fetchNote = async (noteId: string) => {
-  if (!firebaseDb) {
+  if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
-  if (!firebaseAuth?.currentUser) {
+  if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const noteRef = doc(firebaseDb, 'notes', noteId)
+  const noteRef = doc(firestore, 'notes', noteId)
   const noteSnap = await getDoc(noteRef)
   if (!noteSnap.exists()) {
     throw new Error('Note not found.')
@@ -61,29 +61,29 @@ export const fetchNote = async (noteId: string) => {
 }
 
 export const createNote = async (noteData: TCreateNoteRequest) => {
-  if (!firebaseDb) {
+  if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
-  if (!firebaseAuth?.currentUser) {
+  if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const noteRef = collection(firebaseDb, 'notes')
+  const noteRef = collection(firestore, 'notes')
   return await addDoc(noteRef, {
     ...noteData,
-    owner: firebaseAuth.currentUser.uid,
+    owner: auth.currentUser.uid,
     createdAt: new Date(),
   })
 }
 
 export const updateNote = async (noteData: TUpdateNoteRequest) => {
   const { id, ...rest } = noteData
-  if (!firebaseDb) {
+  if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
-  if (!firebaseAuth?.currentUser) {
+  if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const noteRef = doc(firebaseDb, 'notes', id)
+  const noteRef = doc(firestore, 'notes', id)
   return await updateDoc(noteRef, {
     ...rest,
     updatedAt: new Date(),
@@ -92,13 +92,13 @@ export const updateNote = async (noteData: TUpdateNoteRequest) => {
 
 export const pinNote = async (noteData: TPinNoteRequest) => {
   const { id, ...rest } = noteData
-  if (!firebaseDb) {
+  if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
-  if (!firebaseAuth?.currentUser) {
+  if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const noteRef = doc(firebaseDb, 'notes', id)
+  const noteRef = doc(firestore, 'notes', id)
   return await updateDoc(noteRef, {
     ...rest,
     updatedAt: new Date(),

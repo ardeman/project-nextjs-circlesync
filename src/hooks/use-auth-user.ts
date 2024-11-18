@@ -1,18 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
 import { onAuthStateChanged, User } from 'firebase/auth'
 
-import { firebaseAuth } from '@/configs'
+import { auth } from '@/configs'
 
 export const useAuthUser = () => {
   return useQuery<User | null>({
     queryKey: ['auth-user'],
     queryFn: () =>
       new Promise<User | null>((resolve) => {
-        if (!firebaseAuth) {
+        if (!auth) {
           resolve(null)
           return
         }
-        const unsubscribe = onAuthStateChanged(firebaseAuth, (currentUser) => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
           resolve(currentUser) // Resolve the current user or null
         })
 

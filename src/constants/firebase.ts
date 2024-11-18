@@ -1,10 +1,10 @@
-type TFirebaseAuthError = {
+type TAuthError = {
   code: string
   message?: string
   action?: string
 }
 
-export const firebaseAuthError: TFirebaseAuthError[] = [
+export const authError: TAuthError[] = [
   {
     code: 'auth/email-already-in-use',
     action: 'signin',

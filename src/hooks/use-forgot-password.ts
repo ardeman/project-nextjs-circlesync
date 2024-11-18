@@ -2,8 +2,8 @@ import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { sendPasswordResetEmail } from 'firebase/auth'
 
-import { firebaseAuth } from '@/configs'
-import { firebaseAuthError } from '@/constants'
+import { auth } from '@/configs'
+import { authError } from '@/constants'
 import { TEmailRequest } from '@/types'
 
 import { toast } from './use-toast'
@@ -11,10 +11,10 @@ import { toast } from './use-toast'
 export const useForgotPassword = () => {
   return useMutation({
     mutationFn: async (data: TEmailRequest) => {
-      if (!firebaseAuth) {
+      if (!auth) {
         throw new Error('Firebase Auth is not initialized.')
       }
-      await sendPasswordResetEmail(firebaseAuth, data.email)
+      await sendPasswordResetEmail(auth, data.email)
     },
     onSuccess: () => {
       toast({
@@ -25,7 +25,7 @@ export const useForgotPassword = () => {
       let message = String(error)
       if (error instanceof FirebaseError) {
         message =
-          firebaseAuthError.find((item) => item.code === error.code)?.message ||
+          authError.find((item) => item.code === error.code)?.message ||
           error.message
       }
       toast({

@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 
-import { firebaseAuthError } from '@/constants'
+import { authError } from '@/constants'
 import { login } from '@/firestore'
 import { TSignInRequest } from '@/types'
 
@@ -19,7 +19,7 @@ export const useLogin = () => {
       let message = String(error)
       if (error instanceof FirebaseError) {
         message =
-          firebaseAuthError.find((item) => item.code === error.code)?.message ||
+          authError.find((item) => item.code === error.code)?.message ||
           error.message
       }
       toast({

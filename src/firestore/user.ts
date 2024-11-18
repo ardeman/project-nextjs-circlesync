@@ -8,23 +8,23 @@ import {
 } from 'firebase/auth'
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 
-import { firebaseAuth, firebaseDb } from '@/configs' // Assuming your Firestore is configured here
+import { auth, firestore } from '@/configs' // Assuming your Firestore is configured here
 import { TSignInRequest, TSignUpRequest, TUpdateProfileRequest } from '@/types'
 
 // Function to fetch user data from Firestore
 export const fetchUserData = async () => {
-  if (!firebaseAuth) {
+  if (!auth) {
     throw new Error('Firebase Auth is not initialized.')
   }
-  if (!firebaseDb) {
+  if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
-  const user = firebaseAuth.currentUser
+  const user = auth.currentUser
   if (!user) {
     throw new Error('No authenticated user found.')
   }
 
-  const userRef = doc(firebaseDb, 'users', user.uid)
+  const userRef = doc(firestore, 'users', user.uid)
   const userSnap = await getDoc(userRef)
 
   if (!userSnap.exists()) {
@@ -36,13 +36,13 @@ export const fetchUserData = async () => {
 
 export const updateProfile = async (userData: TUpdateProfileRequest) => {
   const { ...rest } = userData
-  if (!firebaseDb) {
+  if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
-  if (!firebaseAuth?.currentUser) {
+  if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const userRef = doc(firebaseDb, 'users', firebaseAuth?.currentUser.uid)
+  const userRef = doc(firestore, 'users', auth?.currentUser.uid)
   return await updateDoc(userRef, {
     ...rest,
     updatedAt: new Date(),
@@ -51,17 +51,17 @@ export const updateProfile = async (userData: TUpdateProfileRequest) => {
 
 export const login = async (userData: TSignInRequest) => {
   const { email, password } = userData
-  if (!firebaseAuth || !firebaseDb) {
+  if (!auth || !firestore) {
     throw new Error('Firebase is not initialized.')
   }
 
   // Sign in with email and password
-  const result = await signInWithEmailAndPassword(firebaseAuth, email, password)
+  const result = await signInWithEmailAndPassword(auth, email, password)
   const user = result.user
 
   if (user) {
     // Check if user exists in Firestore
-    const userRef = doc(firebaseDb, 'users', user.uid)
+    const userRef = doc(firestore, 'users', user.uid)
     const userSnap = await getDoc(userRef)
     const userData = userSnap.data()
 
@@ -77,17 +77,17 @@ export const login = async (userData: TSignInRequest) => {
 
 export const loginWithGoogle = async () => {
   const provider = new GoogleAuthProvider()
-  if (!firebaseAuth || !firebaseDb) {
+  if (!auth || !firestore) {
     throw new Error('Firebase is not initialized.')
   }
 
   // Sign in with Google
-  const result = await signInWithPopup(firebaseAuth, provider)
+  const result = await signInWithPopup(auth, provider)
   const user = result.user
 
   if (user) {
     // Check if user exists in Firestore
-    const userRef = doc(firebaseDb, 'users', user.uid)
+    const userRef = doc(firestore, 'users', user.uid)
     const userSnap = await getDoc(userRef)
 
     // If user data doesn't exist, store it
@@ -105,12 +105,12 @@ export const loginWithGoogle = async () => {
 
 export const register = async (userData: TSignUpRequest) => {
   const { email, password, displayName } = userData
-  if (!firebaseAuth || !firebaseDb) {
+  if (!auth || !firestore) {
     throw new Error('Firebase is not initialized.')
   }
   // Create the user with Firebase Auth
   const userCredential = await createUserWithEmailAndPassword(
-    firebaseAuth,
+    auth,
     email,
     password
   )
@@ -126,7 +126,7 @@ export const register = async (userData: TSignUpRequest) => {
     await sendEmailVerification(user)
 
     // Store user data in Firestore
-    await setDoc(doc(firebaseDb, 'users', user.uid), {
+    await setDoc(doc(firestore, 'users', user.uid), {
       uid: user.uid,
       displayName: displayName,
       email: email,

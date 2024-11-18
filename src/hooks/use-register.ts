@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { useRouter } from 'next/navigation'
 
-import { firebaseAuthError } from '@/constants'
+import { authError } from '@/constants'
 import { register } from '@/firestore'
 import { TSignUpRequest } from '@/types'
 
@@ -25,7 +25,7 @@ export const useRegister = () => {
       let message = String(error)
       if (error instanceof FirebaseError) {
         message =
-          firebaseAuthError.find((item) => item.code === error.code)?.message ||
+          authError.find((item) => item.code === error.code)?.message ||
           error.message
       }
       toast({

@@ -15,24 +15,24 @@ const firebaseConfig = {
 }
 
 // Initialize Firebase app and services
-let firebaseApp: FirebaseApp | null = null
-let firebaseAnalytics: Analytics | null = null
-let firebaseAuth: Auth | null = null
-let firebaseDb: Firestore | null = null
+let firebase: FirebaseApp | null = null
+let analytics: Analytics | null = null
+let auth: Auth | null = null
+let firestore: Firestore | null = null
 
 // Ensure that Firebase is only initialized on the client side
 if (typeof window !== 'undefined') {
   try {
-    firebaseApp = initializeApp(firebaseConfig)
-    firebaseAuth = getAuth(firebaseApp)
-    firebaseDb = getFirestore(firebaseApp)
+    firebase = initializeApp(firebaseConfig)
+    auth = getAuth(firebase)
+    firestore = getFirestore(firebase)
 
     // Async function to initialize Analytics if supported
     const initializeAnalytics = async () => {
       try {
         const supported = await isSupported()
         if (supported) {
-          firebaseAnalytics = getAnalytics(firebaseApp!)
+          analytics = getAnalytics(firebase!)
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -47,4 +47,4 @@ if (typeof window !== 'undefined') {
   }
 }
 
-export { firebaseAuth, firebaseDb, firebaseAnalytics }
+export { auth, firestore, analytics }
