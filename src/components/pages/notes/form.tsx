@@ -1,33 +1,25 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { forwardRef, useEffect, useImperativeHandle } from 'react'
+import { forwardRef, useImperativeHandle } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { Textarea } from '@/components/base'
-import {
-  useCreateNote,
-  useDebounce,
-  useQueryActions,
-  useUpdateNote,
-} from '@/hooks'
-import { useGetNote } from '@/hooks'
+import { useCreateNote, useDebounce, useUpdateNote } from '@/hooks'
 import { TNoteForm } from '@/types'
 import { noteSchema } from '@/validations'
 
 import { TFormProps } from './type'
 
 export const Form = forwardRef((props: TFormProps, ref) => {
-  const { selectedNote, setSelectedNote } = props
-  const { mutate: mutateCreateNote, data } = useCreateNote()
+  const { selectedNote } = props
+  const { mutate: mutateCreateNote } = useCreateNote()
   const { mutate: mutateUpdateNote } = useUpdateNote()
-  const { invalidateQueries: invalidateNote } = useQueryActions(['note'])
-  const { data: noteData, isFetching } = useGetNote(selectedNote || '')
   const formMethods = useForm<TNoteForm>({
     resolver: zodResolver(noteSchema),
     values: {
-      title: noteData?.title || '',
-      content: noteData?.content || '',
+      title: selectedNote?.title || '',
+      content: selectedNote?.content || '',
     },
   })
   const {
@@ -43,7 +35,7 @@ export const Form = forwardRef((props: TFormProps, ref) => {
       return
     }
     if (selectedNote) {
-      mutateUpdateNote({ id: selectedNote, ...data })
+      mutateUpdateNote({ id: selectedNote.id, ...data })
       return
     }
     mutateCreateNote(data)
@@ -54,20 +46,6 @@ export const Form = forwardRef((props: TFormProps, ref) => {
     watch: [watchTitle, watchContent],
     condition: !!selectedNote,
   })
-
-  useEffect(() => {
-    if (data && !selectedNote) {
-      setSelectedNote(data.id)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, selectedNote])
-
-  useEffect(() => {
-    if (selectedNote) {
-      invalidateNote()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedNote])
 
   // Expose the submit function to the parent component via ref
   useImperativeHandle(ref, () => ({
@@ -81,7 +59,6 @@ export const Form = forwardRef((props: TFormProps, ref) => {
         className="space-y-4"
       >
         <Textarea
-          disabled={isFetching}
           name="title"
           placeholder="Title"
           inputClassName="border-none ring-0 text-xl font-semibold focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none resize-none min-h-0"
@@ -95,7 +72,6 @@ export const Form = forwardRef((props: TFormProps, ref) => {
           }}
         />
         <Textarea
-          disabled={isFetching}
           name="content"
           placeholder="Content"
           inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none"

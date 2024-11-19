@@ -2,11 +2,12 @@ import {
   addDoc,
   collection,
   query,
-  where,
   getDocs,
   doc,
   getDoc,
   updateDoc,
+  where,
+  or,
 } from 'firebase/firestore'
 
 import { auth, firestore } from '@/configs'
@@ -27,10 +28,14 @@ export const fetchNotes = async () => {
 
   const notesQuery = query(
     collection(firestore, 'notes'),
-    where('owner', '==', auth.currentUser.uid)
-    // where('sharedWith', 'array-contains', auth?.currentUser.uid)
+    or(
+      where('owner', '==', auth.currentUser.uid),
+      where('collaborator', 'array-contains', auth.currentUser.uid),
+      where('spectator', 'array-contains', auth.currentUser.uid)
+    )
   )
   const notesSnapshot = await getDocs(notesQuery)
+
   // Map over the snapshot documents, including both data and ID
   return notesSnapshot.docs.map((doc) => {
     const data = doc.data()

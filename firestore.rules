@@ -1,0 +1,57 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Define a common rule for authenticated users
+    function isAuthenticated() {
+      return request.auth.uid != null && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    // Define a function to check if a user is the document owner
+    function isOwner() {
+      return resource.data.owner == request.auth.uid;
+    }
+    
+    // Define a function to check if a user is the document collaborator
+    function isCollaborator() {
+    	return resource.data.collaborator.hasAny(request.auth.id)
+    }
+
+    // Users collection rules
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if request.auth.uid == userId;
+    }
+
+    // Groups collection rules
+    match /groups/{groupId} {
+      allow write: if isOwner() || isCollaborator();
+      allow create, read: if isAuthenticated();
+    }
+
+    // Notes collection rules
+    match /notes/{noteId} {
+      allow write: if isOwner() || isCollaborator();
+      allow create, read: if isAuthenticated();
+    }
+    
+    // To-Dos collection rules
+    match /to-dos/{noteId} {
+      allow write: if isOwner() || isCollaborator();
+      allow create, read: if isAuthenticated();
+    }
+    
+    // Reminders collection rules
+    match /reminders/{noteId} {
+      allow write: if isOwner() || isCollaborator();
+      allow create, read: if isAuthenticated();
+    }
+    
+    // Money Log collection rules
+    match /money-logs/{noteId} {
+      allow write: if isOwner() || isCollaborator();
+      allow create, read: if isAuthenticated();
+    }
+  }
+}

@@ -25,5 +25,6 @@
     "labelClassName",
     "leftNodeClassName",
     "rightNodeClassName"
-  ]
+  ],
+  "cSpell.words": ["firestore"]
 }

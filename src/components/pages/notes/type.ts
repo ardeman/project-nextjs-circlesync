@@ -1,6 +1,8 @@
 import { Dispatch, SetStateAction } from 'react'
 
+import { TNoteResponse } from '@/types'
+
 export type TFormProps = {
-  selectedNote?: string
-  setSelectedNote: Dispatch<SetStateAction<string | undefined>>
+  selectedNote?: TNoteResponse
+  setSelectedNote: Dispatch<SetStateAction<TNoteResponse | undefined>>
 }

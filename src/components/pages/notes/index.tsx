@@ -13,13 +13,14 @@ import {
   CardTitle,
 } from '@/components/ui'
 import { useGetNotes, usePinNote } from '@/hooks'
+import { TNoteResponse } from '@/types'
 
 import { Form } from './form'
 
 export const NotesPage = () => {
   const [openForm, setOpenForm] = useState(false)
   const [openConfirmation, setOpenConfirmation] = useState(false)
-  const [selectedNote, setSelectedNote] = useState<string>()
+  const [selectedNote, setSelectedNote] = useState<TNoteResponse>()
   const [selectedConfirmation, setSelectedConfirmation] = useState({
     kind: '',
     id: '',
@@ -36,9 +37,9 @@ export const NotesPage = () => {
     setSelectedNote(undefined)
   }
 
-  const handleEditNote = (id: string) => {
+  const handleEditNote = (note: TNoteResponse) => {
     setOpenForm(true)
-    setSelectedNote(id)
+    setSelectedNote(note)
   }
 
   const handleModalClose = () => {
@@ -133,7 +134,7 @@ export const NotesPage = () => {
               <Card
                 key={note.id}
                 className="masonry-item-pinned relative mb-4 w-full sm:max-w-xs"
-                onClick={() => handleEditNote(note.id)}
+                onClick={() => handleEditNote(note)}
               >
                 <div className="absolute right-1 top-1 flex gap-2">
                   <Trash
@@ -194,7 +195,7 @@ export const NotesPage = () => {
               <Card
                 key={note.id}
                 className="masonry-item-regular relative mb-4 w-full sm:max-w-xs"
-                onClick={() => handleEditNote(note.id)}
+                onClick={() => handleEditNote(note)}
               >
                 <div className="absolute right-1 top-1 flex gap-2">
                   <Trash
