@@ -18,7 +18,10 @@ export const NotesPage = () => {
   const [selectedConfirmation, setSelectedConfirmation] = useState({
     kind: '',
     id: '',
-    description: '',
+    detail: {
+      title: '',
+      content: '',
+    },
   })
   const { data: notesData } = useGetNotes()
   const { mutate: mutatePinNote } = usePinNote()
@@ -55,7 +58,10 @@ export const NotesPage = () => {
     setSelectedConfirmation({
       id,
       kind: 'Delete',
-      description: title || content || '',
+      detail: {
+        title: title || '',
+        content: content || '',
+      },
     })
   }
 
@@ -163,7 +169,12 @@ export const NotesPage = () => {
         handleConfirm={handleConfirmDelete}
       >
         <strong>{selectedConfirmation.kind} this note?</strong>
-        {selectedConfirmation.description}
+        {selectedConfirmation.detail.title && (
+          <p className="text-xl">{selectedConfirmation.detail.title}</p>
+        )}
+        {selectedConfirmation.detail.content && (
+          <p>{selectedConfirmation.detail.content}</p>
+        )}
       </Modal>
     </main>
   )
