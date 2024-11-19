@@ -1,21 +1,15 @@
 'use client'
 
-import { Pin, Trash } from 'lucide-react'
 import Masonry from 'masonry-layout'
-import { useEffect, useRef, useState, MouseEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button, Modal } from '@/components/base'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui'
 import { useGetNotes, usePinNote } from '@/hooks'
 import { TNoteResponse } from '@/types'
 
+import { Card } from './card'
 import { Form } from './form'
+import { THandleDeleteNote, THandlePinNote } from './type'
 
 export const NotesPage = () => {
   const [openForm, setOpenForm] = useState(false)
@@ -54,17 +48,8 @@ export const NotesPage = () => {
     setOpenConfirmation(false)
   }
 
-  const handleDeleteNote = ({
-    event,
-    id,
-    title,
-    content,
-  }: {
-    event: MouseEvent<SVGSVGElement>
-    id: string
-    title?: string
-    content?: string
-  }) => {
+  const handleDeleteNote = (props: THandleDeleteNote) => {
+    const { event, id, title, content } = props
     event.stopPropagation() // Prevents the Card's onClick from triggering
     setOpenConfirmation(true)
     setSelectedConfirmation({
@@ -74,15 +59,8 @@ export const NotesPage = () => {
     })
   }
 
-  const handlePinNote = ({
-    event,
-    id,
-    isPinned,
-  }: {
-    event: MouseEvent<SVGSVGElement>
-    id: string
-    isPinned: boolean
-  }) => {
+  const handlePinNote = (props: THandlePinNote) => {
+    const { event, id, isPinned } = props
     event.stopPropagation() // Prevents the Card's onClick from triggering
     const data = {
       isPinned,
@@ -132,50 +110,13 @@ export const NotesPage = () => {
             )
             .map((note) => (
               <Card
+                note={note}
+                isPinned={true}
+                handleDeleteNote={handleDeleteNote}
+                handleEditNote={handleEditNote}
+                handlePinNote={handlePinNote}
                 key={note.id}
-                className="masonry-item-pinned relative mb-4 w-full sm:max-w-xs"
-                onClick={() => handleEditNote(note)}
-              >
-                <div className="absolute right-1 top-1 flex gap-2">
-                  <Trash
-                    className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-opacity hover:text-red-500 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-30"
-                    onClick={(event) =>
-                      handleDeleteNote({
-                        event,
-                        id: note.id,
-                        title: note.title,
-                        content: note.content,
-                      })
-                    }
-                  />
-                  <Pin
-                    className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full text-yellow-500 opacity-30 transition-opacity hover:opacity-30 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-100"
-                    onClick={(event) =>
-                      handlePinNote({ event, id: note.id, isPinned: false })
-                    }
-                  />
-                </div>
-                <CardHeader>
-                  <CardDescription className="text-xs">
-                    {note.updatedAt?.seconds ? 'Edited' : 'Created'}{' '}
-                    {new Date(
-                      (note.updatedAt?.seconds || note.createdAt.seconds) * 1000
-                    ).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: '2-digit',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </CardDescription>
-                  {note.title && <CardTitle>{note.title}</CardTitle>}
-                </CardHeader>
-                {note.content && (
-                  <CardContent>
-                    <p className="whitespace-pre-wrap">{note.content}</p>
-                  </CardContent>
-                )}
-              </Card>
+              />
             ))}
         </div>
       </div>
@@ -193,50 +134,13 @@ export const NotesPage = () => {
             )
             .map((note) => (
               <Card
+                note={note}
+                isPinned={false}
+                handleDeleteNote={handleDeleteNote}
+                handleEditNote={handleEditNote}
+                handlePinNote={handlePinNote}
                 key={note.id}
-                className="masonry-item-regular relative mb-4 w-full sm:max-w-xs"
-                onClick={() => handleEditNote(note)}
-              >
-                <div className="absolute right-1 top-1 flex gap-2">
-                  <Trash
-                    className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-opacity hover:text-red-500 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-30"
-                    onClick={(event) =>
-                      handleDeleteNote({
-                        event,
-                        id: note.id,
-                        title: note.title,
-                        content: note.content,
-                      })
-                    }
-                  />
-                  <Pin
-                    className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-opacity hover:text-yellow-500 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none sm:w-4 sm:opacity-30"
-                    onClick={(event) =>
-                      handlePinNote({ event, id: note.id, isPinned: true })
-                    }
-                  />
-                </div>
-                <CardHeader>
-                  <CardDescription className="text-xs">
-                    {note.updatedAt?.seconds ? 'Edited' : 'Created'}{' '}
-                    {new Date(
-                      (note.updatedAt?.seconds || note.createdAt.seconds) * 1000
-                    ).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: '2-digit',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </CardDescription>
-                  {note.title && <CardTitle>{note.title}</CardTitle>}
-                </CardHeader>
-                {note.content && (
-                  <CardContent>
-                    <p className="whitespace-pre-wrap">{note.content}</p>
-                  </CardContent>
-                )}
-              </Card>
+              />
             ))}
         </div>
       </div>
