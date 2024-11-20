@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
+import { useUserData } from '@/hooks'
 import { cn } from '@/utils'
 
 import { TCardProps } from './type'
@@ -14,15 +15,24 @@ import { TCardProps } from './type'
 export const Card = (props: TCardProps) => {
   const { note, handleEditNote, handleDeleteNote, handlePinNote, isPinned } =
     props
+  const { data: userData } = useUserData()
+  const isEditable =
+    note.owner === userData?.uid || note.collaborators?.includes(userData?.uid)
   return (
     <UICard
       className={cn(
+        isEditable ? 'group' : '',
         isPinned ? 'masonry-item-pinned' : 'masonry-item-regular',
-        'group relative mb-4 w-full sm:max-w-xs'
+        'relative mb-4 w-full sm:max-w-xs'
       )}
-      onClick={() => handleEditNote(note)}
+      onClick={() => isEditable && handleEditNote(note)}
     >
-      <div className="absolute right-1 top-1 flex justify-between gap-2 sm:-left-1 sm:-right-1 sm:-top-1">
+      <div
+        className={cn(
+          isEditable ? 'flex' : 'hidden',
+          'absolute right-1 top-1 justify-between gap-2 sm:-left-1 sm:-right-1 sm:-top-1'
+        )}
+      >
         <Trash
           className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-all duration-300 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover:opacity-100 sm:w-4 sm:opacity-0"
           onClick={(event) =>
@@ -45,17 +55,20 @@ export const Card = (props: TCardProps) => {
         />
       </div>
       <CardHeader>
-        <CardDescription className="text-xs">
-          {note.updatedAt?.seconds ? 'Edited' : 'Created'}{' '}
-          {new Date(
-            (note.updatedAt?.seconds || note.createdAt.seconds) * 1000
-          ).toLocaleDateString('en-US', {
-            month: 'short',
-            day: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
+        <CardDescription className="flex justify-between text-xs">
+          <span>
+            {note.updatedAt?.seconds ? 'Edited' : 'Created'}{' '}
+            {new Date(
+              (note.updatedAt?.seconds || note.createdAt.seconds) * 1000
+            ).toLocaleDateString('en-US', {
+              month: 'short',
+              day: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </span>
+          <span>{!isEditable && 'Read-only'}</span>
         </CardDescription>
         {note.title && <CardTitle>{note.title}</CardTitle>}
       </CardHeader>

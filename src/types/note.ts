@@ -19,4 +19,7 @@ export type TNoteResponse = {
   isPinned?: boolean
   createdAt: TTime
   updatedAt: TTime
+  owner: string
+  spectators?: string[]
+  collaborators?: string[]
 }

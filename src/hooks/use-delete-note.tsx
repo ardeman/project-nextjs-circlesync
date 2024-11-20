@@ -20,7 +20,7 @@ export const useDeleteNote = () => {
         description: 'Note deleted successfully',
         action: (
           <ToastAction
-            altText="Unde"
+            altText="Undo"
             onClick={() => mutateCreateNote(note)}
           >
             Undo

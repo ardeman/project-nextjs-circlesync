@@ -30,8 +30,8 @@ export const fetchNotes = async () => {
     collection(firestore, 'notes'),
     or(
       where('owner', '==', auth.currentUser.uid),
-      where('collaborator', 'array-contains', auth.currentUser.uid),
-      where('spectator', 'array-contains', auth.currentUser.uid)
+      where('collaborators', 'array-contains', auth.currentUser.uid),
+      where('spectators', 'array-contains', auth.currentUser.uid)
     )
   )
   const snap = await getDocs(notesQuery)
