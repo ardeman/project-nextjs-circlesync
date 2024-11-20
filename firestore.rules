@@ -37,19 +37,19 @@ service cloud.firestore {
     }
     
     // To-Dos collection rules
-    match /to-dos/{noteId} {
+    match /to-dos/{todoId} {
       allow write: if isOwner() || isCollaborator();
       allow create, read: if isAuthenticated();
     }
     
     // Reminders collection rules
-    match /reminders/{noteId} {
+    match /reminders/{reminderId} {
       allow write: if isOwner() || isCollaborator();
       allow create, read: if isAuthenticated();
     }
     
     // Money Log collection rules
-    match /money-logs/{noteId} {
+    match /money-logs/{moneyLogId} {
       allow write: if isOwner() || isCollaborator();
       allow create, read: if isAuthenticated();
     }

@@ -24,14 +24,14 @@ export const fetchUserData = async () => {
     throw new Error('No authenticated user found.')
   }
 
-  const userRef = doc(firestore, 'users', user.uid)
-  const userSnap = await getDoc(userRef)
+  const ref = doc(firestore, 'users', user.uid)
+  const snap = await getDoc(ref)
 
-  if (!userSnap.exists()) {
+  if (!snap.exists()) {
     throw new Error('User data not found in Firestore.')
   }
 
-  return userSnap.data()
+  return snap.data()
 }
 
 export const updateProfile = async (userData: TUpdateProfileRequest) => {
@@ -42,8 +42,8 @@ export const updateProfile = async (userData: TUpdateProfileRequest) => {
   if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const userRef = doc(firestore, 'users', auth?.currentUser.uid)
-  return await updateDoc(userRef, {
+  const ref = doc(firestore, 'users', auth?.currentUser.uid)
+  return await updateDoc(ref, {
     ...rest,
     updatedAt: new Date(),
   })
@@ -61,13 +61,13 @@ export const login = async (userData: TSignInRequest) => {
 
   if (user) {
     // Check if user exists in Firestore
-    const userRef = doc(firestore, 'users', user.uid)
-    const userSnap = await getDoc(userRef)
-    const userData = userSnap.data()
+    const ref = doc(firestore, 'users', user.uid)
+    const snap = await getDoc(ref)
+    const userData = snap.data()
 
     // Update the email in Firestore if it's different
     if (userData && user.email && userData.email !== user.email) {
-      return await updateDoc(userRef, {
+      return await updateDoc(ref, {
         email,
         updatedAt: new Date(),
       })
@@ -87,12 +87,12 @@ export const loginWithGoogle = async () => {
 
   if (user) {
     // Check if user exists in Firestore
-    const userRef = doc(firestore, 'users', user.uid)
-    const userSnap = await getDoc(userRef)
+    const ref = doc(firestore, 'users', user.uid)
+    const snap = await getDoc(ref)
 
     // If user data doesn't exist, store it
-    if (!userSnap.exists()) {
-      await setDoc(userRef, {
+    if (!snap.exists()) {
+      await setDoc(ref, {
         uid: user.uid,
         displayName: user.displayName,
         email: user.email,

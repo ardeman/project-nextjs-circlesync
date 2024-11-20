@@ -9,9 +9,7 @@ export type TFormProps = {
 
 export type THandleDeleteNote = {
   event: MouseEvent<SVGSVGElement>
-  id: string
-  title?: string
-  content?: string
+  note: TNoteResponse
 }
 
 export type THandlePinNote = {
@@ -26,4 +24,9 @@ export type TCardProps = {
   handleEditNote: (note: TNoteResponse) => void
   handleDeleteNote: (props: THandleDeleteNote) => void
   handlePinNote: (props: THandlePinNote) => void
+}
+
+export type TNoteConfirmation = {
+  kind: string
+  detail: TNoteResponse
 }

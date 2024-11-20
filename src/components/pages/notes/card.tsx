@@ -28,9 +28,7 @@ export const Card = (props: TCardProps) => {
           onClick={(event) =>
             handleDeleteNote({
               event,
-              id: note.id,
-              title: note.title,
-              content: note.content,
+              note,
             })
           }
         />

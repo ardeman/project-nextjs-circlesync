@@ -4,27 +4,22 @@ import Masonry from 'masonry-layout'
 import { useEffect, useRef, useState } from 'react'
 
 import { Button, Modal } from '@/components/base'
-import { useGetNotes, usePinNote } from '@/hooks'
+import { useDeleteNote, useGetNotes, usePinNote } from '@/hooks'
 import { TNoteResponse } from '@/types'
 
 import { Card } from './card'
 import { Form } from './form'
-import { THandleDeleteNote, THandlePinNote } from './type'
+import { TNoteConfirmation, THandleDeleteNote, THandlePinNote } from './type'
 
 export const NotesPage = () => {
   const [openForm, setOpenForm] = useState(false)
   const [openConfirmation, setOpenConfirmation] = useState(false)
   const [selectedNote, setSelectedNote] = useState<TNoteResponse>()
-  const [selectedConfirmation, setSelectedConfirmation] = useState({
-    kind: '',
-    id: '',
-    detail: {
-      title: '',
-      content: '',
-    },
-  })
+  const [selectedConfirmation, setSelectedConfirmation] =
+    useState<TNoteConfirmation>()
   const { data: notesData } = useGetNotes()
   const { mutate: mutatePinNote } = usePinNote()
+  const { mutate: mutateDeleteNote } = useDeleteNote()
   const masonryRefPinned = useRef(null)
   const masonryRefRegular = useRef(null)
   const formRef = useRef<{ submit: () => void } | null>(null)
@@ -49,19 +44,18 @@ export const NotesPage = () => {
 
   const handleConfirmDelete = () => {
     setOpenConfirmation(false)
+    if (selectedConfirmation?.detail.id) {
+      mutateDeleteNote(selectedConfirmation.detail)
+    }
   }
 
   const handleDeleteNote = (props: THandleDeleteNote) => {
-    const { event, id, title, content } = props
+    const { event, note } = props
     event.stopPropagation() // Prevents the Card's onClick from triggering
     setOpenConfirmation(true)
     setSelectedConfirmation({
-      id,
       kind: 'Delete',
-      detail: {
-        title: title || '',
-        content: content || '',
-      },
+      detail: note,
     })
   }
 
@@ -168,11 +162,11 @@ export const NotesPage = () => {
         setOpen={setOpenConfirmation}
         handleConfirm={handleConfirmDelete}
       >
-        <strong>{selectedConfirmation.kind} this note?</strong>
-        {selectedConfirmation.detail.title && (
+        <strong>{selectedConfirmation?.kind} this note?</strong>
+        {selectedConfirmation?.detail.title && (
           <p className="text-xl">{selectedConfirmation.detail.title}</p>
         )}
-        {selectedConfirmation.detail.content && (
+        {selectedConfirmation?.detail.content && (
           <p>{selectedConfirmation.detail.content}</p>
         )}
       </Modal>

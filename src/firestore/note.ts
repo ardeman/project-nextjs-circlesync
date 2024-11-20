@@ -4,10 +4,10 @@ import {
   query,
   getDocs,
   doc,
-  getDoc,
   updateDoc,
   where,
   or,
+  deleteDoc,
 } from 'firebase/firestore'
 
 import { auth, firestore } from '@/configs'
@@ -34,10 +34,10 @@ export const fetchNotes = async () => {
       where('spectator', 'array-contains', auth.currentUser.uid)
     )
   )
-  const notesSnapshot = await getDocs(notesQuery)
+  const snap = await getDocs(notesQuery)
 
   // Map over the snapshot documents, including both data and ID
-  return notesSnapshot.docs.map((doc) => {
+  return snap.docs.map((doc) => {
     const data = doc.data()
     return {
       ...data,
@@ -46,66 +46,60 @@ export const fetchNotes = async () => {
   })
 }
 
-export const fetchNote = async (noteId: string) => {
+export const createNote = async (data: TCreateNoteRequest) => {
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
   if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const noteRef = doc(firestore, 'notes', noteId)
-  const noteSnap = await getDoc(noteRef)
-  if (!noteSnap.exists()) {
-    throw new Error('Note not found.')
-  }
-  const data = noteSnap.data()
-  return {
+  const ref = collection(firestore, 'notes')
+  return await addDoc(ref, {
     ...data,
-    id: noteSnap.id,
-  } as TNoteResponse
-}
-
-export const createNote = async (noteData: TCreateNoteRequest) => {
-  if (!firestore) {
-    throw new Error('Firebase Firestore is not initialized.')
-  }
-  if (!auth?.currentUser) {
-    throw new Error('No user is currently signed in.')
-  }
-  const noteRef = collection(firestore, 'notes')
-  return await addDoc(noteRef, {
-    ...noteData,
     owner: auth.currentUser.uid,
     createdAt: new Date(),
   })
 }
 
-export const updateNote = async (noteData: TUpdateNoteRequest) => {
-  const { id, ...rest } = noteData
+export const updateNote = async (data: TUpdateNoteRequest) => {
+  const { id, ...rest } = data
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
   if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const noteRef = doc(firestore, 'notes', id)
-  return await updateDoc(noteRef, {
+  const ref = doc(firestore, 'notes', id)
+  return await updateDoc(ref, {
     ...rest,
     updatedAt: new Date(),
   })
 }
 
-export const pinNote = async (noteData: TPinNoteRequest) => {
-  const { id, ...rest } = noteData
+export const pinNote = async (data: TPinNoteRequest) => {
+  const { id, ...rest } = data
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
   if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const noteRef = doc(firestore, 'notes', id)
-  return await updateDoc(noteRef, {
+  const ref = doc(firestore, 'notes', id)
+  return await updateDoc(ref, {
     ...rest,
     updatedAt: new Date(),
   })
+}
+
+export const deleteNote = async (note: TNoteResponse) => {
+  const { id } = note
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  if (!auth?.currentUser) {
+    throw new Error('No user is currently signed in.')
+  }
+  const ref = doc(firestore, 'notes', id)
+  await deleteDoc(ref)
+  return note
 }
