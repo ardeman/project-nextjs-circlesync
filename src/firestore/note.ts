@@ -42,6 +42,7 @@ export const fetchNotes = async () => {
     return {
       ...data,
       id: doc.id, // Get document ID
+      isPinned: data.pinnedBy?.includes(auth?.currentUser?.uid),
     } as TNoteResponse
   })
 }
@@ -77,16 +78,23 @@ export const updateNote = async (data: TUpdateNoteRequest) => {
 }
 
 export const pinNote = async (data: TPinNoteRequest) => {
-  const { id, ...rest } = data
+  const { note, isPinned } = data
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
   if (!auth?.currentUser) {
     throw new Error('No user is currently signed in.')
   }
-  const ref = doc(firestore, 'notes', id)
+  const pinnedBy = new Set(note.pinnedBy || [])
+  if (isPinned) {
+    pinnedBy.add(auth.currentUser.uid)
+  } else {
+    pinnedBy.delete(auth.currentUser.uid)
+  }
+
+  const ref = doc(firestore, 'notes', note.id)
   return await updateDoc(ref, {
-    ...rest,
+    pinnedBy: [...pinnedBy],
     updatedAt: new Date(),
   })
 }

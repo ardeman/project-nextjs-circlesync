@@ -60,12 +60,9 @@ export const NotesPage = () => {
   }
 
   const handlePinNote = (props: THandlePinNote) => {
-    const { event, id, isPinned } = props
+    const { event, note, isPinned } = props
     event.stopPropagation() // Prevents the Card's onClick from triggering
-    const data = {
-      isPinned,
-    }
-    mutatePinNote({ id: id, ...data })
+    mutatePinNote({ note, isPinned })
   }
 
   useEffect(() => {

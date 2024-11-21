@@ -14,7 +14,7 @@ export type THandleDeleteNote = {
 
 export type THandlePinNote = {
   event: MouseEvent<SVGSVGElement>
-  id: string
+  note: TNoteResponse
   isPinned: boolean
 }
 

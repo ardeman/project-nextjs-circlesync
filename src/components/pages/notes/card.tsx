@@ -50,7 +50,7 @@ export const Card = (props: TCardProps) => {
             'ring-offset-background focus:ring-ring bg-accent h-4 w-16 cursor-pointer rounded-full opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover:opacity-100 sm:w-4'
           )}
           onClick={(event) =>
-            handlePinNote({ event, id: note.id, isPinned: true })
+            handlePinNote({ event, note, isPinned: !isPinned })
           }
         />
       </div>
