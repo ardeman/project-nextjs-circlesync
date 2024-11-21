@@ -4,7 +4,7 @@ import Masonry from 'masonry-layout'
 import { useEffect, useRef, useState } from 'react'
 
 import { Button, Modal } from '@/components/base'
-import { useDeleteNote, useGetNotes, usePinNote } from '@/hooks'
+import { useDeleteNote, useGetNotes, usePinNote, useUnlinkNote } from '@/hooks'
 import { TNoteResponse } from '@/types'
 
 import { Card } from './card'
@@ -20,6 +20,7 @@ export const NotesPage = () => {
   const { data: notesData } = useGetNotes()
   const { mutate: mutatePinNote } = usePinNote()
   const { mutate: mutateDeleteNote } = useDeleteNote()
+  const { mutate: mutateUnlinkNote } = useUnlinkNote()
   const masonryRefPinned = useRef(null)
   const masonryRefRegular = useRef(null)
   const formRef = useRef<{ submit: () => void } | null>(null)
@@ -42,10 +43,14 @@ export const NotesPage = () => {
     }
   }
 
-  const handleConfirmDelete = () => {
+  const handleConfirm = () => {
     setOpenConfirmation(false)
-    if (selectedConfirmation?.detail.id) {
+    if (!selectedConfirmation?.detail || !selectedConfirmation.kind) return
+    if (selectedConfirmation?.kind === 'Delete') {
       mutateDeleteNote(selectedConfirmation.detail)
+    }
+    if (selectedConfirmation?.kind === 'Unlink') {
+      mutateUnlinkNote(selectedConfirmation.detail)
     }
   }
 
@@ -55,6 +60,16 @@ export const NotesPage = () => {
     setOpenConfirmation(true)
     setSelectedConfirmation({
       kind: 'Delete',
+      detail: note,
+    })
+  }
+
+  const handleUnlinkNote = (props: THandleDeleteNote) => {
+    const { event, note } = props
+    event.stopPropagation() // Prevents the Card's onClick from triggering
+    setOpenConfirmation(true)
+    setSelectedConfirmation({
+      kind: 'Unlink',
       detail: note,
     })
   }
@@ -112,6 +127,7 @@ export const NotesPage = () => {
                 handleDeleteNote={handleDeleteNote}
                 handleEditNote={handleEditNote}
                 handlePinNote={handlePinNote}
+                handleUnlinkNote={handleUnlinkNote}
                 key={note.id}
               />
             ))}
@@ -136,6 +152,7 @@ export const NotesPage = () => {
                 handleDeleteNote={handleDeleteNote}
                 handleEditNote={handleEditNote}
                 handlePinNote={handlePinNote}
+                handleUnlinkNote={handleUnlinkNote}
                 key={note.id}
               />
             ))}
@@ -157,7 +174,8 @@ export const NotesPage = () => {
       <Modal
         open={openConfirmation}
         setOpen={setOpenConfirmation}
-        handleConfirm={handleConfirmDelete}
+        handleConfirm={handleConfirm}
+        variant="destructive"
       >
         <strong>{selectedConfirmation?.kind} this note?</strong>
         {selectedConfirmation?.detail.title && (

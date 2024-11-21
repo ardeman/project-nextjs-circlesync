@@ -1,5 +1,6 @@
-import { Pin, Trash } from 'lucide-react'
+import { Eye, Pin, Trash } from 'lucide-react'
 
+import { Button } from '@/components/base'
 import {
   Card as UICard,
   CardContent,
@@ -13,46 +14,78 @@ import { cn } from '@/utils'
 import { TCardProps } from './type'
 
 export const Card = (props: TCardProps) => {
-  const { note, handleEditNote, handleDeleteNote, handlePinNote, isPinned } =
-    props
+  const {
+    note,
+    handleEditNote,
+    handleDeleteNote,
+    handlePinNote,
+    handleUnlinkNote,
+    isPinned,
+  } = props
   const { data: userData } = useUserData()
   const isEditable =
     note.owner === userData?.uid || note.collaborators?.includes(userData?.uid)
+  const isOwner = note.owner === userData?.uid
   return (
     <UICard
       className={cn(
-        isEditable ? 'group' : '',
         isPinned ? 'masonry-item-pinned' : 'masonry-item-regular',
-        'relative mb-4 w-full sm:max-w-xs'
+        'group/card relative mb-4 w-full sm:max-w-xs'
       )}
       onClick={() => isEditable && handleEditNote(note)}
     >
       <div
         className={cn(
-          isEditable ? 'flex' : 'hidden',
-          'absolute right-1 top-1 justify-between gap-2 sm:-left-1 sm:-right-1 sm:-top-1'
+          'absolute right-1 top-1 flex justify-between gap-2 sm:-left-1 sm:-right-1 sm:-top-1'
         )}
       >
-        <Trash
-          className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full opacity-100 transition-all duration-300 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover:opacity-100 sm:w-4 sm:opacity-0"
-          onClick={(event) =>
-            handleDeleteNote({
-              event,
-              note,
-            })
-          }
-        />
-        <Pin
-          className={cn(
-            isPinned
-              ? 'hover:text-muted-foreground rotate-45 text-yellow-500 hover:rotate-0 sm:opacity-100'
-              : 'text-muted-foreground hover:rotate-45 hover:text-yellow-500 sm:opacity-0',
-            'ring-offset-background focus:ring-ring bg-accent h-4 w-16 cursor-pointer rounded-full opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover:opacity-100 sm:w-4'
-          )}
+        {isOwner ? (
+          <Button
+            variant="outline"
+            onClick={(event) =>
+              handleDeleteNote({
+                event,
+                note,
+              })
+            }
+            className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full p-0 opacity-100 transition-all duration-300 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 sm:h-6 sm:w-6 sm:p-1 sm:opacity-0"
+          >
+            <Trash />
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            onClick={(event) =>
+              handleUnlinkNote({
+                event,
+                note,
+              })
+            }
+            className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full p-0 opacity-100 transition-all duration-300 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 sm:h-6 sm:w-6 sm:p-1 sm:opacity-0"
+          >
+            <Eye />
+          </Button>
+        )}
+        <Button
+          variant="outline"
           onClick={(event) =>
             handlePinNote({ event, note, isPinned: !isPinned })
           }
-        />
+          className={cn(
+            isPinned
+              ? 'hover:text-muted-foreground text-yellow-500 sm:opacity-100'
+              : 'text-muted-foreground hover:text-yellow-500 sm:opacity-0',
+            'ring-offset-background focus:ring-ring bg-accent group/button h-4 w-16 cursor-pointer rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 sm:h-6 sm:w-6 sm:p-1'
+          )}
+        >
+          <Pin
+            className={cn(
+              isPinned
+                ? 'rotate-45 group-hover/button:rotate-0'
+                : 'group-hover/button:rotate-45'
+            )}
+          />
+        </Button>
       </div>
       <CardHeader>
         <CardDescription className="flex justify-between text-xs">

@@ -31,6 +31,7 @@ export const Modal = (props: TProps) => {
     description,
     onClose,
     handleConfirm,
+    variant = 'default',
   } = props
   const isDesktop = useMediaQuery('(min-width: 768px)')
 
@@ -61,7 +62,7 @@ export const Modal = (props: TProps) => {
           {handleConfirm && (
             <DialogFooter>
               <Button
-                variant="default"
+                variant={variant}
                 onClick={handleConfirm}
               >
                 Confirm

@@ -111,3 +111,24 @@ export const deleteNote = async (note: TNoteResponse) => {
   await deleteDoc(ref)
   return note
 }
+
+export const unlinkNote = async (note: TNoteResponse) => {
+  const { id, collaborators, spectators } = note
+  if (!firestore) {
+    throw new Error('Firebase Firestore is not initialized.')
+  }
+  if (!auth?.currentUser) {
+    throw new Error('No user is currently signed in.')
+  }
+  const data = {
+    collaborators:
+      collaborators?.filter((c) => c !== auth?.currentUser?.uid) || [],
+    spectators: spectators?.filter((s) => s !== auth?.currentUser?.uid) || [],
+  }
+
+  const ref = doc(firestore, 'notes', id)
+  return await updateDoc(ref, {
+    ...data,
+    updatedAt: new Date(),
+  })
+}

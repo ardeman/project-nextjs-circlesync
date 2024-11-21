@@ -12,11 +12,6 @@ service cloud.firestore {
     function isOwner() {
       return resource.data.owner == request.auth.uid;
     }
-    
-    // Define a function to check if a user is the document collaborator
-    function isCollaborator() {
-    	return resource.data.collaborator.hasAny(request.auth.id)
-    }
 
     // Users collection rules
     match /users/{userId} {
@@ -26,32 +21,32 @@ service cloud.firestore {
 
     // Groups collection rules
     match /groups/{groupId} {
-      allow write: if isOwner() || isCollaborator();
-      allow create, read: if isAuthenticated();
+      allow delete: if isOwner();
+      allow create, read, write: if isAuthenticated();
     }
 
     // Notes collection rules
     match /notes/{noteId} {
-      allow write: if isOwner() || isCollaborator();
-      allow create, read: if isAuthenticated();
+      allow delete: if isOwner();
+      allow create, read, write: if isAuthenticated();
     }
     
     // To-Dos collection rules
     match /to-dos/{todoId} {
-      allow write: if isOwner() || isCollaborator();
-      allow create, read: if isAuthenticated();
+      allow delete: if isOwner();
+      allow create, read, write: if isAuthenticated();
     }
     
     // Reminders collection rules
     match /reminders/{reminderId} {
-      allow write: if isOwner() || isCollaborator();
-      allow create, read: if isAuthenticated();
+      allow delete: if isOwner();
+      allow create, read, write: if isAuthenticated();
     }
     
     // Money Log collection rules
     match /money-logs/{moneyLogId} {
-      allow write: if isOwner() || isCollaborator();
-      allow create, read: if isAuthenticated();
+      allow delete: if isOwner();
+      allow create, read, write: if isAuthenticated();
     }
   }
 }
