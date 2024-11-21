@@ -36,7 +36,7 @@ export const Card = (props: TCardProps) => {
     >
       <div
         className={cn(
-          'absolute right-1 top-1 flex justify-between gap-2 sm:-left-1 sm:-right-1 sm:-top-1'
+          'absolute bottom-1 left-1 right-1 flex justify-between gap-2 sm:-left-1 sm:-right-1 sm:-top-1'
         )}
       >
         {isOwner ? (
@@ -50,7 +50,7 @@ export const Card = (props: TCardProps) => {
             }
             className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full p-0 opacity-100 transition-all duration-300 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 sm:h-6 sm:w-6 sm:p-1 sm:opacity-0"
           >
-            <Trash />
+            <Trash className="h-4 w-4" />
           </Button>
         ) : (
           <Button
@@ -63,7 +63,7 @@ export const Card = (props: TCardProps) => {
             }
             className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-4 w-16 cursor-pointer rounded-full p-0 opacity-100 transition-all duration-300 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 sm:h-6 sm:w-6 sm:p-1 sm:opacity-0"
           >
-            <Eye />
+            <Eye className="h-4 w-4" />
           </Button>
         )}
         <Button
@@ -82,7 +82,8 @@ export const Card = (props: TCardProps) => {
             className={cn(
               isPinned
                 ? 'rotate-45 group-hover/button:rotate-0'
-                : 'group-hover/button:rotate-45'
+                : 'group-hover/button:rotate-45',
+              'h-4 w-4'
             )}
           />
         </Button>

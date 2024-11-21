@@ -96,7 +96,7 @@ export const Modal = (props: TProps) => {
           <DrawerFooter className="pt-2">
             {handleConfirm && (
               <Button
-                variant="default"
+                variant={variant}
                 onClick={handleConfirm}
               >
                 Confirm
