@@ -1,4 +1,4 @@
-import { Eye, Pin, Trash } from 'lucide-react'
+import { Eye, Forward, Pin, Trash } from 'lucide-react'
 
 import { Button } from '@/components/base'
 import {
@@ -28,6 +28,8 @@ export const Card = (props: TCardProps) => {
   const isEditable = isOwner || isCollaborator
   const dateLabel = getDateLabel(note.updatedAt?.seconds)
   const date = formatDate(note.updatedAt?.seconds || note.createdAt.seconds)
+  const buttonClassName =
+    'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 sm:opacity-0'
   return (
     <UICard
       className={cn(
@@ -51,7 +53,7 @@ export const Card = (props: TCardProps) => {
               })
             }
             containerClassName="flex-1 flex items-center"
-            className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full cursor-pointer rounded-full p-0 opacity-100 transition-all duration-300 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 sm:opacity-0"
+            className={cn(buttonClassName, 'hover:text-red-500')}
           >
             <Trash className="h-4 w-4" />
           </Button>
@@ -65,9 +67,21 @@ export const Card = (props: TCardProps) => {
               })
             }
             containerClassName="flex-1 flex items-center"
-            className="ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full cursor-pointer rounded-full p-0 opacity-100 transition-all duration-300 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 sm:opacity-0"
+            className={cn(buttonClassName, 'hover:text-red-500')}
           >
             <Eye className="h-4 w-4" />
+          </Button>
+        )}
+        {isEditable && (
+          <Button
+            variant="outline"
+            onClick={(event) => {
+              event.stopPropagation()
+            }}
+            containerClassName="flex-1 flex items-center"
+            className={buttonClassName}
+          >
+            <Forward className="h-4 w-4" />
           </Button>
         )}
         <Button
@@ -77,10 +91,11 @@ export const Card = (props: TCardProps) => {
           }
           containerClassName="flex-1 flex items-center"
           className={cn(
+            buttonClassName,
             isPinned
               ? 'hover:text-muted-foreground text-yellow-500 sm:opacity-100'
               : 'text-muted-foreground hover:text-yellow-500 sm:opacity-0',
-            'ring-offset-background focus:ring-ring bg-accent group/button h-5 w-full cursor-pointer rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100'
+            'group/button'
           )}
         >
           <Pin

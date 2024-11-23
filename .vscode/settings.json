@@ -23,6 +23,7 @@
     "containerClassName",
     "inputClassName",
     "labelClassName",
+    "buttonClassName",
     "leftNodeClassName",
     "rightNodeClassName"
   ],
