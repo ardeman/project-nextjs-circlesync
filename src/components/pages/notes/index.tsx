@@ -168,6 +168,7 @@ export const NotesPage = () => {
           ref={formRef}
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}
+          notes={notesData}
         />
       </Modal>
 

@@ -5,6 +5,7 @@ import { TNoteResponse } from '@/types'
 export type TFormProps = {
   selectedNote?: TNoteResponse
   setSelectedNote: Dispatch<SetStateAction<TNoteResponse | undefined>>
+  notes?: TNoteResponse[]
 }
 
 export type THandleDeleteNote = {

@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui'
 import { useUserData } from '@/hooks'
-import { cn } from '@/utils'
+import { cn, formatDate, getDateLabel } from '@/utils'
 
 import { TCardProps } from './type'
 
@@ -26,16 +26,8 @@ export const Card = (props: TCardProps) => {
   const isCollaborator = note.collaborators?.includes(userData?.uid)
   const isOwner = note.owner === userData?.uid
   const isEditable = isOwner || isCollaborator
-  const dateLabel = note.updatedAt?.seconds ? 'Edited' : 'Created'
-  const date = new Date(
-    (note.updatedAt?.seconds || note.createdAt.seconds) * 1000
-  ).toLocaleDateString('en-US', {
-    month: 'short',
-    day: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  const dateLabel = getDateLabel(note.updatedAt?.seconds)
+  const date = formatDate(note.updatedAt?.seconds || note.createdAt.seconds)
   return (
     <UICard
       className={cn(

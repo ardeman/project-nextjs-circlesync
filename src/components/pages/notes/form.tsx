@@ -7,12 +7,18 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { Textarea } from '@/components/base'
 import { useCreateNote, useDebounce, useUpdateNote } from '@/hooks'
 import { TNoteForm } from '@/types'
+import { formatDate, getDateLabel } from '@/utils'
 import { noteSchema } from '@/validations'
 
 import { TFormProps } from './type'
 
 export const Form = forwardRef((props: TFormProps, ref) => {
-  const { selectedNote } = props
+  const { selectedNote, notes } = props
+  const note = notes?.find((n) => n.id === selectedNote?.id)
+  const dateLabel = note ? getDateLabel(note.updatedAt?.seconds) : ''
+  const date = note
+    ? formatDate(note.updatedAt?.seconds || note.createdAt.seconds)
+    : ''
   const { mutate: mutateCreateNote } = useCreateNote()
   const { mutate: mutateUpdateNote } = useUpdateNote()
   const formMethods = useForm<TNoteForm>({
@@ -54,6 +60,9 @@ export const Form = forwardRef((props: TFormProps, ref) => {
 
   return (
     <FormProvider {...formMethods}>
+      <span className="absolute left-6 right-6 top-1 text-center text-xs">
+        {dateLabel} {date}
+      </span>
       <form
         onSubmit={onSubmit}
         className="space-y-4"
