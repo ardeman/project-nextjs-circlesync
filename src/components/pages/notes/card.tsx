@@ -26,6 +26,16 @@ export const Card = (props: TCardProps) => {
   const isCollaborator = note.collaborators?.includes(userData?.uid)
   const isOwner = note.owner === userData?.uid
   const isEditable = isOwner || isCollaborator
+  const dateLabel = note.updatedAt?.seconds ? 'Edited' : 'Created'
+  const date = new Date(
+    (note.updatedAt?.seconds || note.createdAt.seconds) * 1000
+  ).toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
   return (
     <UICard
       className={cn(
@@ -94,16 +104,7 @@ export const Card = (props: TCardProps) => {
       <CardHeader>
         <CardDescription className="flex justify-between text-xs">
           <span>
-            {note.updatedAt?.seconds ? 'Edited' : 'Created'}{' '}
-            {new Date(
-              (note.updatedAt?.seconds || note.createdAt.seconds) * 1000
-            ).toLocaleDateString('en-US', {
-              month: 'short',
-              day: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
+            {dateLabel} {date}
           </span>
           <span>{isEditable ? isCollaborator && 'Shared' : 'Read-only'}</span>
         </CardDescription>
