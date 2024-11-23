@@ -23,9 +23,9 @@ export const Card = (props: TCardProps) => {
     isPinned,
   } = props
   const { data: userData } = useUserData()
-  const isEditable =
-    note.owner === userData?.uid || note.collaborators?.includes(userData?.uid)
+  const isCollaborator = note.collaborators?.includes(userData?.uid)
   const isOwner = note.owner === userData?.uid
+  const isEditable = isOwner || isCollaborator
   return (
     <UICard
       className={cn(
@@ -105,7 +105,7 @@ export const Card = (props: TCardProps) => {
               minute: '2-digit',
             })}
           </span>
-          <span>{!isEditable && 'Read-only'}</span>
+          <span>{isEditable ? isCollaborator && 'Shared' : 'Read-only'}</span>
         </CardDescription>
         {note.title && <CardTitle>{note.title}</CardTitle>}
       </CardHeader>
