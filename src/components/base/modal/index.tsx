@@ -93,7 +93,7 @@ export const Modal = (props: TProps) => {
             </DrawerDescription>
           </DrawerHeader>
           <div className="p-4">{children}</div>
-          <DrawerFooter className="pt-2">
+          <DrawerFooter className="pb-6 pt-2">
             {handleConfirm && (
               <Button
                 variant={variant}

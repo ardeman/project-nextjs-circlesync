@@ -60,9 +60,6 @@ export const Form = forwardRef((props: TFormProps, ref) => {
 
   return (
     <FormProvider {...formMethods}>
-      <span className="absolute left-6 right-6 top-1 text-center text-xs">
-        {dateLabel} {date}
-      </span>
       <form
         onSubmit={onSubmit}
         className="space-y-4"
@@ -86,6 +83,9 @@ export const Form = forwardRef((props: TFormProps, ref) => {
           inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none"
         />
       </form>
+      <span className="absolute bottom-1 left-6 right-6 text-center text-xs">
+        {dateLabel} {date}
+      </span>
     </FormProvider>
   )
 })
