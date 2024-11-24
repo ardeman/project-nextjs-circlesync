@@ -45,6 +45,7 @@ export const NotesPage = () => {
 
   const handleConfirm = () => {
     setOpenConfirmation(false)
+    setOpenForm(false)
     if (!selectedConfirmation?.detail || !selectedConfirmation.kind) return
     if (selectedConfirmation?.kind === 'Delete') {
       mutateDeleteNote(selectedConfirmation.detail)
@@ -123,7 +124,6 @@ export const NotesPage = () => {
             .map((note) => (
               <Card
                 note={note}
-                isPinned={true}
                 handleDeleteNote={handleDeleteNote}
                 handleEditNote={handleEditNote}
                 handlePinNote={handlePinNote}
@@ -148,7 +148,6 @@ export const NotesPage = () => {
             .map((note) => (
               <Card
                 note={note}
-                isPinned={false}
                 handleDeleteNote={handleDeleteNote}
                 handleEditNote={handleEditNote}
                 handlePinNote={handlePinNote}
@@ -169,6 +168,9 @@ export const NotesPage = () => {
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}
           notes={notesData}
+          handleDeleteNote={handleDeleteNote}
+          handlePinNote={handlePinNote}
+          handleUnlinkNote={handleUnlinkNote}
         />
       </Modal>
 

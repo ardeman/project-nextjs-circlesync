@@ -6,6 +6,9 @@ export type TFormProps = {
   selectedNote?: TNoteResponse
   setSelectedNote: Dispatch<SetStateAction<TNoteResponse | undefined>>
   notes?: TNoteResponse[]
+  handleDeleteNote: (props: THandleDeleteNote) => void
+  handlePinNote: (props: THandlePinNote) => void
+  handleUnlinkNote: (props: THandleDeleteNote) => void
 }
 
 export type THandleDeleteNote = {
@@ -20,7 +23,6 @@ export type THandlePinNote = {
 }
 
 export type TCardProps = {
-  isPinned: boolean
   note: TNoteResponse
   handleEditNote: (note: TNoteResponse) => void
   handleDeleteNote: (props: THandleDeleteNote) => void
@@ -31,4 +33,15 @@ export type TCardProps = {
 export type TNoteConfirmation = {
   kind: string
   detail: TNoteResponse
+}
+
+export type TActionProps = {
+  isOwner: boolean
+  isEditable?: boolean
+  isPinned?: boolean
+  note: TNoteResponse
+  handleDeleteNote: (props: THandleDeleteNote) => void
+  handlePinNote: (props: THandlePinNote) => void
+  handleUnlinkNote: (props: THandleDeleteNote) => void
+  className?: string
 }

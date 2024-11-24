@@ -15,13 +15,14 @@ export const useDeleteNote = () => {
   return useMutation({
     mutationFn: (note: TNoteResponse) => deleteNote(note),
     onSuccess: (note: TNoteResponse) => {
+      const { isPinned: _, ...data } = note
       invalidateNotes()
       toast({
         description: 'Note deleted successfully',
         action: (
           <ToastAction
             altText="Undo"
-            onClick={() => mutateCreateNote(note)}
+            onClick={() => mutateCreateNote(data)}
           >
             Undo
           </ToastAction>
