@@ -17,21 +17,6 @@ import { Card } from './card'
 import { Form } from './form'
 import { TNoteConfirmation, THandleModifyNote, THandlePinNote } from './type'
 
-const handleShareNote = (props: THandleModifyNote) => {
-  const { event, note } = props
-  event.stopPropagation() // Prevents the Card's onClick from triggering
-
-  toast({
-    title: 'Feature in progress',
-    description: (
-      <p>
-        This feature is currently in progress.
-        <pre>{JSON.stringify(note, null, 2)}</pre>
-      </p>
-    ),
-  })
-}
-
 export const NotesPage = () => {
   const [openForm, setOpenForm] = useState(false)
   const [openConfirmation, setOpenConfirmation] = useState(false)
@@ -100,6 +85,22 @@ export const NotesPage = () => {
     const { event, note, isPinned } = props
     event.stopPropagation() // Prevents the Card's onClick from triggering
     mutatePinNote({ note, isPinned })
+  }
+
+  const handleShareNote = (props: THandleModifyNote) => {
+    const { event, note } = props
+    event.stopPropagation() // Prevents the Card's onClick from triggering
+
+    setOpenForm(false)
+    toast({
+      title: 'Feature in progress',
+      description: (
+        <p>
+          This feature is currently in progress.
+          <pre>{JSON.stringify(note, null, 2)}</pre>
+        </p>
+      ),
+    })
   }
 
   useEffect(() => {
