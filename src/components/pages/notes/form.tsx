@@ -11,17 +11,12 @@ import { formatDate, getDateLabel } from '@/utils'
 import { noteSchema } from '@/validations'
 
 import { Action } from './action'
+import { useNote } from './context'
 import { TFormProps } from './type'
 
 export const Form = forwardRef((props: TFormProps, ref) => {
-  const {
-    selectedNote,
-    notes,
-    handleDeleteNote,
-    handlePinNote,
-    handleUnlinkNote,
-    handleShareNote,
-  } = props
+  const { notes } = props
+  const { selectedNote } = useNote()
   const note = notes?.find((n) => n.id === selectedNote?.id)
   const dateLabel = note ? getDateLabel(note.updatedAt?.seconds) : ''
   const date = note
@@ -83,10 +78,6 @@ export const Form = forwardRef((props: TFormProps, ref) => {
             isOwner={isOwner}
             isEditable={isEditable}
             isPinned={isPinned}
-            handleDeleteNote={handleDeleteNote}
-            handlePinNote={handlePinNote}
-            handleUnlinkNote={handleUnlinkNote}
-            handleShareNote={handleShareNote}
           />
         )}
         <Textarea

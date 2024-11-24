@@ -9,17 +9,12 @@ import { useUserData } from '@/hooks'
 import { cn, formatDate, getDateLabel } from '@/utils'
 
 import { Action } from './action'
+import { useNote } from './context'
 import { TCardProps } from './type'
 
 export const Card = (props: TCardProps) => {
-  const {
-    note,
-    handleEditNote,
-    handleDeleteNote,
-    handlePinNote,
-    handleUnlinkNote,
-    handleShareNote,
-  } = props
+  const { note } = props
+  const { handleEditNote } = useNote()
   const { data: userData } = useUserData()
   const isPinned = note.isPinned
   const isCollaborator = note.collaborators?.includes(userData?.uid)
@@ -42,10 +37,6 @@ export const Card = (props: TCardProps) => {
         isOwner={isOwner}
         isEditable={isEditable}
         isPinned={isPinned}
-        handleDeleteNote={handleDeleteNote}
-        handlePinNote={handlePinNote}
-        handleUnlinkNote={handleUnlinkNote}
-        handleShareNote={handleShareNote}
       />
       <CardHeader className="pb-4">
         <CardDescription className="flex justify-between text-xs">

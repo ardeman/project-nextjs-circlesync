@@ -1,15 +1,9 @@
-import { Dispatch, MouseEvent, SetStateAction } from 'react'
+import { MouseEvent } from 'react'
 
 import { TNoteResponse } from '@/types'
 
 export type TFormProps = {
-  selectedNote?: TNoteResponse
-  setSelectedNote: Dispatch<SetStateAction<TNoteResponse | undefined>>
   notes?: TNoteResponse[]
-  handleDeleteNote: (props: THandleModifyNote) => void
-  handlePinNote: (props: THandlePinNote) => void
-  handleUnlinkNote: (props: THandleModifyNote) => void
-  handleShareNote: (props: THandleModifyNote) => void
 }
 
 export type THandleModifyNote = {
@@ -23,11 +17,6 @@ export type THandlePinNote = {
 
 export type TCardProps = {
   note: TNoteResponse
-  handleEditNote: (note: TNoteResponse) => void
-  handleDeleteNote: (props: THandleModifyNote) => void
-  handlePinNote: (props: THandlePinNote) => void
-  handleUnlinkNote: (props: THandleModifyNote) => void
-  handleShareNote: (props: THandleModifyNote) => void
 }
 
 export type TNoteConfirmation = {
@@ -40,9 +29,5 @@ export type TActionProps = {
   isEditable?: boolean
   isPinned?: boolean
   note: TNoteResponse
-  handleDeleteNote: (props: THandleModifyNote) => void
-  handlePinNote: (props: THandlePinNote) => void
-  handleUnlinkNote: (props: THandleModifyNote) => void
-  handleShareNote: (props: THandleModifyNote) => void
   className?: string
 }

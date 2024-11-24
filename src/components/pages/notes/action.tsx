@@ -3,20 +3,13 @@ import { Eye, Forward, Pin, Trash } from 'lucide-react'
 import { Button } from '@/components/base'
 import { cn } from '@/utils'
 
+import { useNote } from './context'
 import { TActionProps } from './type'
 
 export const Action = (props: TActionProps) => {
-  const {
-    isOwner,
-    isEditable,
-    isPinned,
-    note,
-    handleDeleteNote,
-    handlePinNote,
-    handleUnlinkNote,
-    handleShareNote,
-    className,
-  } = props
+  const { isOwner, isEditable, isPinned, note, className } = props
+  const { handleDeleteNote, handlePinNote, handleUnlinkNote, handleShareNote } =
+    useNote()
   const buttonClassName =
     'ring-offset-background focus:ring-ring bg-accent text-muted-foreground h-5 w-full rounded-full p-0 opacity-100 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:pointer-events-none group-hover/card:opacity-100 group-[.is-shown]/form:opacity-100 sm:opacity-0'
 
