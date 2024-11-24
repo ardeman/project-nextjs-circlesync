@@ -83,7 +83,7 @@ export const Form = forwardRef((props: TFormProps, ref) => {
           inputClassName="border-none ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 rounded-none p-0 focus-visible:shadow-none focus:outline-none"
         />
       </form>
-      <span className="absolute bottom-1 left-6 right-6 text-center text-xs">
+      <span className="text-muted-foreground absolute bottom-1 left-6 right-6 text-center text-xs">
         {dateLabel} {date}
       </span>
     </FormProvider>

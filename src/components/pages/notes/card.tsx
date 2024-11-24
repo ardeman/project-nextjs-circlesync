@@ -108,18 +108,18 @@ export const Card = (props: TCardProps) => {
           />
         </Button>
       </div>
-      <CardHeader>
+      <CardHeader className="pb-4">
         <CardDescription className="flex justify-between text-xs">
           <span>
             {dateLabel} {date}
           </span>
           <span>{isEditable ? isCollaborator && 'Shared' : 'Read-only'}</span>
         </CardDescription>
-        {note.title && <CardTitle>{note.title}</CardTitle>}
+        {note.title && <CardTitle className="text-xl">{note.title}</CardTitle>}
       </CardHeader>
       {note.content && (
         <CardContent>
-          <p className="whitespace-pre-wrap">{note.content}</p>
+          <p className="whitespace-pre-wrap text-sm">{note.content}</p>
         </CardContent>
       )}
     </UICard>
