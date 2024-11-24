@@ -20,6 +20,7 @@ export const Form = forwardRef((props: TFormProps, ref) => {
     handleDeleteNote,
     handlePinNote,
     handleUnlinkNote,
+    handleShareNote,
   } = props
   const note = notes?.find((n) => n.id === selectedNote?.id)
   const dateLabel = note ? getDateLabel(note.updatedAt?.seconds) : ''
@@ -85,6 +86,7 @@ export const Form = forwardRef((props: TFormProps, ref) => {
             handleDeleteNote={handleDeleteNote}
             handlePinNote={handlePinNote}
             handleUnlinkNote={handleUnlinkNote}
+            handleShareNote={handleShareNote}
           />
         )}
         <Textarea

@@ -14,6 +14,7 @@ export const Action = (props: TActionProps) => {
     handleDeleteNote,
     handlePinNote,
     handleUnlinkNote,
+    handleShareNote,
     className,
   } = props
   const buttonClassName =
@@ -54,7 +55,10 @@ export const Action = (props: TActionProps) => {
         <Button
           variant="outline"
           onClick={(event) => {
-            event.stopPropagation()
+            handleShareNote({
+              event,
+              note,
+            })
           }}
           containerClassName="flex-1 flex items-center"
           className={buttonClassName}

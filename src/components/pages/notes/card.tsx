@@ -18,6 +18,7 @@ export const Card = (props: TCardProps) => {
     handleDeleteNote,
     handlePinNote,
     handleUnlinkNote,
+    handleShareNote,
   } = props
   const { data: userData } = useUserData()
   const isPinned = note.isPinned
@@ -44,6 +45,7 @@ export const Card = (props: TCardProps) => {
         handleDeleteNote={handleDeleteNote}
         handlePinNote={handlePinNote}
         handleUnlinkNote={handleUnlinkNote}
+        handleShareNote={handleShareNote}
       />
       <CardHeader className="pb-4">
         <CardDescription className="flex justify-between text-xs">

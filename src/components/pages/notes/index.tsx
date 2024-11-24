@@ -4,12 +4,33 @@ import Masonry from 'masonry-layout'
 import { useEffect, useRef, useState } from 'react'
 
 import { Button, Modal } from '@/components/base'
-import { useDeleteNote, useGetNotes, usePinNote, useUnlinkNote } from '@/hooks'
+import {
+  toast,
+  useDeleteNote,
+  useGetNotes,
+  usePinNote,
+  useUnlinkNote,
+} from '@/hooks'
 import { TNoteResponse } from '@/types'
 
 import { Card } from './card'
 import { Form } from './form'
-import { TNoteConfirmation, THandleDeleteNote, THandlePinNote } from './type'
+import { TNoteConfirmation, THandleModifyNote, THandlePinNote } from './type'
+
+const handleShareNote = (props: THandleModifyNote) => {
+  const { event, note } = props
+  event.stopPropagation() // Prevents the Card's onClick from triggering
+
+  toast({
+    title: 'Feature in progress',
+    description: (
+      <p>
+        This feature is currently in progress.
+        <pre>{JSON.stringify(note, null, 2)}</pre>
+      </p>
+    ),
+  })
+}
 
 export const NotesPage = () => {
   const [openForm, setOpenForm] = useState(false)
@@ -55,7 +76,7 @@ export const NotesPage = () => {
     }
   }
 
-  const handleDeleteNote = (props: THandleDeleteNote) => {
+  const handleDeleteNote = (props: THandleModifyNote) => {
     const { event, note } = props
     event.stopPropagation() // Prevents the Card's onClick from triggering
     setOpenConfirmation(true)
@@ -65,7 +86,7 @@ export const NotesPage = () => {
     })
   }
 
-  const handleUnlinkNote = (props: THandleDeleteNote) => {
+  const handleUnlinkNote = (props: THandleModifyNote) => {
     const { event, note } = props
     event.stopPropagation() // Prevents the Card's onClick from triggering
     setOpenConfirmation(true)
@@ -128,6 +149,7 @@ export const NotesPage = () => {
                 handleEditNote={handleEditNote}
                 handlePinNote={handlePinNote}
                 handleUnlinkNote={handleUnlinkNote}
+                handleShareNote={handleShareNote}
                 key={note.id}
               />
             ))}
@@ -152,6 +174,7 @@ export const NotesPage = () => {
                 handleEditNote={handleEditNote}
                 handlePinNote={handlePinNote}
                 handleUnlinkNote={handleUnlinkNote}
+                handleShareNote={handleShareNote}
                 key={note.id}
               />
             ))}
@@ -171,6 +194,7 @@ export const NotesPage = () => {
           handleDeleteNote={handleDeleteNote}
           handlePinNote={handlePinNote}
           handleUnlinkNote={handleUnlinkNote}
+          handleShareNote={handleShareNote}
         />
       </Modal>
 
