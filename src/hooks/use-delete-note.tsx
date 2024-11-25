@@ -15,7 +15,7 @@ export const useDeleteNote = () => {
   return useMutation({
     mutationFn: (note: TNoteResponse) => deleteNote(note),
     onSuccess: (note: TNoteResponse) => {
-      const { isPinned: _, ...data } = note
+      const { isPinned: _isPinned, id: _id, ...data } = note
       invalidateNotes()
       toast({
         description: 'Note deleted successfully',
