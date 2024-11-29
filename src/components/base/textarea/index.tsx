@@ -64,7 +64,18 @@ export const Textarea = <TFormValues extends Record<string, unknown>>(
                   inputClassName
                 )}
                 onClick={onClick}
+                onInput={(e) => {
+                  const target = e.target as HTMLTextAreaElement
+                  target.style.height = 'auto'
+                  target.style.height = `${target.scrollHeight}px`
+                }}
                 {...field}
+                ref={(textarea) => {
+                  if (textarea) {
+                    textarea.style.height = 'auto'
+                    textarea.style.height = `${textarea.scrollHeight}px`
+                  }
+                }}
                 {...rest}
               />
             </FormControl>

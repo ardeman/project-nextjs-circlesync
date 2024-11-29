@@ -51,7 +51,7 @@ export const Modal = (props: TProps) => {
           if (!isOpen) handleClose() // Trigger handleClose when closing
         }}
       >
-        <DialogContent className="max-w-md rounded-lg">
+        <DialogContent className="max-h-dvh max-w-md overflow-y-auto rounded-lg">
           <DialogHeader className={title || description ? '' : 'hidden'}>
             <DialogTitle className={title ? '' : 'hidden'}>{title}</DialogTitle>
             <DialogDescription className={description ? '' : 'hidden'}>
@@ -84,7 +84,7 @@ export const Modal = (props: TProps) => {
       }}
     >
       <DrawerContent className="h-dvh rounded-t-lg">
-        <div className="relative overflow-y-auto">
+        <div className="overflow-y-auto">
           <DrawerHeader
             className={cn(title || description ? '' : 'hidden', 'text-left')}
           >
@@ -93,7 +93,7 @@ export const Modal = (props: TProps) => {
               {description}
             </DrawerDescription>
           </DrawerHeader>
-          <div className="p-4">{children}</div>
+          <div className="grid gap-4 p-4">{children}</div>
           <DrawerFooter className="pb-6 pt-2">
             {handleConfirm && (
               <Button
