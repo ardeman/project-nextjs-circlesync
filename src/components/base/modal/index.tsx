@@ -83,7 +83,7 @@ export const Modal = (props: TProps) => {
         if (!isOpen) handleClose() // Trigger handleClose when closing
       }}
     >
-      <DrawerContent className="h-dvh rounded-t-lg">
+      <DrawerContent className="h-fit max-h-dvh rounded-t-lg">
         <div className="overflow-y-auto">
           <DrawerHeader
             className={cn(title || description ? '' : 'hidden', 'text-left')}
