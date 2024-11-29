@@ -93,7 +93,7 @@ export const Modal = (props: TProps) => {
               {description}
             </DrawerDescription>
           </DrawerHeader>
-          <div className="grid gap-4 p-4">{children}</div>
+          <div className="grid gap-2 p-4">{children}</div>
           <DrawerFooter className="pb-6 pt-2">
             {handleConfirm && (
               <Button
