@@ -9,6 +9,7 @@ import { useGetNotes } from '@/hooks'
 import { Card } from './card'
 import { useNote } from './context'
 import { Form } from './form'
+import { Share } from './share'
 
 export const Wrapper = () => {
   const {
@@ -16,6 +17,8 @@ export const Wrapper = () => {
     setOpenForm,
     openConfirmation,
     setOpenConfirmation,
+    openShare,
+    setOpenShare,
     selectedConfirmation,
     handleFormClose,
     handleCreateNote,
@@ -120,6 +123,13 @@ export const Wrapper = () => {
         {selectedConfirmation?.detail.content && (
           <p>{selectedConfirmation.detail.content}</p>
         )}
+      </Modal>
+
+      <Modal
+        open={openShare}
+        setOpen={setOpenShare}
+      >
+        <Share />
       </Modal>
     </main>
   )

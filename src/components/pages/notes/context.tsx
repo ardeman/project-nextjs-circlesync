@@ -9,7 +9,7 @@ import {
   useState,
 } from 'react'
 
-import { toast, useDeleteNote, usePinNote, useUnlinkNote } from '@/hooks'
+import { useDeleteNote, usePinNote, useUnlinkNote } from '@/hooks'
 import { TNoteResponse } from '@/types'
 
 import { THandleModifyNote, THandlePinNote, TNoteConfirmation } from './type'
@@ -19,6 +19,8 @@ type NoteContextValue = {
   setOpenForm: Dispatch<SetStateAction<boolean>>
   openConfirmation: boolean
   setOpenConfirmation: Dispatch<SetStateAction<boolean>>
+  openShare: boolean
+  setOpenShare: Dispatch<SetStateAction<boolean>>
   selectedNote: TNoteResponse | undefined
   setSelectedNote: Dispatch<SetStateAction<TNoteResponse | undefined>>
   selectedConfirmation: TNoteConfirmation | undefined
@@ -42,6 +44,7 @@ const NoteProvider = (props: PropsWithChildren) => {
   const { children } = props
   const [openForm, setOpenForm] = useState<boolean>(false)
   const [openConfirmation, setOpenConfirmation] = useState<boolean>(false)
+  const [openShare, setOpenShare] = useState<boolean>(false)
   const [selectedNote, setSelectedNote] = useState<TNoteResponse>()
   const [selectedConfirmation, setSelectedConfirmation] =
     useState<TNoteConfirmation>()
@@ -109,17 +112,8 @@ const NoteProvider = (props: PropsWithChildren) => {
   const handleShareNote = (props: THandleModifyNote) => {
     const { event, note } = props
     event.stopPropagation() // Prevents the Card's onClick from triggering
-
-    setOpenForm(false)
-    toast({
-      title: 'Feature in progress',
-      description: (
-        <p>
-          This feature is currently in progress.
-          <pre>{JSON.stringify(note, null, 2)}</pre>
-        </p>
-      ),
-    })
+    setOpenShare(true)
+    setSelectedNote(note)
   }
 
   return (
@@ -129,6 +123,8 @@ const NoteProvider = (props: PropsWithChildren) => {
         setOpenForm,
         openConfirmation,
         setOpenConfirmation,
+        openShare,
+        setOpenShare,
         selectedNote,
         setSelectedNote,
         selectedConfirmation,

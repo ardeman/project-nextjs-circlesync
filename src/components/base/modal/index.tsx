@@ -84,7 +84,7 @@ export const Modal = (props: TProps) => {
       }}
     >
       <DrawerContent className="h-dvh rounded-t-lg">
-        <div className="overflow-y-auto">
+        <div className="relative overflow-y-auto">
           <DrawerHeader
             className={cn(title || description ? '' : 'hidden', 'text-left')}
           >
