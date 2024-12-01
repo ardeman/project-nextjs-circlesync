@@ -28,7 +28,7 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIRCLE_SYNC_7D314 }}
         run: |
           echo $FIREBASE_SERVICE_ACCOUNT > ${HOME}/firebase-service-account.json
-          firebase login:ci --no-localhost --account ${HOME}/firebase-service-account.json)
+          firebase login:ci --no-localhost --account ${HOME}/firebase-service-account.json
 
       - name: Deploy Firestore Rules and Indexes
         run: firebase deploy --only firestore
