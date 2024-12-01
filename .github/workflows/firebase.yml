@@ -26,7 +26,7 @@ jobs:
       - name: Authenticate to Firebase
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIRCLE_SYNC_7D314 }}
-        run: echo $FIREBASE_SERVICE_ACCOUNT | base64 --decode > ${HOME}/firebase-key.json
+        run: echo $FIREBASE_SERVICE_ACCOUNT | base64 -d > ${HOME}/firebase-key.json
 
       - name: Set Firebase credentials
         run: firebase auth:import ${HOME}/firebase-key.json
