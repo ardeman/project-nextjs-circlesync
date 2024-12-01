@@ -1,9 +1,8 @@
 name: Firebase Firestore Deploy
 
 on:
-  push:
-    branches:
-      - main # Adjust the branch to trigger deploy on, such as 'main' or 'develop'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -24,7 +23,6 @@ jobs:
       - name: Install dependencies
         run: |
           npm install -g firebase-tools
-          npm ci  # If you have a package.json with dependencies
 
       # Step 4: Authenticate Firebase using the service account key
       - name: Authenticate Firebase
