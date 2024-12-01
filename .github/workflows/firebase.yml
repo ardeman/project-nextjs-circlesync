@@ -1,35 +1,42 @@
-name: Deploy Firestore Rules and Indexes
+name: Firebase Firestore Deploy
 
 on:
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  id-token: write
+  push:
+    branches:
+      - main # Adjust the branch to trigger deploy on, such as 'main' or 'develop'
 
 jobs:
-  deploy-firestore:
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      # Step 1: Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v2
 
+      # Step 2: Set up Node.js (Firebase CLI needs Node.js)
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v2
         with:
-          node-version: '20'
+          node-version: '16' # Use the appropriate Node.js version
 
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          npm install -g firebase-tools
+          npm ci  # If you have a package.json with dependencies
 
-      - name: Authenticate to Firebase
+      # Step 4: Authenticate Firebase using the service account key
+      - name: Authenticate Firebase
         env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIRCLE_SYNC_7D314 }}
-        run: echo $FIREBASE_SERVICE_ACCOUNT | base64 -d > ${HOME}/firebase-key.json
+          FIREBASE_SERVICE_ACCOUNT_CIRCLE_SYNC_7D314: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIRCLE_SYNC_7D314 }}
+        run: |
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIRCLE_SYNC_7D314 }}" > "${HOME}/firebase-service-account.json"
+          firebase use --add
 
-      - name: Set Firebase credentials
-        run: firebase auth:import ${HOME}/firebase-key.json
-
-      - name: Deploy Firestore Rules and Indexes
-        run: firebase deploy --only firestore
+      # Step 5: Deploy Firestore (Firestore Rules or other Firestore-related tasks)
+      - name: Deploy Firestore
+        run: |
+          firebase deploy --only firestore
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: '${HOME}/firebase-service-account.json'
