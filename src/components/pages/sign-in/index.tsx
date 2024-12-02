@@ -18,7 +18,6 @@ import {
   CardTitle,
 } from '@/components/ui'
 import { metadata } from '@/constants'
-import { useFirebase } from '@/contexts'
 import { useLogin, useLoginGoogle } from '@/hooks'
 import { TSignInRequest } from '@/types'
 import { signInSchema } from '@/validations'
@@ -26,7 +25,6 @@ import { signInSchema } from '@/validations'
 export const SignInPage: FC = () => {
   const [disabled, setDisabled] = useState(false)
   const [passwordType, setPasswordType] = useState('password')
-  const { isLoading } = useFirebase()
   const formMethods = useForm<TSignInRequest>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -123,7 +121,7 @@ export const SignInPage: FC = () => {
                 }
               />
               <Button
-                disabled={isLoading || disabled}
+                disabled={disabled}
                 isLoading={isLoginPending}
                 type="submit"
               >
@@ -137,7 +135,7 @@ export const SignInPage: FC = () => {
             containerClassName="w-full"
             variant="outline"
             onClick={handleLoginGoogle}
-            disabled={isLoading || disabled}
+            disabled={disabled}
             isLoading={isLoginGooglePending}
           >
             <FcGoogle className="text-xl" />

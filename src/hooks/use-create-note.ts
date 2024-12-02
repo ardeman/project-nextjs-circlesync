@@ -1,17 +1,28 @@
 import { useMutation } from '@tanstack/react-query'
+import { addDoc, collection } from 'firebase/firestore'
+import { useFirestore, useUser } from 'reactfire'
 
-import { createNote } from '@/firestore'
 import { TCreateNoteRequest } from '@/types'
 
-import { useQueryActions } from './use-query-actions'
 import { toast } from './use-toast'
 
 export const useCreateNote = () => {
-  const { invalidateQueries: invalidateNotes } = useQueryActions(['notes'])
+  const firestore = useFirestore()
+  const { data: user } = useUser()
   return useMutation({
-    mutationFn: (data: TCreateNoteRequest) => createNote(data),
-    onSuccess: () => {
-      invalidateNotes()
+    mutationFn: async (data: TCreateNoteRequest) => {
+      if (!firestore) {
+        throw new Error('Firebase Firestore is not initialized.')
+      }
+      if (!user) {
+        throw new Error('No user is currently signed in.')
+      }
+      const ref = collection(firestore, 'notes')
+      return await addDoc(ref, {
+        ...data,
+        owner: user.uid,
+        createdAt: new Date(),
+      })
     },
     onError: (error: unknown) => {
       const message = String(error)

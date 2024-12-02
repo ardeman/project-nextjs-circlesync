@@ -1,22 +1,32 @@
 import { useMutation } from '@tanstack/react-query'
+import { deleteDoc, doc } from 'firebase/firestore'
+import { useFirestore, useUser } from 'reactfire'
 
 import { ToastAction } from '@/components/ui'
-import { deleteNote } from '@/firestore'
 import { TNoteResponse } from '@/types'
 
 import { useCreateNote } from './use-create-note'
-import { useQueryActions } from './use-query-actions'
 import { toast } from './use-toast'
 
 export const useDeleteNote = () => {
-  const { invalidateQueries: invalidateNotes } = useQueryActions(['notes'])
+  const firestore = useFirestore()
+  const { data: user } = useUser()
   const { mutate: mutateCreateNote } = useCreateNote()
-
   return useMutation({
-    mutationFn: (note: TNoteResponse) => deleteNote(note),
+    mutationFn: async (note: TNoteResponse) => {
+      if (!firestore) {
+        throw new Error('Firebase Firestore is not initialized.')
+      }
+      if (!user) {
+        throw new Error('No user is currently signed in.')
+      }
+      const { id } = note
+      const ref = doc(firestore, 'notes', id)
+      await deleteDoc(ref)
+      return note
+    },
     onSuccess: (note: TNoteResponse) => {
       const { isPinned: _isPinned, id: _id, ...data } = note
-      invalidateNotes()
       toast({
         description: 'Note deleted successfully',
         action: (

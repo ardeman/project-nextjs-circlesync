@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useUser } from 'reactfire'
 
 import { ModeToggle, Input } from '@/components/base'
 import {
@@ -20,7 +21,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui'
-import { toast, useLogout, useUserData } from '@/hooks'
+import { toast, useLogout } from '@/hooks'
 import { TSearchRequest } from '@/types'
 import { cn } from '@/utils'
 import { searchSchema } from '@/validations'
@@ -32,7 +33,7 @@ import { TProps } from './type'
 export const Navbar = (props: TProps) => {
   const { className } = props
   const { push } = useRouter()
-  const { data: userData } = useUserData()
+  const { data: user } = useUser()
   const formMethods = useForm<TSearchRequest>({
     resolver: zodResolver(searchSchema),
     defaultValues: {
@@ -99,10 +100,10 @@ export const Navbar = (props: TProps) => {
               size="icon"
               className="rounded-full"
             >
-              {userData?.photoURL ? (
+              {user?.photoURL ? (
                 <Image
-                  src={userData.photoURL}
-                  alt={userData.displayName}
+                  src={user.photoURL}
+                  alt={user.displayName || ''}
                   width={40}
                   height={40}
                   className="select-none rounded-full"
@@ -115,7 +116,7 @@ export const Navbar = (props: TProps) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>
-              {userData?.displayName || userData?.email}
+              {user?.displayName || user?.email}
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {userMenus.map((menu, index) => (

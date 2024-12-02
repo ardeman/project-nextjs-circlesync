@@ -5,6 +5,7 @@ import { BadgeAlert, BadgeCheck } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { FcGoogle } from 'react-icons/fc'
+import { useUser } from 'reactfire'
 
 import { Button, Input } from '@/components/base'
 import {
@@ -21,7 +22,6 @@ import {
 } from '@/components/ui'
 import { metadata } from '@/constants'
 import {
-  useAuthUser,
   useEmailVerification,
   useLinkGoogle,
   useResetPassword,
@@ -36,17 +36,17 @@ export const AccountSettingsPage = () => {
   const [timerEmailVerify, setTimerEmailVerify] = useState<number>()
   const [timerUpdateEmail, setTimerUpdateEmail] = useState<number>()
   const [timerSetPassword, setTimerSetPassword] = useState<number>()
-  const { data: authData } = useAuthUser()
-  const userGoogleProvider = authData?.providerData.find(
+  const { data: user } = useUser()
+  const userGoogleProvider = user?.providerData.find(
     (provider) => provider.providerId === 'google.com'
   )
-  const userPasswordProvider = authData?.providerData.find(
+  const userPasswordProvider = user?.providerData.find(
     (provider) => provider.providerId === 'password'
   )
   const formMethods = useForm<TEmailRequest>({
     resolver: zodResolver(emailSchema),
     values: {
-      email: authData?.email || '',
+      email: user?.email || '',
     },
   })
   const { handleSubmit, watch } = formMethods
@@ -177,16 +177,16 @@ export const AccountSettingsPage = () => {
                 label="Email"
                 name="email"
                 disabled={
-                  disabled || !authData?.emailVerified || !userPasswordProvider
+                  disabled || !user?.emailVerified || !userPasswordProvider
                 }
                 placeholder="Display Name"
                 className="w-full"
                 rightNode={({ className }) =>
-                  watchEmail === authData?.email && (
+                  watchEmail === user?.email && (
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          {authData?.emailVerified ? (
+                          {user?.emailVerified ? (
                             <BadgeCheck
                               className={cn(
                                 className,
@@ -203,7 +203,7 @@ export const AccountSettingsPage = () => {
                           )}
                         </TooltipTrigger>
                         <TooltipContent>
-                          {authData?.emailVerified
+                          {user?.emailVerified
                             ? 'Email verified'
                             : 'Email not verified'}
                         </TooltipContent>
@@ -212,7 +212,7 @@ export const AccountSettingsPage = () => {
                   )
                 }
               />
-              {!authData?.emailVerified && (
+              {!user?.emailVerified && (
                 <Button
                   className="w-fit"
                   disabled={disabled || !!timerEmailVerify}
@@ -240,7 +240,7 @@ export const AccountSettingsPage = () => {
                 disabled={
                   isUpdateEmailPending ||
                   disabled ||
-                  !authData?.emailVerified ||
+                  !user?.emailVerified ||
                   !!timerUpdateEmail ||
                   !userPasswordProvider
                 }
