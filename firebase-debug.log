@@ -1,0 +1,17 @@
+[debug] [2024-12-09T01:17:20.354Z] ----------------------------------------------------------------------
+[debug] [2024-12-09T01:17:20.359Z] Command:       /Users/ardeman/.nvm/versions/node/v22.11.0/bin/node /Users/ardeman/.nvm/versions/node/v22.11.0/bin/firebase deploy --only firestore
+[debug] [2024-12-09T01:17:20.359Z] CLI Version:   13.28.0
+[debug] [2024-12-09T01:17:20.359Z] Platform:      darwin
+[debug] [2024-12-09T01:17:20.359Z] Node Version:  v22.11.0
+[debug] [2024-12-09T01:17:20.360Z] Time:          Mon Dec 09 2024 09:17:20 GMT+0800 (Philippine Standard Time)
+[debug] [2024-12-09T01:17:20.360Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-12-09T01:17:20.361Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2024-12-09T01:17:20.415Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-12-09T01:17:20.415Z] > authorizing via signed-in user (are.theman@gmail.com)
+[debug] [2024-12-09T01:17:20.415Z] [iam] checking project circle-sync-7d314 for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get"]
+[debug] [2024-12-09T01:17:20.415Z] Checked if tokens are valid: false, expires at: 1733582521148
+[debug] [2024-12-09T01:17:20.415Z] Checked if tokens are valid: false, expires at: 1733582521148
+[debug] [2024-12-09T01:17:20.415Z] > refreshing access token with scopes: []
+[debug] [2024-12-09T01:17:20.415Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2024-12-09T01:17:20.416Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
