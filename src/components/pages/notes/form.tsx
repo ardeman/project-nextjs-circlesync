@@ -24,9 +24,9 @@ export const Form = forwardRef((props: TFormProps, ref) => {
     : ''
   const { data: userData } = useUserData()
   const isPinned = note?.isPinned
-  const isCollaborator = note?.collaborators?.includes(userData?.uid)
+  const canWrite = note?.permissions?.write.includes(userData?.uid)
   const isOwner = note?.owner === userData?.uid
-  const isEditable = isOwner || isCollaborator
+  const isEditable = isOwner || canWrite
   const { mutate: mutateCreateNote } = useCreateNote()
   const { mutate: mutateUpdateNote } = useUpdateNote()
   const formMethods = useForm<TNoteForm>({

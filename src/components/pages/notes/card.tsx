@@ -17,9 +17,9 @@ export const Card = (props: TCardProps) => {
   const { handleEditNote } = useNote()
   const { data: userData } = useUserData()
   const isPinned = note.isPinned
-  const isCollaborator = note.collaborators?.includes(userData?.uid)
+  const canWrite = note.permissions?.write?.includes(userData?.uid)
   const isOwner = note.owner === userData?.uid
-  const isEditable = isOwner || isCollaborator
+  const isEditable = isOwner || canWrite
   const dateLabel = getDateLabel(note.updatedAt?.seconds)
   const date = formatDate(note.updatedAt?.seconds || note.createdAt.seconds)
 
@@ -43,7 +43,7 @@ export const Card = (props: TCardProps) => {
           <span>
             {dateLabel} {date}
           </span>
-          <span>{isEditable ? isCollaborator && 'Shared' : 'Read-only'}</span>
+          <span>{isEditable ? canWrite && 'Shared' : 'Read-only'}</span>
         </CardDescription>
         {note.title && <CardTitle className="text-xl">{note.title}</CardTitle>}
       </CardHeader>

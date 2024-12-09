@@ -6,7 +6,6 @@ import {
   doc,
   updateDoc,
   where,
-  or,
   deleteDoc,
 } from 'firebase/firestore'
 
@@ -28,11 +27,7 @@ export const fetchNotes = async () => {
 
   const notesQuery = query(
     collection(firestore, 'notes'),
-    or(
-      where('owner', '==', auth.currentUser.uid),
-      where('collaborators', 'array-contains', auth.currentUser.uid),
-      where('spectators', 'array-contains', auth.currentUser.uid)
-    )
+    where('permission.readers', 'array-contains', auth.currentUser.uid)
   )
   const snap = await getDocs(notesQuery)
 
@@ -58,6 +53,10 @@ export const createNote = async (data: TCreateNoteRequest) => {
   return await addDoc(ref, {
     ...data,
     owner: auth.currentUser.uid,
+    permissions: {
+      read: [auth.currentUser.uid],
+      write: [auth.currentUser.uid],
+    },
     createdAt: new Date(),
   })
 }
@@ -113,7 +112,7 @@ export const deleteNote = async (note: TNoteResponse) => {
 }
 
 export const unlinkNote = async (note: TNoteResponse) => {
-  const { id, collaborators, spectators } = note
+  const { id, permissions } = note
   if (!firestore) {
     throw new Error('Firebase Firestore is not initialized.')
   }
@@ -121,9 +120,11 @@ export const unlinkNote = async (note: TNoteResponse) => {
     throw new Error('No user is currently signed in.')
   }
   const data = {
-    collaborators:
-      collaborators?.filter((c) => c !== auth?.currentUser?.uid) || [],
-    spectators: spectators?.filter((s) => s !== auth?.currentUser?.uid) || [],
+    permissions: {
+      read: permissions?.read.filter((r) => r !== auth?.currentUser?.uid) || [],
+      write:
+        permissions?.write.filter((w) => w !== auth?.currentUser?.uid) || [],
+    },
   }
 
   const ref = doc(firestore, 'notes', id)

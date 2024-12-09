@@ -14,8 +14,8 @@ export const Share = () => {
   const formMethods = useForm<TShareForm>({
     resolver: zodResolver(shareSchema),
     values: {
-      collaborators: selectedNote?.collaborators || [],
-      spectators: selectedNote?.spectators || [],
+      writers: selectedNote?.permissions?.write || [],
+      readers: selectedNote?.permissions?.read || [],
     },
   })
   const { handleSubmit } = formMethods
