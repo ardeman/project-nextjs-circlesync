@@ -7,6 +7,7 @@ import {
   updateDoc,
   where,
   deleteDoc,
+  FieldPath,
 } from 'firebase/firestore'
 
 import { auth, firestore } from '@/configs'
@@ -27,7 +28,11 @@ export const fetchNotes = async () => {
 
   const notesQuery = query(
     collection(firestore, 'notes'),
-    where('permission.readers', 'array-contains', auth.currentUser.uid)
+    where(
+      new FieldPath('permissions', 'read'),
+      'array-contains',
+      auth.currentUser.uid
+    )
   )
   const snap = await getDocs(notesQuery)
 

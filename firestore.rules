@@ -15,11 +15,11 @@ service cloud.firestore {
     }
 
     function canRead(readers) {
-      return readers.hasAny(request.auth.uid)
+      return readers.hasAny([request.auth.uid])
     }
 
     function canWrite(writers) {
-      return writers.hasAny(request.auth.uid)
+      return writers.hasAny([request.auth.uid])
     }
 
     match /users/{userId} {
