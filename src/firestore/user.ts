@@ -93,7 +93,6 @@ export const loginWithGoogle = async () => {
     // If user data doesn't exist, store it
     if (!snap.exists()) {
       await setDoc(ref, {
-        uid: user.uid,
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL || '',
@@ -127,7 +126,6 @@ export const register = async (userData: TSignUpRequest) => {
 
     // Store user data in Firestore
     await setDoc(doc(firestore, 'users', user.uid), {
-      uid: user.uid,
       displayName: displayName,
       email: email,
       createdAt: new Date(),
