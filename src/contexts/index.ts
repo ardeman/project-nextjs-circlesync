@@ -1,2 +1,2 @@
-export * from './firebase-provider'
+export * from './firebase-context'
 export * from './theme-provider'

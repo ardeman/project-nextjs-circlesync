@@ -1,15 +1,14 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { sendPasswordResetEmail } from 'firebase/auth'
-import { useAuth } from 'reactfire'
 
+import { auth } from '@/configs'
 import { authError } from '@/constants'
 import { TEmailRequest } from '@/types'
 
 import { toast } from './use-toast'
 
 export const useForgotPassword = () => {
-  const auth = useAuth()
   return useMutation({
     mutationFn: async (data: TEmailRequest) => {
       if (!auth) {

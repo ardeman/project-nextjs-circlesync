@@ -1,21 +1,19 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { sendPasswordResetEmail } from 'firebase/auth'
-import { useAuth, useUser } from 'reactfire'
 
+import { auth } from '@/configs'
 import { authError } from '@/constants'
 
 import { toast } from './use-toast'
 
 export const useResetPassword = () => {
-  const { data: user } = useUser()
-  const auth = useAuth()
   return useMutation({
     mutationFn: () => {
-      if (!user?.email) {
+      if (!auth?.currentUser?.email) {
         throw new Error('No user is currently signed in.')
       }
-      return sendPasswordResetEmail(auth, user.email)
+      return sendPasswordResetEmail(auth, auth.currentUser.email)
     },
     onSuccess: () => {
       toast({

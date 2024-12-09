@@ -3,7 +3,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useUser } from 'reactfire'
 
 import { Button, Input } from '@/components/base'
 import {
@@ -14,13 +13,13 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
-import { useUpdateProfile } from '@/hooks'
+import { useUpdateProfile, useUserData } from '@/hooks'
 import { TUpdateProfileRequest } from '@/types'
 import { generalSettingSchema } from '@/validations'
 
 export const GeneralSettingsPage = () => {
   const [disabled, setDisabled] = useState(false)
-  const { data: user } = useUser()
+  const { data: userData } = useUserData()
   const formMethods = useForm<TUpdateProfileRequest>({
     resolver: zodResolver(generalSettingSchema),
     defaultValues: {
@@ -47,10 +46,10 @@ export const GeneralSettingsPage = () => {
   }, [isUpdateProfileSuccess, isUpdateProfileError])
 
   useEffect(() => {
-    if (user) {
-      setValue('displayName', user?.displayName || '')
+    if (userData) {
+      setValue('displayName', userData.displayName)
     }
-  }, [user, setValue])
+  }, [userData, setValue])
 
   return (
     <div className="grid gap-6">

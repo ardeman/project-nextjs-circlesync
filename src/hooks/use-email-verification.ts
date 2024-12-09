@@ -1,20 +1,19 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { sendEmailVerification } from 'firebase/auth'
-import { useUser } from 'reactfire'
 
+import { auth } from '@/configs'
 import { authError } from '@/constants'
 
 import { toast } from './use-toast'
 
 export const useEmailVerification = () => {
-  const { data: user } = useUser()
   return useMutation({
     mutationFn: () => {
-      if (!user) {
+      if (!auth?.currentUser) {
         throw new Error('No user is currently signed in.')
       }
-      return sendEmailVerification(user)
+      return sendEmailVerification(auth.currentUser)
     },
     onSuccess: () => {
       toast({

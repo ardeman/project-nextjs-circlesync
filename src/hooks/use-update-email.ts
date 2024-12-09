@@ -1,22 +1,21 @@
 import { useMutation } from '@tanstack/react-query'
 import { FirebaseError } from 'firebase/app'
 import { verifyBeforeUpdateEmail } from 'firebase/auth'
-import { useUser } from 'reactfire'
 
+import { auth } from '@/configs'
 import { authError } from '@/constants'
 import { TEmailRequest } from '@/types'
 
 import { toast } from './use-toast'
 
 export const useUpdateEmail = () => {
-  const { data: user } = useUser()
   return useMutation({
     mutationFn: async (data: TEmailRequest) => {
-      if (!user) {
+      if (!auth?.currentUser) {
         throw new Error('No user is currently signed in.')
       }
 
-      await verifyBeforeUpdateEmail(user, data.email)
+      await verifyBeforeUpdateEmail(auth.currentUser, data.email)
     },
     onSuccess: () => {
       toast({

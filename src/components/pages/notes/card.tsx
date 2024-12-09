@@ -1,5 +1,3 @@
-import { useUser } from 'reactfire'
-
 import {
   Card as UICard,
   CardContent,
@@ -7,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui'
+import { useUserData } from '@/hooks'
 import { cn, formatDate, getDateLabel } from '@/utils'
 
 import { Action } from './action'
@@ -16,10 +15,10 @@ import { TCardProps } from './type'
 export const Card = (props: TCardProps) => {
   const { note } = props
   const { handleEditNote } = useNote()
-  const { data: user } = useUser()
+  const { data: userData } = useUserData()
   const isPinned = note.isPinned
-  const isCollaborator = note.collaborators?.includes(user?.uid || '')
-  const isOwner = note.owner === user?.uid
+  const isCollaborator = note.collaborators?.includes(userData?.uid)
+  const isOwner = note.owner === userData?.uid
   const isEditable = isOwner || isCollaborator
   const dateLabel = getDateLabel(note.updatedAt?.seconds)
   const date = formatDate(note.updatedAt?.seconds || note.createdAt.seconds)

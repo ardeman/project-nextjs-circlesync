@@ -3,10 +3,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { forwardRef, useImperativeHandle } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { useUser } from 'reactfire'
 
 import { Textarea } from '@/components/base'
-import { useCreateNote, useDebounce, useUpdateNote } from '@/hooks'
+import { useCreateNote, useDebounce, useUpdateNote, useUserData } from '@/hooks'
 import { TNoteForm } from '@/types'
 import { formatDate, getDateLabel } from '@/utils'
 import { noteSchema } from '@/validations'
@@ -23,10 +22,10 @@ export const Form = forwardRef((props: TFormProps, ref) => {
   const date = note
     ? formatDate(note.updatedAt?.seconds || note.createdAt.seconds)
     : ''
-  const { data: user } = useUser()
+  const { data: userData } = useUserData()
   const isPinned = note?.isPinned
-  const isCollaborator = note?.collaborators?.includes(user?.uid || '')
-  const isOwner = note?.owner === user?.uid
+  const isCollaborator = note?.collaborators?.includes(userData?.uid)
+  const isOwner = note?.owner === userData?.uid
   const isEditable = isOwner || isCollaborator
   const { mutate: mutateCreateNote } = useCreateNote()
   const { mutate: mutateUpdateNote } = useUpdateNote()

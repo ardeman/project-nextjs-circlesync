@@ -1,12 +1,10 @@
 'use client'
 
-import { collection, or, query, where } from 'firebase/firestore'
 import Masonry from 'masonry-layout'
 import { useEffect, useRef } from 'react'
-import { useFirestore, useFirestoreCollectionData, useUser } from 'reactfire'
 
 import { Button, Modal } from '@/components/base'
-import { TNoteResponse } from '@/types'
+import { useGetNotes } from '@/hooks'
 
 import { Card } from './card'
 import { useNote } from './context'
@@ -27,28 +25,9 @@ export const Wrapper = () => {
     handleConfirm,
     formRef,
   } = useNote()
+  const { data: notesData } = useGetNotes()
   const masonryRefPinned = useRef(null)
   const masonryRefRegular = useRef(null)
-  const { data: user } = useUser()
-  const firestore = useFirestore()
-  const notesCollection = collection(firestore, 'notes')
-  const notesQuery = query(
-    notesCollection,
-    or(
-      where('owner', '==', user?.uid),
-      where('collaborators', 'array-contains', user?.uid),
-      where('spectators', 'array-contains', user?.uid)
-    )
-  )
-
-  const { data: notes } = useFirestoreCollectionData(notesQuery, {
-    idField: 'id', // this field will be added to the object created from each document
-  })
-
-  const notesData = notes?.map((note) => ({
-    ...note,
-    isPinned: note.pinnedBy?.includes(user?.uid),
-  })) as TNoteResponse[]
 
   useEffect(() => {
     if (masonryRefPinned?.current) {
@@ -93,7 +72,7 @@ export const Wrapper = () => {
             )
             .map((note) => (
               <Card
-                note={note as TNoteResponse}
+                note={note}
                 key={note.id}
               />
             ))}
@@ -113,7 +92,7 @@ export const Wrapper = () => {
             )
             .map((note) => (
               <Card
-                note={note as TNoteResponse}
+                note={note}
                 key={note.id}
               />
             ))}
@@ -127,7 +106,7 @@ export const Wrapper = () => {
       >
         <Form
           ref={formRef}
-          notes={notes as TNoteResponse[]}
+          notes={notesData}
         />
       </Modal>
 
