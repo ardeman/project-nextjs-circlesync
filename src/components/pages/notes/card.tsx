@@ -43,7 +43,7 @@ export const Card = (props: TCardProps) => {
           <span>
             {dateLabel} {date}
           </span>
-          <span>{isEditable ? canWrite && 'Shared' : 'Read-only'}</span>
+          <span>{isEditable ? !isOwner && 'Shared' : 'Read-only'}</span>
         </CardDescription>
         {note.title && <CardTitle className="text-xl">{note.title}</CardTitle>}
       </CardHeader>
